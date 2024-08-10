@@ -1,8 +1,13 @@
 add_subdirectory(external/googletest)
 
-add_executable(test_tree test_tree.cpp)
+file(GLOB_RECURSE UNTI_TEST_SOURCES
+    test_*.cpp
+)
+
+
+add_executable(test_tree ${UNTI_TEST_SOURCES})
 
 target_link_libraries(test_tree gtest_main Tree)
 
 include(GoogleTest)
-gtest_discover_tests(test_tree)
+gtest_discover_tests(test_tree TEST_PREFIX "test_")

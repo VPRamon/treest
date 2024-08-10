@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "tree.hpp"
 
-TEST(TreeTest, AddChildLeaf) {
+TEST(IntTest, AddChildLeaf) {
     Tree<int> tree;
     tree.addChild(1);
     tree.addChild(2);
@@ -10,7 +10,7 @@ TEST(TreeTest, AddChildLeaf) {
     ASSERT_EQ(tree.toString(), "{1,2}");
 }
 
-TEST(TreeTest, AddChildSubTree) {
+TEST(IntTest, AddChildSubTree) {
     Tree<int> tree;
     auto subTree = std::make_unique<Tree<int>>();
     subTree->addChild(3);
@@ -21,7 +21,7 @@ TEST(TreeTest, AddChildSubTree) {
     ASSERT_EQ(tree.toString(), "{{3,4}}");
 }
 
-TEST(TreeTest, PrintTree) {
+TEST(IntTest, PrintTree) {
     Tree<int> tree;
     tree.addChild(1);
     auto subTree = std::make_unique<Tree<int>>();
@@ -30,9 +30,4 @@ TEST(TreeTest, PrintTree) {
     tree.addChild(std::move(subTree));
 
     ASSERT_EQ(tree.toString(), "{1,{2,3}}");
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }
