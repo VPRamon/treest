@@ -5,6 +5,11 @@
 #include <list>
 #include <memory>
 #include <variant>
+#include <string>
+
+// Helper struct for visitor pattern
+template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
+template<class... Ts> overload(Ts...) -> overload<Ts...>;
 
 template <typename T>
 class Tree {
@@ -36,15 +41,22 @@ public:
         return std::get<SubTree>(node);
     }
 
-    void printTree(int depth = 0) const {
-        for (const auto& child : children_) {
-            if (isLeaf(child)) {
-                std::cout << std::string(depth * 2, ' ') << getLeaf(child) << "\n";
-            } else {
-                std::cout << std::string(depth * 2, ' ') << "SubTree:\n";
-                getSubTree(child)->printTree(depth + 1);
+    void stream(std::ostream &out) const {
+        out << '{';
+        for (auto it = children_.begin(); it != children_.end(); ++it) {
+            std::visit(overload{
+                [&out](const Leaf& leaf)    { out << leaf; },
+                [&out](const SubTree& tree) { tree->stream(out); },
+            }, *it);
+            if (std::next(it) != children_.end()) {  // Check if it's not the last element
+                out << ',';
             }
         }
+        out << '}';
+    }
+
+    void print() {
+        this->stream(std::cout);
     }
 
 protected:
