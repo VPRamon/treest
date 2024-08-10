@@ -7,33 +7,29 @@ TEST(TreeTest, AddChildLeaf) {
     tree.addChild(2);
 
     // Expect 2 children in the tree
-    // (We could add a method to return number of children)
+    ASSERT_EQ(tree.toString(), "{1,2}");
 }
 
 TEST(TreeTest, AddChildSubTree) {
     Tree<int> tree;
-    
     auto subTree = std::make_unique<Tree<int>>();
     subTree->addChild(3);
     subTree->addChild(4);
-    
     tree.addChild(std::move(subTree));
 
     // Expect 1 child in the tree (the subtree)
+    ASSERT_EQ(tree.toString(), "{{3,4}}");
 }
 
 TEST(TreeTest, PrintTree) {
     Tree<int> tree;
     tree.addChild(1);
-    
     auto subTree = std::make_unique<Tree<int>>();
     subTree->addChild(2);
     subTree->addChild(3);
-    
     tree.addChild(std::move(subTree));
 
-    std::string out = tree.toString();
-    ASSERT_EQ(out, "{1,{2,3}}");
+    ASSERT_EQ(tree.toString(), "{1,{2,3}}");
 }
 
 int main(int argc, char **argv) {
