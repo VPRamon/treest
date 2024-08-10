@@ -1,0 +1,72 @@
+# Ignore build directories
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/Makefile
+/*.cmake
+/*.cbp
+/*.vcxproj*
+/*.sln
+/CMakeScripts/
+/Testing/
+/test/CMakeFiles/
+/test/Makefile
+
+# Ignore executable files
+*.exe
+*.out
+*.app
+
+# Ignore library files
+*.a
+*.lib
+*.so
+*.dylib
+
+# Ignore object files
+*.o
+*.obj
+*.lo
+*.lai
+
+# Ignore logs and debugging files
+*.log
+*.trace
+*.dSYM/
+*.stackdump
+*.mem
+
+# Ignore editor/IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.ncb
+*.sdf
+*.opensdf
+*.vscode/
+*.VC.db
+*.VC.opendb
+
+# Ignore macOS specific files
+.DS_Store
+
+# Ignore Windows specific files
+Thumbs.db
+desktop.ini
+
+# Ignore Python cache files (if you use Python scripts)
+__pycache__/
+*.py[cod]
+
+# Ignore gtest-related files (if downloaded manually or as a submodule)
+external/googletest/
+googletest/
+
+# Ignore CTest temporary files
+CTestTestfile.cmake
+DartConfiguration.tcl
+
+# Ignore generated documentation
+/doc/
