@@ -59,6 +59,12 @@ public:
         this->stream(std::cout);
     }
 
+    std::string toString() {
+        std::ostringstream oss;  // Create an ostringstream object
+        stream(oss);             // Pass the ostringstream to the stream function
+        return oss.str();        // Retrieve the string from the ostringstream
+    }
+
 protected:
     std::list<Node> children_;
 };

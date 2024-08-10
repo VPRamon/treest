@@ -32,8 +32,8 @@ TEST(TreeTest, PrintTree) {
     
     tree.addChild(std::move(subTree));
 
-    // This is a simple test; you could redirect std::cout and verify output.
-    tree.print();
+    std::string out = tree.toString();
+    ASSERT_EQ(out, "{1,{2,3}}");
 }
 
 int main(int argc, char **argv) {
