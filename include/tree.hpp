@@ -61,8 +61,8 @@ public:
     }
 
     // Begin and End functions for the iterator
-    auto begin() { return Iterator<T>(*this); }
-    auto end() { return Iterator<T>(*this); }
+    auto begin() { return Iterator<T>::begin(*this); }
+    auto end() { return Iterator<T>::end(*this); }
 
 protected:
     std::list<Node> children_;

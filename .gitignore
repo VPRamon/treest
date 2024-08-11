@@ -11,6 +11,7 @@
 /Testing/
 /test/CMakeFiles/
 /test/Makefile
+/.vscode/
 
 # Ignore executable files
 *.exe
