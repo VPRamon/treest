@@ -5,14 +5,16 @@
 #include <list>
 #include <memory>
 #include <variant>
-#include <string>
+#include <sstream>
 
 // Helper struct for visitor pattern
 template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
 template<class... Ts> overload(Ts...) -> overload<Ts...>;
+template <typename T> class Iterator;
 
 template <typename T>
 class Tree {
+    friend Iterator<T>;
 public:
     using Leaf = T;
     using SubTree = std::unique_ptr<Tree<T>>;
@@ -22,26 +24,14 @@ public:
     virtual ~Tree() = default;
 
     void addChild(Node node) { 
-        children_.emplace_back(std::move(node)); 
+        children_.emplace_back(std::move(node));  
     }
 
-    static bool isLeaf(const Node& node) {
-        return std::holds_alternative<Leaf>(node);
+    const std::list<Node>& getChildren() const { 
+        return children_; 
     }
 
-    static bool isSubTree(const Node& node) {
-        return std::holds_alternative<SubTree>(node);
-    }
-
-    static const Leaf& getLeaf(const Node& node) {
-        return std::get<Leaf>(node);
-    }
-
-    static const SubTree& getSubTree(const Node& node) {
-        return std::get<SubTree>(node);
-    }
-
-    void stream(std::ostream &out) const {
+    std::ostream& stream(std::ostream &out) const {
         out << '{';
         for (auto it = children_.begin(); it != children_.end(); ++it) {
             std::visit(overload{
@@ -53,20 +43,36 @@ public:
             }
         }
         out << '}';
+        return out;
     }
 
-    void print() {
+    // Friend function declaration for operator<<
+    template<typename U>
+    friend std::ostream& operator<<(std::ostream& os, const Tree<U>& tree);
+
+    void print() const {
         this->stream(std::cout);
     }
 
-    std::string toString() {
+    std::string toString() const {
         std::ostringstream oss;  // Create an ostringstream object
         stream(oss);             // Pass the ostringstream to the stream function
         return oss.str();        // Retrieve the string from the ostringstream
     }
 
+    // Begin and End functions for the iterator
+    auto begin() { return Iterator<T>(*this); }
+    auto end() { return Iterator<T>(*this); }
+
 protected:
     std::list<Node> children_;
+    Node* parent_ = nullptr; // This might be used for some parent-child relationships
 };
+
+// Implementation of operator<<
+template<typename U>
+std::ostream& operator<<(std::ostream& os, const Tree<U>& tree) {
+    return tree.stream(os);
+}
 
 #endif // TREE_HPP
