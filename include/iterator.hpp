@@ -9,64 +9,73 @@ template <typename T>
 class Iterator {
 private:
     using Leaf = T;
-    using SubTree = std::unique_ptr<TreeImpl<T>>;
+    using TreeType = Tree<T>;
+    using SubTree = std::unique_ptr<TreeType>;
     using Node = std::variant<Leaf, SubTree>;
+    using IteratorType = Iterator<T>;
 
     typename std::list<Node>::iterator it_;
-    TreeImpl<T>& tree_;
-    std::shared_ptr<Iterator<T>> sub_tree_it_;
+    TreeType& tree_;
+    std::shared_ptr<IteratorType> sub_tree_it_;
 
 public:
-    Iterator(TreeImpl<T>& tree)
+    Iterator(TreeType& tree)
         : tree_(tree), it_(tree.children_.begin()), sub_tree_it_(nullptr)
     { }
 
-    static auto begin(TreeImpl<T>& tree) {
-        return Iterator<T>(tree);
-    }
+    static auto begin(TreeType& tree) { return IteratorType(tree); }
+    static auto beginPtr(TreeType& tree) { return std::make_shared<IteratorType>(tree); }
 
-    static auto beginPtr(TreeImpl<T>& tree) {
-        return std::make_shared<Iterator<T>>(tree);
-    }
+    Node& operator*() const { return sub_tree_it_ ? **sub_tree_it_ : *it_; }
+    Node* operator->() { return sub_tree_it_ ? &(*sub_tree_it_) : &it_; }
 
-    static Iterator<T> end(TreeImpl<T>& tree) {
-        Iterator<T> iterator(tree);
+    bool operator==(const Iterator& other) const { return it_ == other.it_; }
+    bool operator!=(const Iterator& other) const { return it_ != other.it_; }
+
+    static IteratorType end(TreeType& tree) {
+        IteratorType iterator(tree);
         iterator.it_ = tree.children_.end();
         return iterator;
     }
 
-    // Access operators
-    Node& operator*() const { return sub_tree_it_ ? **sub_tree_it_ : *it_; }
-    Node* operator->() { return sub_tree_it_ ? &(*sub_tree_it_) : &it_; }
+    // buggy, whall do a deep copy
+    static IteratorType next(const IteratorType& it) {
+        IteratorType next_it = it;
+        next_it++;
+        return next_it;
+    }
 
-    // Prefix increment
-    Iterator& operator++() {
+
+    void incrementIterator() {
         if (sub_tree_it_) {
-            (*sub_tree_it_)++;
-            if (*sub_tree_it_ == Iterator<T>::end(sub_tree_it_->tree_)) { // Si es l'ultim clean
-                ++it_;
+            ++(*sub_tree_it_);
+            if (*sub_tree_it_ == IteratorType::end(sub_tree_it_->tree_)) {
                 sub_tree_it_ = nullptr;
+                ++it_;
             }
-        }
-        else if (auto* sub_tree = std::get_if<SubTree>(&(*it_))) { // I am in a subtree-root
-            sub_tree_it_ = Iterator<T>::beginPtr(**sub_tree);      // initialize sub_tree iterator (first child)
-        }
-        else {  // I am a leaf, visit next node
+        } else if (auto* sub_tree = std::get_if<SubTree>(&(*it_))) {
+            sub_tree_it_ = IteratorType::beginPtr(**sub_tree);
+        } else {
             ++it_;
         }
+    }
+
+    Iterator& operator++() {
+        incrementIterator();
         return *this;
     }
 
-    // Postfix increment
+
     Iterator operator++(int) {
         Iterator temp = *this;
         ++(*this);
         return temp;
     }
 
-    // Equality/Inequality operators
-    bool operator==(const Iterator& other) const { return it_ == other.it_; }
-    bool operator!=(const Iterator& other) const { return it_ != other.it_; }
+private:
+
+
+
 };
 
 #endif // TREE_ITERATOR_HPP

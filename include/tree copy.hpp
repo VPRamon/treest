@@ -1,5 +1,5 @@
-#ifndef TREE_IMPL_HPP
-#define TREE_IMPL_HPP
+#ifndef TREE_HPP
+#define TREE_HPP
 
 #include <iostream>
 #include <list>
@@ -13,15 +13,16 @@ template<class... Ts> overload(Ts...) -> overload<Ts...>;
 template <typename T> class Iterator;
 
 template <typename T>
-class TreeImpl {
+class Tree {
     friend Iterator<T>;
 public:
     using Leaf = T;
-    using SubTree = std::unique_ptr<TreeImpl<T>>;
+    using TreeType = Tree<T>;
+    using SubTree = std::unique_ptr<TreeType>;
     using Node = std::variant<Leaf, SubTree>;
 
-    TreeImpl() = default;
-    virtual ~TreeImpl() = default;
+    Tree() = default;
+    virtual ~Tree() = default;
 
     void addChild(Node node) { children_.emplace_back(std::move(node)); }
     const std::list<Node>& getChildren() const { return children_; }
@@ -53,7 +54,7 @@ public:
 
     // Friend function declaration for operator<<
     template<typename U>
-    friend std::ostream& operator<<(std::ostream& os, const TreeImpl<U>& tree);
+    friend std::ostream& operator<<(std::ostream& os, const Tree<U>& tree);
 
 protected:
     std::list<Node> children_;
@@ -61,8 +62,10 @@ protected:
 
 // Implementation of operator<<
 template<typename U>
-std::ostream& operator<<(std::ostream& os, const TreeImpl<U>& tree) {
+std::ostream& operator<<(std::ostream& os, const Tree<U>& tree) {
     return tree.stream(os);
 }
 
-#endif // TREE_IMPL_HPP
+
+
+#endif // TREE_HPP
