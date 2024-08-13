@@ -16,6 +16,13 @@ public:
     using SubTree = std::unique_ptr<Tree<T>>;
     using Node = std::variant<Leaf, SubTree>;
 
+    static bool isLeaf(const Node& node) { return std::get_if<Leaf>(&node); }
+    static bool isSubTree(const Node& node) { return std::get_if<SubTree>(&node); }
+    static const Leaf& getLeaf(const Node& node) { return std::get<Leaf>(node); }
+    static const SubTree& getSubTree(const Node& node) { return std::get<SubTree>(node); }
+    static Leaf& getLeaf(Node& node) { return std::get<Leaf>(node); }
+    static SubTree& getSubTree(Node& node) { return std::get<SubTree>(node); }
+
     Tree() = default;
     virtual ~Tree() = default;
 
@@ -42,5 +49,6 @@ std::ostream& operator<<(std::ostream& os, const Tree<U>& tree) {
 }
 
 #include <tree_impl.hpp>
+#include <iterator.hpp>
 
 #endif // TREE_HPP

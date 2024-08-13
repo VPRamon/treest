@@ -2,6 +2,7 @@ add_subdirectory(external/googletest)
 
 file(GLOB_RECURSE UNTI_TEST_SOURCES
     test_*.cpp
+    iterators/test_*.cpp
 )
 
 
