@@ -23,23 +23,16 @@ protected:
         }
     }
 
-    void traverseTree(Tree& tree) {
-        for (auto& node: tree) {
+    void ASSERT_CONST_DFS(const Tree& tree, int expected) { // increments as we traverse the tree
+        for (const auto& node: tree) {
             std::visit(overload{
-                [](const Leaf& leaf)    { std::cout << leaf << std::endl; },
-                [](const SubTree& tree) { std::cout << *tree << std::endl; },
+                [&](const Leaf& leaf)    { ASSERT_EQ(Tree::getLeaf(node), expected++); },
+                [&](const SubTree& tree) { ASSERT_DFS(*Tree::getSubTree(node), expected); },
             }, node);
         }
     }
 
-    void traverseTreeConst(Tree& tree) {
-        for (const auto& node: tree) {
-            std::visit(overload{
-                [](const Leaf& leaf)    { std::cout << leaf << std::endl; },
-                [](const SubTree& tree) { std::cout << *tree << std::endl; },
-            }, node);
-        }
-    }
+public:
 
     Tree tree;
 

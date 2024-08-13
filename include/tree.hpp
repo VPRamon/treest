@@ -7,10 +7,12 @@
 #include <variant>
 
 template <typename T> class Iterator;
+template <typename T> class ConstIterator;
 
 template <typename T>
 class Tree {
     friend Iterator<T>;
+    friend ConstIterator<T>;
 public:
     using Leaf = T;
     using SubTree = std::unique_ptr<Tree<T>>;
@@ -36,6 +38,9 @@ public:
     auto begin() { return Iterator<T>::begin(*this); }
     auto end() { return Iterator<T>::end(*this); }
 
+    auto begin() const { return ConstIterator<T>::begin(*this); }
+    auto end() const { return ConstIterator<T>::end(*this); }
+
     template<typename U>
     friend std::ostream& operator<<(std::ostream& os, const Tree<U>& tree);
 
@@ -50,5 +55,6 @@ std::ostream& operator<<(std::ostream& os, const Tree<U>& tree) {
 
 #include <tree_impl.hpp>
 #include <iterator.hpp>
+#include <const_iterator.hpp>
 
 #endif // TREE_HPP

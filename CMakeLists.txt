@@ -6,7 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/include/iterators
+)
 
 add_library(Tree INTERFACE)
 
