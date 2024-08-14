@@ -5,9 +5,7 @@
 #include <list>
 #include <memory>
 #include <variant>
-
-template <typename T> class Iterator;
-template <typename T> class ConstIterator;
+#include "iterator.hpp"
 
 template <typename T>
 class Tree {
@@ -18,11 +16,15 @@ public:
     using SubTree = std::unique_ptr<Tree<T>>;
     using Node = std::variant<Leaf, SubTree>;
 
+    using ConstSubTree = std::unique_ptr<const Tree<T>>;
+    using ConstNode = std::variant<Leaf, ConstSubTree>;
+
     static bool isLeaf(const Node& node) { return std::get_if<Leaf>(&node); }
     static bool isSubTree(const Node& node) { return std::get_if<SubTree>(&node); }
     static const Leaf& getLeaf(const Node& node) { return std::get<Leaf>(node); }
-    static const SubTree& getSubTree(const Node& node) { return std::get<SubTree>(node); }
     static Leaf& getLeaf(Node& node) { return std::get<Leaf>(node); }
+
+    static const SubTree& getSubTree(const Node& node) { return std::get<SubTree>(node); }
     static SubTree& getSubTree(Node& node) { return std::get<SubTree>(node); }
 
     Tree() = default;
@@ -53,8 +55,6 @@ std::ostream& operator<<(std::ostream& os, const Tree<U>& tree) {
     return tree.stream(os);
 }
 
-#include <tree_impl.hpp>
-#include <iterator.hpp>
-#include <const_iterator.hpp>
+#include "tree_impl.hpp"
 
 #endif // TREE_HPP
