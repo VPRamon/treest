@@ -7,6 +7,8 @@ template<class... Ts> overload(Ts...) -> overload<Ts...>;
 
 template <typename T, typename U>
 std::ostream& Tree<T, U>::stream(std::ostream &out) const {
+    if(data_)
+        out << data_.value();
     out << '{';
     for (auto it = children_.begin(); it != children_.end(); ++it) {
         std::visit(overload{

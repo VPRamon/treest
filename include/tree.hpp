@@ -29,7 +29,7 @@ public:
     static const SubTree& getSubTree(const Node& node) { return std::get<SubTree>(node); }
     static SubTree& getSubTree(Node& node) { return std::get<SubTree>(node); }
 
-    Tree() = default;
+    Tree(std::optional<NodeData> data = std::nullopt) : data_(data) {};
     virtual ~Tree() = default;
     Tree(const Tree& other);
 
@@ -61,7 +61,7 @@ public:
 
 protected:
     std::list<Node> children_;
-    NodeData data_;
+    std::optional<NodeData> data_;
     friend Iterator;
     friend ConstIterator;
 };
