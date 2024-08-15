@@ -6,19 +6,18 @@
 #include <list>
 #include <type_traits>
 
-template<typename T> class Tree;
+template<typename Leaf, typename NodeData> class Tree;
 
-template <typename T, typename TreeType, typename IteratorType>
+template <typename Leaf, typename NodeData, typename TreeType, typename IteratorType>
 class BaseIterator {
 protected:
-    using Leaf = T;
     using SubTree = std::unique_ptr<TreeType>;
-    using NodeType = std::variant<T, std::unique_ptr<Tree<T>>>;
+    using NodeType = std::variant<Leaf, std::unique_ptr<Tree<Leaf, NodeData>>>;
     using Node = NodeType;
 
     IteratorType it_;
     TreeType& tree_;
-    std::shared_ptr<BaseIterator<T, TreeType, IteratorType>> sub_tree_it_;
+    std::shared_ptr<BaseIterator<Leaf, NodeData, TreeType, IteratorType>> sub_tree_it_;
 
 public:
     BaseIterator(TreeType& tree) : tree_(tree), it_(tree.children_.begin()), sub_tree_it_(nullptr) {}
@@ -28,7 +27,7 @@ public:
         : tree_(other.tree_),
         it_(other.it_) {
         if (other.sub_tree_it_) {
-            this->sub_tree_it_ = std::make_shared<BaseIterator<T, TreeType, IteratorType>>(*other.sub_tree_it_);
+            this->sub_tree_it_ = std::make_shared<BaseIterator<Leaf, NodeData, TreeType, IteratorType>>(*other.sub_tree_it_);
         } else {
             this->sub_tree_it_ = nullptr;
         }
@@ -42,9 +41,9 @@ public:
         using ConstIteratorType = typename std::list<NodeType>::const_iterator;
 
         if constexpr (std::is_const_v<TreeType>) {
-            return std::make_shared<BaseIterator<T, TreeType, ConstIteratorType>>(tree);
+            return std::make_shared<BaseIterator<Leaf, NodeData, TreeType, ConstIteratorType>>(tree);
         } else {
-            return std::make_shared<BaseIterator<T, TreeType, NonConstIteratorType>>(tree);
+            return std::make_shared<BaseIterator<Leaf, NodeData, TreeType, NonConstIteratorType>>(tree);
         }
     }
 
@@ -65,7 +64,7 @@ public:
                 sub_tree_it_ = nullptr;
                 ++it_;
             }
-        } else if (auto* sub_tree = std::get_if<std::unique_ptr<Tree<T>>>(&(*it_))) {
+        } else if (auto* sub_tree = std::get_if<std::unique_ptr<Tree<Leaf, NodeData>>>(&(*it_))) {
             if constexpr (std::is_const_v<TreeType>) {
                 sub_tree_it_ = beginPtr(*static_cast<const TreeType*>(sub_tree->get()));
             } else {

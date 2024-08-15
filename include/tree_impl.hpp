@@ -5,8 +5,8 @@
 template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
 template<class... Ts> overload(Ts...) -> overload<Ts...>;
 
-template <typename T>
-std::ostream& Tree<T>::stream(std::ostream &out) const {
+template <typename T, typename U>
+std::ostream& Tree<T, U>::stream(std::ostream &out) const {
     out << '{';
     for (auto it = children_.begin(); it != children_.end(); ++it) {
         std::visit(overload{
@@ -21,16 +21,16 @@ std::ostream& Tree<T>::stream(std::ostream &out) const {
     return out;
 }
 
-template <typename T>
-std::string Tree<T>::toString() const {
+template <typename T, typename U>
+std::string Tree<T, U>::toString() const {
     std::ostringstream oss;  // Create an ostringstream object
     stream(oss);             // Pass the ostringstream to the stream function
     return oss.str();        // Retrieve the string from the ostringstream
 }
 
 // Copy constructor
-template <typename T>
-Tree<T>::Tree(const Tree& other) {
+template <typename T, typename U>
+Tree<T, U>::Tree(const Tree& other) {
     for (const Node& node : other.children_) {
         std::visit(overload{
             [this](const Leaf& leaf)    { this->addChild(leaf); },

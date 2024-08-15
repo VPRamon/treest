@@ -7,9 +7,10 @@
 #include <variant>
 #include "iterator.hpp"
 
-template <typename T>
+template <typename T, typename U = char>
 class Tree {
 public:
+    using NodeData = U;
     using Leaf = T;
     using SubTree = std::unique_ptr<Tree>;
     using Node = std::variant<Leaf, SubTree>;
@@ -17,8 +18,8 @@ public:
     using ConstSubTree = std::unique_ptr<const Tree>;
     using ConstNode = std::variant<Leaf, ConstSubTree>;
 
-    using Iterator = BaseIterator<Leaf, Tree, typename std::list<std::variant<Leaf, std::unique_ptr<Tree>>>::iterator>;
-    using ConstIterator = BaseIterator<Leaf, const Tree, typename std::list<std::variant<Leaf, std::unique_ptr<Tree>>>::const_iterator>;
+    using Iterator = BaseIterator<Leaf, NodeData, Tree, typename std::list<std::variant<Leaf, std::unique_ptr<Tree>>>::iterator>;
+    using ConstIterator = BaseIterator<Leaf, NodeData, const Tree, typename std::list<std::variant<Leaf, std::unique_ptr<Tree>>>::const_iterator>;
 
     static bool isLeaf(const Node& node)    { return std::get_if<Leaf>(&node); }
     static bool isSubTree(const Node& node) { return std::get_if<SubTree>(&node); }
@@ -51,15 +52,22 @@ public:
     auto cbegin() const { return ConstIterator::begin(*this); }
     auto cend()   const { return ConstIterator::end(*this); }
 
+
+    NodeData& operator*()  { return data_; }
+    NodeData* operator->() { return data_;; }
+
+    const NodeData& operator*()  const { return data_; }
+    const NodeData* operator->() const { return data_; }
+
 protected:
     std::list<Node> children_;
-
+    NodeData data_;
     friend Iterator;
     friend ConstIterator;
 };
 
-template<typename U>
-std::ostream& operator<<(std::ostream& os, const Tree<U>& tree) {
+template<typename U, typename W>
+std::ostream& operator<<(std::ostream& os, const Tree<U, W>& tree) {
     return tree.stream(os);
 }
 
