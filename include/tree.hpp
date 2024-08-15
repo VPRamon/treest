@@ -11,15 +11,14 @@ template <typename T>
 class Tree {
 public:
     using Leaf = T;
-    using SubTree = std::unique_ptr<Tree<T>>;
+    using SubTree = std::unique_ptr<Tree>;
     using Node = std::variant<Leaf, SubTree>;
 
-    using ConstSubTree = std::unique_ptr<const Tree<T>>;
+    using ConstSubTree = std::unique_ptr<const Tree>;
     using ConstNode = std::variant<Leaf, ConstSubTree>;
 
-    using Iterator = BaseIterator<T, Tree<T>, std::variant<T, std::unique_ptr<Tree<T>>>, typename std::list<std::variant<T, std::unique_ptr<Tree<T>>>>::iterator>;
-    using ConstIterator = BaseIterator<T, const Tree<T>, std::variant<T, std::unique_ptr<Tree<T>>>, typename std::list<std::variant<T, std::unique_ptr<Tree<T>>>>::const_iterator>;
-
+    using Iterator = BaseIterator<Leaf, Tree, typename std::list<std::variant<Leaf, std::unique_ptr<Tree>>>::iterator>;
+    using ConstIterator = BaseIterator<Leaf, const Tree, typename std::list<std::variant<Leaf, std::unique_ptr<Tree>>>::const_iterator>;
 
     static bool isLeaf(const Node& node)    { return std::get_if<Leaf>(&node); }
     static bool isSubTree(const Node& node) { return std::get_if<SubTree>(&node); }
@@ -33,8 +32,8 @@ public:
     virtual ~Tree() = default;
     Tree(const Tree& other);
 
-    void addChild(const Leaf& leaf)    { children_.emplace_back(leaf); }
-    void addChild(const Tree<T>& tree) { children_.emplace_back(std::make_unique<Tree<T>>(tree)); }
+    void addChild(const Leaf& leaf) { children_.emplace_back(leaf); }
+    void addChild(const Tree& tree) { children_.emplace_back(std::make_unique<Tree>(tree)); }
 
     void addChild(Node node) { children_.emplace_back(std::move(node)); }
     const std::list<Node>& getChildren() const { return children_; }
@@ -51,9 +50,6 @@ public:
 
     auto cbegin() const { return ConstIterator::begin(*this); }
     auto cend()   const { return ConstIterator::end(*this); }
-
-    template<typename U>
-    friend std::ostream& operator<<(std::ostream& os, const Tree<U>& tree);
 
 protected:
     std::list<Node> children_;

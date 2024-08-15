@@ -8,16 +8,17 @@
 
 template<typename T> class Tree;
 
-template <typename T, typename TreeType, typename NodeType, typename IteratorType>
+template <typename T, typename TreeType, typename IteratorType>
 class BaseIterator {
 protected:
     using Leaf = T;
     using SubTree = std::unique_ptr<TreeType>;
+    using NodeType = std::variant<T, std::unique_ptr<Tree<T>>>;
     using Node = NodeType;
 
     IteratorType it_;
     TreeType& tree_;
-    std::shared_ptr<BaseIterator<T, TreeType, NodeType, IteratorType>> sub_tree_it_;
+    std::shared_ptr<BaseIterator<T, TreeType, IteratorType>> sub_tree_it_;
 
 public:
     BaseIterator(TreeType& tree) : tree_(tree), it_(tree.children_.begin()), sub_tree_it_(nullptr) {}
@@ -27,7 +28,7 @@ public:
         : tree_(other.tree_),
         it_(other.it_) {
         if (other.sub_tree_it_) {
-            this->sub_tree_it_ = std::make_shared<BaseIterator<T, TreeType, NodeType, IteratorType>>(*other.sub_tree_it_);
+            this->sub_tree_it_ = std::make_shared<BaseIterator<T, TreeType, IteratorType>>(*other.sub_tree_it_);
         } else {
             this->sub_tree_it_ = nullptr;
         }
@@ -41,9 +42,9 @@ public:
         using ConstIteratorType = typename std::list<NodeType>::const_iterator;
 
         if constexpr (std::is_const_v<TreeType>) {
-            return std::make_shared<BaseIterator<T, TreeType, NodeType, ConstIteratorType>>(tree);
+            return std::make_shared<BaseIterator<T, TreeType, ConstIteratorType>>(tree);
         } else {
-            return std::make_shared<BaseIterator<T, TreeType, NodeType, NonConstIteratorType>>(tree);
+            return std::make_shared<BaseIterator<T, TreeType, NonConstIteratorType>>(tree);
         }
     }
 
