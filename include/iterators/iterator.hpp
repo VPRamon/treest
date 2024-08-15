@@ -23,6 +23,15 @@ public:
     BaseIterator(TreeType& tree) : tree_(tree), it_(tree.children_.begin()), sub_tree_it_(nullptr) {}
     ~BaseIterator() = default;
 
+    BaseIterator(const BaseIterator& other)
+        : tree_(other.tree_),
+        it_(other.it_) {
+        if (other.sub_tree_it_) {
+            this->sub_tree_it_ = std::make_shared<BaseIterator<T, TreeType, NodeType, IteratorType>>(*other.sub_tree_it_);
+        } else {
+            this->sub_tree_it_ = nullptr;
+        }
+    }
     static BaseIterator begin(TreeType& tree) {
         return BaseIterator(tree);
     }
@@ -84,10 +93,5 @@ public:
     }
 };
 
-template <typename T>
-using Iterator = BaseIterator<T, Tree<T>, std::variant<T, std::unique_ptr<Tree<T>>>, typename std::list<std::variant<T, std::unique_ptr<Tree<T>>>>::iterator>;
-
-template <typename T>
-using ConstIterator = BaseIterator<T, const Tree<T>, std::variant<T, std::unique_ptr<Tree<T>>>, typename std::list<std::variant<T, std::unique_ptr<Tree<T>>>>::const_iterator>;
 
 #endif // TREE_ITERATOR_HPP

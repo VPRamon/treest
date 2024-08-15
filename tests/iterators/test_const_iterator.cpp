@@ -27,20 +27,10 @@ TEST_F(IteratorFixture, ManualConstIterator) {
     tree.addChild(subTree);
 
     auto it = tree.begin();
-    ASSERT_TRUE(Tree::isLeaf(*it));
-    ASSERT_EQ(Tree::getLeaf(*it), 1);
 
-    it++;
-    ASSERT_TRUE(Tree::isSubTree(*it));
-
-    it++;
-    ASSERT_TRUE(Tree::isLeaf(*it));
-    ASSERT_EQ(Tree::getLeaf(*it), 2);
-
-    it++;
-    ASSERT_TRUE(Tree::isLeaf(*it));
-    ASSERT_EQ(Tree::getLeaf(*it), 3);
-
-    it++;
+    ASSERT_LEAF(it++, 1);
+    ASSERT_SUBTREE(it++);
+    ASSERT_LEAF(it++, 2);
+    ASSERT_LEAF(it++, 3);
     ASSERT_EQ(it, tree.end());
 }

@@ -9,8 +9,6 @@
 
 template <typename T>
 class Tree {
-    friend Iterator<T>;
-    friend ConstIterator<T>;
 public:
     using Leaf = T;
     using SubTree = std::unique_ptr<Tree<T>>;
@@ -18,6 +16,10 @@ public:
 
     using ConstSubTree = std::unique_ptr<const Tree<T>>;
     using ConstNode = std::variant<Leaf, ConstSubTree>;
+
+    using Iterator = BaseIterator<T, Tree<T>, std::variant<T, std::unique_ptr<Tree<T>>>, typename std::list<std::variant<T, std::unique_ptr<Tree<T>>>>::iterator>;
+    using ConstIterator = BaseIterator<T, const Tree<T>, std::variant<T, std::unique_ptr<Tree<T>>>, typename std::list<std::variant<T, std::unique_ptr<Tree<T>>>>::const_iterator>;
+
 
     static bool isLeaf(const Node& node) { return std::get_if<Leaf>(&node); }
     static bool isSubTree(const Node& node) { return std::get_if<SubTree>(&node); }
@@ -43,17 +45,20 @@ public:
 
     std::string toString() const;
 
-    auto begin() { return Iterator<T>::begin(*this); }
-    auto end() { return Iterator<T>::end(*this); }
+    auto begin() { return Iterator::begin(*this); }
+    auto end() { return Iterator::end(*this); }
 
-    auto begin() const { return ConstIterator<T>::begin(*this); }
-    auto end() const { return ConstIterator<T>::end(*this); }
+    auto begin() const { return ConstIterator::begin(*this); }
+    auto end() const { return ConstIterator::end(*this); }
 
     template<typename U>
     friend std::ostream& operator<<(std::ostream& os, const Tree<U>& tree);
 
 protected:
     std::list<Node> children_;
+
+    friend Iterator;
+    friend ConstIterator;
 };
 
 template<typename U>

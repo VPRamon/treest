@@ -32,6 +32,24 @@ protected:
         }
     }
 
+    void ASSERT_LEAF(Tree::Iterator it, Leaf expected) {
+        ASSERT_TRUE(Tree::isLeaf(*it));
+        ASSERT_EQ(Tree::getLeaf(*it), expected);
+    }
+
+    void ASSERT_SUBTREE(Tree::Iterator it) {
+        ASSERT_TRUE(Tree::isSubTree(*it));
+    }
+
+    void ASSERT_LEAF(Tree::ConstIterator it, Leaf expected) {
+        ASSERT_TRUE(Tree::isLeaf(*it));
+        ASSERT_EQ(Tree::getLeaf(*it), expected);
+    }
+
+    void ASSERT_SUBTREE(Tree::ConstIterator it) {
+        ASSERT_TRUE(Tree::isSubTree(*it));
+    }
+
 public:
 
     Tree tree;

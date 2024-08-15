@@ -21,26 +21,42 @@ TEST_F(IteratorFixture, Iterate2Level) {
 
 TEST_F(IteratorFixture, ManualIterator) {
     tree.addChild(1);
+    tree.addChild(2);
     Tree subTree;
     subTree.addChild(2);
     subTree.addChild(3);
     tree.addChild(subTree);
 
     auto it = tree.begin();
-    ASSERT_TRUE(Tree::isLeaf(*it));
-    ASSERT_EQ(Tree::getLeaf(*it), 1);
+    ASSERT_LEAF(it++, 1);
+    ASSERT_LEAF(it++, 2);
+    ASSERT_SUBTREE(it++);
+    ASSERT_LEAF(it++, 2);
+    ASSERT_LEAF(it++, 3);
+    ASSERT_EQ(it, tree.end());
+}
+
+TEST_F(IteratorFixture, AddNodeWhileIterating) {
+    tree.addChild(1);
+    Tree subTree;
+    subTree.addChild(2);
+    subTree.addChild(3);
+    tree.addChild(subTree);
+
+    auto it = tree.begin();
+    ASSERT_LEAF(it++, 1);
+    ASSERT_SUBTREE(it);
+
+    Tree newSubTree;
+    newSubTree.addChild(4);
+    newSubTree.addChild(5);
+    Tree::getSubTree(*it)->addChild(newSubTree);
 
     it++;
-    ASSERT_TRUE(Tree::isSubTree(*it));
-
-    it++;
-    ASSERT_TRUE(Tree::isLeaf(*it));
-    ASSERT_EQ(Tree::getLeaf(*it), 2);
-
-    it++;
-    ASSERT_TRUE(Tree::isLeaf(*it));
-    ASSERT_EQ(Tree::getLeaf(*it), 3);
-
-    it++;
+    ASSERT_LEAF(it++, 2);
+    ASSERT_LEAF(it++, 3);
+    ASSERT_SUBTREE(it++);
+    ASSERT_LEAF(it++, 4);
+    ASSERT_LEAF(it++, 5);
     ASSERT_EQ(it, tree.end());
 }
