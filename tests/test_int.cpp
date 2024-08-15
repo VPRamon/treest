@@ -11,23 +11,21 @@ TEST(IntTest, AddChildLeaf) {
 }
 
 TEST(IntTest, AddChildSubTree) {
-    Tree<int> tree;
-    auto subTree = std::make_unique<Tree<int>>();
-    subTree->addChild(3);
-    subTree->addChild(4);
-    tree.addChild(std::move(subTree));
+    Tree<int> tree, subTree;
+    subTree.addChild(3);
+    subTree.addChild(4);
+    tree.addChild(subTree);
 
     // Expect 1 child in the tree (the subtree)
     ASSERT_EQ(tree.toString(), "{{3,4}}");
 }
 
 TEST(IntTest, PrintTree) {
-    Tree<int> tree;
+    Tree<int> tree, subTree;
     tree.addChild(1);
-    auto subTree = std::make_unique<Tree<int>>();
-    subTree->addChild(2);
-    subTree->addChild(3);
-    tree.addChild(std::move(subTree));
+    subTree.addChild(2);
+    subTree.addChild(3);
+    tree.addChild(subTree);
 
     ASSERT_EQ(tree.toString(), "{1,{2,3}}");
 }

@@ -29,6 +29,12 @@ public:
 
     Tree() = default;
     virtual ~Tree() = default;
+    Tree(const Tree& other);
+
+    void addChild(const Leaf& leaf) { children_.emplace_back(leaf); }
+    void addChild(const Tree<T>& tree) {
+        children_.emplace_back(std::make_unique<Tree<T>>(tree));
+    }
 
     void addChild(Node node) { children_.emplace_back(std::move(node)); }
     const std::list<Node>& getChildren() const { return children_; }

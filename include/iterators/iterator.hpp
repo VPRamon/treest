@@ -38,8 +38,12 @@ public:
         }
     }
 
+    Node& operator*() requires(!std::is_const_v<TreeType>) { return sub_tree_it_ ? **sub_tree_it_ : *it_; }
+    Node* operator->() requires(!std::is_const_v<TreeType>) { return sub_tree_it_ ? &(**sub_tree_it_) : &(*it_); }
+
     const Node& operator*() const { return sub_tree_it_ ? **sub_tree_it_ : *it_; }
     const Node* operator->() const { return sub_tree_it_ ? &(**sub_tree_it_) : &(*it_); }
+
 
     bool operator==(const BaseIterator& other) const { return it_ == other.it_; }
     bool operator!=(const BaseIterator& other) const { return it_ != other.it_; }

@@ -28,4 +28,15 @@ std::string Tree<T>::toString() const {
     return oss.str();        // Retrieve the string from the ostringstream
 }
 
+// Copy constructor
+template <typename T>
+Tree<T>::Tree(const Tree& other) {
+    for (const Node& node : other.children_) {
+        std::visit(overload{
+            [this](const Leaf& leaf)    { this->addChild(leaf); },
+            [this](const SubTree& tree) { this->addChild(*tree); },
+        }, node);
+    }
+}
+
 #endif // TREE_IMPL_HPP

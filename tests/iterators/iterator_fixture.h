@@ -15,7 +15,7 @@ protected:
     void TearDown() override {};
 
     void ASSERT_DFS(Tree& tree, int expected) { // increments as we traverse the tree
-        for (auto& node: tree) {
+        for (Node& node: tree) {
             std::visit(overload{
                 [&](const Leaf& leaf)    { ASSERT_EQ(Tree::getLeaf(node), expected++); },
                 [&](const SubTree& tree) { ASSERT_DFS(*Tree::getSubTree(node), expected); },
@@ -24,7 +24,7 @@ protected:
     }
 
     void ASSERT_CONST_DFS(const Tree& tree, int expected) { // increments as we traverse the tree
-        for (const auto& node: tree) {
+        for (const Node& node: tree) {
             std::visit(overload{
                 [&](const Leaf& leaf)    { ASSERT_EQ(Tree::getLeaf(node), expected++); },
                 [&](const SubTree& tree) { ASSERT_DFS(*Tree::getSubTree(node), expected); },
