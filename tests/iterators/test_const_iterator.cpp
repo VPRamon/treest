@@ -26,11 +26,11 @@ TEST_F(IteratorFixture, ManualConstIterator) {
     subTree.addChild(3);
     tree.addChild(subTree);
 
-    auto it = tree.begin();
+    Tree::ConstIterator it = tree.cbegin();
 
     ASSERT_LEAF(it++, 1);
     ASSERT_SUBTREE(it++);
     ASSERT_LEAF(it++, 2);
     ASSERT_LEAF(it++, 3);
-    ASSERT_EQ(it, tree.end());
+    ASSERT_EQ(it, tree.cend());
 }
