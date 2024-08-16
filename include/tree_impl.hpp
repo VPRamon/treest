@@ -1,6 +1,8 @@
 #ifndef TREE_IMPL_HPP
 #define TREE_IMPL_HPP
 
+#include <sstream>
+
 namespace rvp {
 
 // Helper struct for visitor pattern
@@ -27,9 +29,9 @@ std::ostream& Tree<T, U>::stream(std::ostream &out) const {
 
 template <typename T, typename U>
 std::string Tree<T, U>::toString() const {
-    std::ostringstream oss;  // Create an ostringstream object
-    stream(oss);             // Pass the ostringstream to the stream function
-    return oss.str();        // Retrieve the string from the ostringstream
+    std::ostringstream oss;
+    stream(oss);
+    return oss.str();
 }
 
 // Copy constructor
