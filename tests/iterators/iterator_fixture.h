@@ -9,6 +9,9 @@
 #define SubTree Tree::SubTree
 #define Node Tree::Node
 
+using namespace rvp;
+
+
 class IteratorFixture : public ::testing::Test {
 protected:
     void SetUp() override {};

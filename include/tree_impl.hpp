@@ -1,6 +1,8 @@
 #ifndef TREE_IMPL_HPP
 #define TREE_IMPL_HPP
 
+namespace rvp {
+
 // Helper struct for visitor pattern
 template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
 template<class... Ts> overload(Ts...) -> overload<Ts...>;
@@ -40,5 +42,7 @@ Tree<T, U>::Tree(const Tree& other) {
         }, node);
     }
 }
+
+} // namespace rvp
 
 #endif // TREE_IMPL_HPP

@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include "tree.hpp"
 
+using namespace rvp;
+
 TEST(IntTest, AddChildLeaf) {
     Tree<int> tree;
     tree.addChild(1);

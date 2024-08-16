@@ -2,6 +2,8 @@
 #include <string>
 #include "tree.hpp"
 
+using namespace rvp;
+
 #define Tree Tree<int, std::string>
 
 TEST(NodeTest, AddNodeString) {

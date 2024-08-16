@@ -7,6 +7,8 @@
 #include <variant>
 #include "iterator.hpp"
 
+namespace rvp {
+
 template <typename T, typename U = char>
 class Tree {
 public:
@@ -70,6 +72,8 @@ template<typename U, typename W>
 std::ostream& operator<<(std::ostream& os, const Tree<U, W>& tree) {
     return tree.stream(os);
 }
+
+} // namespace rvp
 
 #include "tree_impl.hpp"
 
