@@ -1,17 +1,30 @@
 Treest - A C++ Tree Container Library
+
 Copyright (C) 2024 VPRamon
 
 This file is part of the Treest library.
 
-Treest is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Treest is free software: you can redistribute it and/or modify it under the terms of the
+GNU General Public License as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
 
-Treest is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+Treest is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Treest.  If not, see <https://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along with Treest. If not,
+see <https://www.gnu.org/licenses/>.
+
+Special Provision for Public Research Purposes:
+
+For public research purposes, this software may be used without any restrictions, provided
+that the use has been previously requested and the necessary permissions have been granted
+by the copyright holder, VPRamon. Once permission is granted, the use is unrestricted under
+the conditions outlined herein.
+
+License Negotiation:
+
+If you require a different license for specific use cases, you may request an alternative
+license from the copyright holder. The terms of such a license can be negotiated, and if an
+agreement is reached, VPRamon will provide a special license granting the necessary permissions
+for your specific needs.
