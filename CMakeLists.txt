@@ -7,14 +7,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(BUILD_TESTS "Build tests for the project" ON)
 
-include_directories(
+set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/include/iterators
 )
 
 add_library(Tree INTERFACE)
 
-target_include_directories(Tree INTERFACE ${PROJECT_SOURCE_DIR}/include)
+include_directories(${INCLUDE_DIRS})
+target_include_directories(Tree INTERFACE ${INCLUDE_DIRS})
 
 install(DIRECTORY include/ DESTINATION include)
 
