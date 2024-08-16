@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <variant>
-#include <list>
+#include <vector>
 #include <type_traits>
 
 namespace rvp {
@@ -39,8 +39,8 @@ public:
     }
 
     static std::shared_ptr<BaseIterator> beginPtr(TreeType& tree) {
-        using NonConstIteratorType = typename std::list<NodeType>::iterator;
-        using ConstIteratorType = typename std::list<NodeType>::const_iterator;
+        using NonConstIteratorType = typename std::vector<NodeType>::iterator;
+        using ConstIteratorType = typename std::vector<NodeType>::const_iterator;
 
         if constexpr (std::is_const_v<TreeType>) {
             return std::make_shared<BaseIterator<Leaf, NodeData, TreeType, ConstIteratorType>>(tree);

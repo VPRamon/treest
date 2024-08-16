@@ -2,7 +2,7 @@
 #define TREE_HPP
 
 #include <iostream>
-#include <list>
+#include <vector>
 #include <memory>
 #include <variant>
 #include <optional>
@@ -22,8 +22,8 @@ public:
     using ConstSubTree = std::unique_ptr<const Tree>;
     using ConstNode = std::variant<Leaf, ConstSubTree>;
 
-    using Iterator = BaseIterator<Leaf, NodeData, Tree, typename std::list<std::variant<Leaf, std::unique_ptr<Tree>>>::iterator>;
-    using ConstIterator = BaseIterator<Leaf, NodeData, const Tree, typename std::list<std::variant<Leaf, std::unique_ptr<Tree>>>::const_iterator>;
+    using Iterator = BaseIterator<Leaf, NodeData, Tree, typename std::vector<std::variant<Leaf, std::unique_ptr<Tree>>>::iterator>;
+    using ConstIterator = BaseIterator<Leaf, NodeData, const Tree, typename std::vector<std::variant<Leaf, std::unique_ptr<Tree>>>::const_iterator>;
 
     static bool isLeaf(const Node& node)    { return std::get_if<Leaf>(&node); }
     static bool isSubTree(const Node& node) { return std::get_if<SubTree>(&node); }
@@ -34,6 +34,27 @@ public:
     static SubTree& getSubTree(Node& node) { return std::get<SubTree>(node); }
 
     Tree(std::optional<NodeData> data = std::nullopt) : data_(data) {};
+
+    template <typename InputIt>
+    Tree(InputIt first, InputIt last) {
+        children_.reserve(std::distance(first, last));
+        children_.insert(children_.end(), std::make_move_iterator(first), std::make_move_iterator(last));
+    }
+
+    Tree(std::initializer_list<Leaf> children)
+        : Tree(children.begin(), children.end()) {}
+
+    explicit Tree(const std::vector<Leaf>& children)
+        : Tree(children.begin(), children.end()) {}
+
+    explicit Tree(std::vector<Leaf>&& children) {
+        children_.reserve(children.size());
+        children_.insert(children_.end(),
+                        std::make_move_iterator(children.begin()),
+                        std::make_move_iterator(children.end()));
+    }
+
+
     virtual ~Tree() = default;
     Tree(const Tree& other);
 
@@ -41,7 +62,7 @@ public:
     void addChild(const Tree& tree) { children_.emplace_back(std::make_unique<Tree>(tree)); }
 
     void addChild(Node node) { children_.emplace_back(std::move(node)); }
-    const std::list<Node>& getChildren() const { return children_; }
+    const std::vector<Node>& getChildren() const { return children_; }
 
     std::ostream& stream(std::ostream &out) const;
 
@@ -64,7 +85,7 @@ public:
     const NodeData* operator->() const { return data_; }
 
 protected:
-    std::list<Node> children_;
+    std::vector<Node> children_;
     std::optional<NodeData> data_;
     friend Iterator;
     friend ConstIterator;
