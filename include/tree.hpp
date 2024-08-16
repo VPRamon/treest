@@ -5,7 +5,7 @@
 #include <list>
 #include <memory>
 #include <variant>
-#include "iterator.hpp"
+#include "dfs_iterator.hpp"
 
 namespace rvp {
 
