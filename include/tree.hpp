@@ -78,11 +78,8 @@ public:
     auto cend()   const { return ConstIterator::end(*this); }
 
 
-    NodeData& operator*()  { return data_; }
-    NodeData* operator->() { return data_;; }
-
-    const NodeData& operator*()  const { return data_; }
-    const NodeData* operator->() const { return data_; }
+    NodeData& value()  { return data_.value(); }
+    const NodeData& value() const { return data_.value(); }
 
 protected:
     std::vector<Node> children_;
