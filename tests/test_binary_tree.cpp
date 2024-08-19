@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "tree.hpp"
+#include "binary_tree.hpp"
 
 using namespace rvp;
 
