@@ -6,6 +6,8 @@
 #include <cassert>
 #include <iostream>
 
+#include "dfs_iterator.hpp"
+
 namespace vpr {
 
 template <typename... Types>
@@ -19,6 +21,8 @@ std::ostream& operator<<(std::ostream& os, const std::variant<Types...>& var) {
 template <typename ChildrenType, typename NodeType>
 class NodeInterface {
 public:
+    using Iterator = TreeIterator<NodeInterface, NodeType>;
+
     NodeInterface() = default;
 
     NodeInterface(const NodeType& data, const ChildrenType& children)
