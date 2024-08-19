@@ -1,12 +1,7 @@
 #ifndef DFS_ITERATOR_HPP
 #define DFS_ITERATOR_HPP
 
-#include <iostream>
-#include <vector>
-#include <memory>
-#include <optional>
 #include <stack>
-#include <cassert>
 
 namespace vpr {
 
@@ -33,6 +28,12 @@ public:
             }
         }
         return *this;
+    }
+
+    TreeIterator operator++(int) {
+        TreeIterator temp = *this;
+        ++(*this);
+        return temp;
     }
 
     Node& operator*() const {

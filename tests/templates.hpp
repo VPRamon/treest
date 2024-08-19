@@ -24,6 +24,10 @@ void TEST_ROOTED_TREE(T value_1, T value_2) {
     ASSERT_FALSE(root.hasValue());
 
     auto it = root.begin();
+    ASSERT_FALSE(it->isLeaf());
+    ASSERT_FALSE(it->hasValue());
+
+    it++;
     ASSERT_TRUE(it->hasValue());
     ASSERT_EQ(it->value(), value_1);
 
@@ -37,18 +41,18 @@ void TEST_VARIANT_LEAF(T value_1, U value_2) {
     DECLARE_ROOTED_TREE(root, value_1, value_2)
 
     auto it = root.begin();
+    ASSERT_FALSE(it->isLeaf());
+    ASSERT_FALSE(it->hasValue());
 
+    it++;
     ASSERT_TRUE(it->isLeaf());
     ASSERT_TRUE(it->hasValue());
-
     ASSERT_EQ(std::get_if<U>(&(it->value())), nullptr);
     ASSERT_EQ(*std::get_if<T>(&(it->value())), value_1);
 
     it++;
-
     ASSERT_TRUE(it->isLeaf());
     ASSERT_TRUE(it->hasValue());
-
     ASSERT_EQ(std::get_if<T>(&(it->value())), nullptr);
     ASSERT_EQ(*std::get_if<U>(&(it->value())), value_2);
 }
@@ -65,4 +69,21 @@ void TEST_OUT_TREE(T value_1, T value_2, T value_3, std::string expected) {
     std::string str_2 = std::to_string(value_2);
     std::string str_3 = std::to_string(value_3);
     ASSERT_EQ(oss1.str(), expected);
+}
+
+template <typename ContainerType, typename T>
+void TEST_ITERATE_TREE(std::array<T, 3> values) {
+    DECLARE_ROOTED_TREE(subtree, values[0], values[1])
+    DECLARE_ROOTED_TREE(root, subtree, values[2])
+
+    // TODO assert number of childs
+    unsigned int i = 0;
+    for (auto node : root) {
+        if(!node.isLeaf())
+            continue;
+
+        ASSERT_TRUE(node.hasValue());
+        ASSERT_EQ(node.value(), values[i]);
+        i++;
+    }
 }

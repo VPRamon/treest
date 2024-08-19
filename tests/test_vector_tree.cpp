@@ -30,3 +30,10 @@ TEST(VectorTreeTest, SerializeTree) {
     TEST_OUT_TREE<VectorTree<char>>('A', 'B', 'C', "[[A, B], C]"); // outs ASCII
     TEST_OUT_TREE<VectorTree<std::variant<int, char>>>(1, 2, 3, "[[1, 2], 3]");
 }
+
+TEST(VectorTreeTest, Iterate) {
+    TEST_ITERATE_TREE<VectorTree<int>>(std::array<int, 3>{1, 2, 3});
+    //TEST_OUT_TREE<VectorTree<float>>(1.2, 2.3, 3.4, "[[1.2, 2.3], 3.4]");
+    //TEST_OUT_TREE<VectorTree<char>>('A', 'B', 'C', "[[A, B], C]"); // outs ASCII
+    //TEST_OUT_TREE<VectorTree<std::variant<int, char>>>(1, 2, 3, "[[1, 2], 3]");
+}

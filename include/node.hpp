@@ -21,7 +21,8 @@ std::ostream& operator<<(std::ostream& os, const std::variant<Types...>& var) {
 template <typename ChildrenType, typename NodeType>
 class NodeInterface {
 public:
-    using Iterator = TreeIterator<NodeInterface, NodeType>;
+    using Iterator = TreeIterator<ChildrenType, NodeType>;
+    friend Iterator;
 
     NodeInterface() = default;
 
@@ -51,6 +52,9 @@ public:
 
     virtual ~NodeInterface() = default;
 
+    auto begin() { return Iterator(this); }
+    auto end() { return Iterator(nullptr); }
+
     bool isLeaf() const { return !children_; }
     bool hasValue() const { return data_.has_value(); }
 
@@ -59,7 +63,6 @@ public:
         return data_.value();
     }
 
-    // Friend function to implement the << operator
     friend std::ostream& operator<<(std::ostream& os, const NodeInterface& node) {
         if (node.hasValue()) {
             os << node.value();
@@ -70,7 +73,7 @@ public:
             bool first = true;
             for (const auto& child : *node.children_) {
                 if (!first) {
-                    os << ", "; // Add space before subsequent elements
+                    os << ", ";
                 }
                 os << child;
                 first = false;

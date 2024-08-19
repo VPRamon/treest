@@ -17,15 +17,6 @@ class GenericTree : public NodeInterface<
 public:
     using ParentType::NodeInterface;
 
-    auto begin() {
-        assert(this->children_ && "Attempting to access begin child of a leaf node.");
-        return this->children_->begin();
-    }
-
-    auto end() {
-        assert(this->children_ && "Attempting to access end child of a leaf node.");
-        return this->children_->end();
-    }
 };
 
 
