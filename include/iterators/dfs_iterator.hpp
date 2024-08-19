@@ -6,7 +6,7 @@
 #include <vector>
 #include <type_traits>
 
-namespace rvp {
+namespace vpr {
 
 template<typename Leaf, typename NodeData> class Tree;
 
@@ -95,6 +95,6 @@ public:
     }
 };
 
-} // namespace rvp
+} // namespace vpr
 
 #endif // TREE_ITERATOR_HPP

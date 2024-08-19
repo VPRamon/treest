@@ -1,13 +1,11 @@
-#ifndef COMMON_TREE_HPP
-#define COMMON_TREE_HPP
+#ifndef GENERIC_TREE_HPP
+#define GENERIC_TREE_HPP
 
 #include "node.hpp"
 
-#include <list>
-#include <vector>
 #include <cassert>
 
-namespace rvp {
+namespace vpr {
 
 template <typename T, template <typename, typename> class Container>
 class GenericTree : public NodeInterface<
@@ -30,13 +28,7 @@ public:
     }
 };
 
-// Example aliases for the original ListTree and VectorTree
-template <typename T>
-using ListTree = GenericTree<T, std::list>;
 
-template <typename T>
-using VectorTree = GenericTree<T, std::vector>;
+} // namespace vpr
 
-} // namespace rvp
-
-#endif // COMMON_TREE_HPP
+#endif // GENERIC_TREE_HPP

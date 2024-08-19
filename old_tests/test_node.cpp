@@ -2,7 +2,7 @@
 #include <string>
 #include "tree.hpp"
 
-using namespace rvp;
+using namespace vpr;
 
 #define Tree Tree<int, std::string>
 

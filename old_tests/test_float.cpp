@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "tree.hpp"
 
-using namespace rvp;
+using namespace vpr;
 
 TEST(FloatTest, AddChildLeaf) {
     Tree<float> tree;

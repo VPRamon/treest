@@ -5,7 +5,7 @@
 
 #include "node.hpp"
 
-namespace rvp {
+namespace vpr {
 
 template <typename NodeType>
 class BinaryTree : public NodeInterface<
@@ -41,6 +41,6 @@ public:
 };
 
 
-} // namespace rvp
+} // namespace vpr
 
 #endif // BINARY_TREE_HPP

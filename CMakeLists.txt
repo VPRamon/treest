@@ -9,7 +9,8 @@ option(BUILD_TESTS "Build tests for the project" ON)
 
 set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/include/iterators
+    ${PROJECT_SOURCE_DIR}/include/tree_types
+#    ${PROJECT_SOURCE_DIR}/include/iterators
 )
 
 add_library(Tree INTERFACE)

@@ -4,8 +4,17 @@
 #include <memory>
 #include <optional>
 #include <cassert>
+#include <iostream>
 
-namespace rvp {
+namespace vpr {
+
+template <typename... Types>
+std::ostream& operator<<(std::ostream& os, const std::variant<Types...>& var) {
+    std::visit([&os](const auto& value) {
+        os << value;
+    }, var);
+    return os;
+}
 
 template <typename ChildrenType, typename NodeType>
 class NodeInterface {
@@ -46,30 +55,34 @@ public:
         return data_.value();
     }
 
+    // Friend function to implement the << operator
+    friend std::ostream& operator<<(std::ostream& os, const NodeInterface& node) {
+        if (node.hasValue()) {
+            os << node.value();
+        }
+
+        if (node.children_) {
+            os << "[";
+            bool first = true;
+            for (const auto& child : *node.children_) {
+                if (!first) {
+                    os << ", "; // Add space before subsequent elements
+                }
+                os << child;
+                first = false;
+            }
+            os << "]";
+        }
+
+        return os;
+    }
+
 protected:
     std::optional<NodeType> data_;
     std::unique_ptr<ChildrenType> children_;
 };
 
 
-// OTHER CONTAINERS ??
-
-//template <typename... NodeTypes> // Binary tree
-//class Node : NodeInterface<std::pair, NodeTypes> {};
-
-//template <typename... NodeTypes> // Ternary/N- tree
-//class Node : NodeInterface<std::array, NodeTypes> {};
-
-//template <typename... NodeTypes> // Ordered Tree
-//class Node : NodeInterface<std::set, NodeTypes> {};
-
-//template <typename... NodeTypes> // CustomTree
-//class Node : NodeInterface<std::list, NodeTypes> {};
-
-//template <typename... NodeTypes>
-//class Node : NodeInterface<std::vector, NodeTypes> {};
-
-
-} // namespace rvp
+} // namespace vpr
 
 #endif // TREE_HPP

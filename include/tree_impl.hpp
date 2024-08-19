@@ -3,7 +3,7 @@
 
 #include <sstream>
 
-namespace rvp {
+namespace vpr {
 
 // Helper struct for visitor pattern
 template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
@@ -45,6 +45,6 @@ Tree<T, U>::Tree(const Tree& other) {
     }
 }
 
-} // namespace rvp
+} // namespace vpr
 
 #endif // TREE_IMPL_HPP

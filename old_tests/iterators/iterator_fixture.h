@@ -9,7 +9,7 @@
 #define SubTree Tree::SubTree
 #define Node Tree::Node
 
-using namespace rvp;
+using namespace vpr;
 
 
 class IteratorFixture : public ::testing::Test {

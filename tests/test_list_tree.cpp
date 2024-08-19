@@ -1,32 +1,25 @@
 #include <gtest/gtest.h>
-#include "common_tree.hpp"
+#include "list_tree.hpp"
+#include "templates.hpp"
 
-using namespace rvp;
-
-#define ListTree ListTree<int>
+using namespace vpr;
 
 TEST(ListTreeTest, MakeLeaf) {
-    ListTree leaf(1);
-    ASSERT_TRUE(leaf.isLeaf());
-    ASSERT_TRUE(leaf.hasValue());
-    ASSERT_EQ(leaf.value(), 1);
+    TEST_LEAF<ListTree<int>>(1);
+    TEST_LEAF<ListTree<float>>(1.5);
+    TEST_LEAF<ListTree<char>>('A');
+    TEST_LEAF<ListTree<std::string>>(std::string("This is a string"));
 }
 
 TEST(ListTreeTest, MakeRootedTree) {
-    ListTree leaf_1(1);
-    ListTree leaf_2(2);
+    TEST_ROOTED_TREE<ListTree<int>>(1, 2);
+    TEST_ROOTED_TREE<ListTree<float>>(1.5, 3.);
+    TEST_ROOTED_TREE<ListTree<char>>('A', 'B');
+    TEST_ROOTED_TREE<ListTree<std::string>>(std::string("This is a string"), std::string("This is another string"));
+}
 
-    std::list<ListTree> children = {leaf_1, leaf_2};
-
-    ListTree rooted_tree(children);
-    ASSERT_FALSE(rooted_tree.isLeaf());
-    ASSERT_FALSE(rooted_tree.hasValue());
-
-    auto it = rooted_tree.begin();
-    ASSERT_TRUE(it->hasValue());
-    ASSERT_EQ(it->value(), 1);
-
-    it++;
-    ASSERT_TRUE(it->hasValue());
-    ASSERT_EQ(it->value(), 2);
+TEST(ListTreeTest, MakeVariantLeaf) {
+    TEST_VARIANT_LEAF<ListTree<std::variant<int, char>>>(1, 'A');
+    TEST_VARIANT_LEAF<ListTree<std::variant<char, int>>>('A', 1);
+    TEST_VARIANT_LEAF<ListTree<std::variant<char, std::string>>>('A', std::string("Test"));
 }
