@@ -23,3 +23,24 @@ TEST(DequeTreeTest, MakeVariantLeaf) {
     TEST_VARIANT_LEAF<DequeTree<std::variant<char, int>>>('A', 1);
     TEST_VARIANT_LEAF<DequeTree<std::variant<char, std::string>>>('A', std::string("Test"));
 }
+
+TEST(DequeTreeTest, SerializeTree) {
+    TEST_OUT_TREE<DequeTree<int>>(1, 2, 3, "[[1, 2], 3]");
+    TEST_OUT_TREE<DequeTree<float>>(1.2, 2.3, 3.4, "[[1.2, 2.3], 3.4]");
+    TEST_OUT_TREE<DequeTree<char>>('A', 'B', 'C', "[[A, B], C]");
+    TEST_OUT_TREE<DequeTree<std::variant<int, char>>>(1, 2, 3, "[[1, 2], 3]");
+}
+
+TEST(DequeTreeTest, IterateTree) {
+    TEST_ITERATE_TREE<DequeTree<int>>(std::array<int, 3>{1, 2, 3});
+    TEST_ITERATE_TREE<DequeTree<float>>(std::array<float, 3>{1.2, 2.3, 3.4});
+    TEST_ITERATE_TREE<DequeTree<char>>(std::array<char, 3>{'A', 'B', 'C'});
+    TEST_ITERATE_VARIANT_TREE<DequeTree<std::variant<int, char>>>(std::array<int, 3>{1, 2, 3});
+}
+
+TEST(DequeTreeTest, ConstIterateTree) {
+    TEST_CONST_ITERATE_TREE<DequeTree<int>>(std::array<int, 3>{1, 2, 3});
+    TEST_CONST_ITERATE_TREE<DequeTree<float>>(std::array<float, 3>{1.2, 2.3, 3.4});
+    TEST_CONST_ITERATE_TREE<DequeTree<char>>(std::array<char, 3>{'A', 'B', 'C'});
+    TEST_CONST_ITERATE_VARIANT_TREE<DequeTree<std::variant<int, char>>>(std::array<int, 3>{1, 2, 3});
+}
