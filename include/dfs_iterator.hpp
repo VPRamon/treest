@@ -9,8 +9,9 @@ template <typename ChildrenType, typename NodeType> class NodeInterface;
 
 template <typename ChildrenType, typename NodeType>
 class TreeIterator {
-    using Node = NodeInterface<ChildrenType, NodeType>;
 public:
+    using Node = NodeInterface<ChildrenType, NodeType>;
+
     TreeIterator(Node* root) {
         if (root) {
             stack_.push(root);

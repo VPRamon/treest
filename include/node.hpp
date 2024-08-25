@@ -21,6 +21,7 @@ std::ostream& operator<<(std::ostream& os, const std::variant<Types...>& var) {
 template <typename ChildrenType, typename NodeType>
 class NodeInterface {
 public:
+    using Node = NodeInterface<ChildrenType, NodeType>;
     using Iterator = TreeIterator<ChildrenType, NodeType>;
     friend Iterator;
 

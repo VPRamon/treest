@@ -1,4 +1,6 @@
+#include "generic_tree.hpp"
 
+using namespace vpr;
 
 #define DECLARE_ROOTED_TREE(root, value_1, value_2) \
     ContainerType root;                             \
@@ -76,9 +78,32 @@ void TEST_ITERATE_TREE(std::array<T, 3> values) {
     DECLARE_ROOTED_TREE(subtree, values[0], values[1])
     DECLARE_ROOTED_TREE(root, subtree, values[2])
 
+    using Node = typename ContainerType::Node;
+
     // TODO assert number of childs
     unsigned int i = 0;
-    for (auto node : root) {
+    for (Node& node : root) {
+        if(!node.isLeaf())
+            continue;
+
+        ASSERT_TRUE(node.hasValue());
+        ASSERT_EQ(node.value(), values[i]);
+        i++;
+    }
+}
+
+template <typename ContainerType, typename T>
+void TEST_CONST_ITERATE_TREE(std::array<T, 3> values) {
+    DECLARE_ROOTED_TREE(subtree, values[0], values[1])
+    DECLARE_ROOTED_TREE(root, subtree, values[2])
+
+    using Node = typename ContainerType::Node;
+
+    const ContainerType& const_root = root;
+
+    // TODO assert number of childs
+    unsigned int i = 0;
+    for (const Node& node : const_root) {
         if(!node.isLeaf())
             continue;
 
