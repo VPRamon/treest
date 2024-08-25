@@ -54,7 +54,10 @@ public:
     virtual ~NodeInterface() = default;
 
     auto begin() { return Iterator(this); }
-    auto end() { return Iterator(nullptr); }
+    auto end() { return Iterator(static_cast<Node*>(nullptr)); }
+
+    auto begin() const { return Iterator(this); }
+    auto end() const { return Iterator(static_cast<const Node*>(nullptr)); }
 
     bool isLeaf() const { return !children_; }
     bool hasValue() const { return data_.has_value(); }

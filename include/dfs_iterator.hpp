@@ -18,6 +18,8 @@ public:
         }
     }
 
+    TreeIterator(const Node* root) : TreeIterator(const_cast<Node*>(root)) {}
+
     TreeIterator& operator++() {
         if (!stack_.empty()) {
             auto* node = stack_.top();
@@ -37,13 +39,22 @@ public:
         return temp;
     }
 
-    Node& operator*() const {
+    Node& operator*() {
         return *stack_.top();
     }
 
-    Node* operator->() const {
+    Node* operator->() {
         return stack_.top();
     }
+
+    const Node& operator*() const {
+        return *stack_.top();
+    }
+
+    const Node* operator->() const {
+        return stack_.top();
+    }
+
 
     bool operator==(const TreeIterator& other) const {
         return stack_ == other.stack_;
