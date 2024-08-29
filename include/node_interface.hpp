@@ -62,6 +62,8 @@ public:
     bool isLeaf() const { return !children_; }
     bool hasValue() const { return data_.has_value(); }
 
+    const ChildrenType& getChildren() const { return *children_; }
+
     const NodeType& value() const {
         assert(data_.has_value() && "Attempting to access a value that is not set.");
         return data_.value();
