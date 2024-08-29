@@ -7,7 +7,7 @@
 
 namespace vpr {
 
-template <typename Data, typename Children>
+template <typename Children, typename Data = void*>
 class CustomNode : public NodeInterface<Children, Data> {
     using ParentType = NodeInterface<Children, Data>;
 

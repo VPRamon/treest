@@ -48,7 +48,7 @@ TEST(VectorNodeTest, ConstIterateTree) {
 
 TEST(VectorNodeTest, CustomTree) {
     VectorNode<char> char_node('A');
-    CustomNode<int, VectorNode<char>> int_node(1, char_node);
+    CustomNode<VectorNode<char>, int> int_node(1, char_node);
 
     std::cout << "CHAR_NODE: ";
     std::cout << char_node;
