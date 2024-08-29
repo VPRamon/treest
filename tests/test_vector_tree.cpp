@@ -44,3 +44,20 @@ TEST(VectorTreeTest, ConstIterateTree) {
     TEST_CONST_ITERATE_TREE<VectorTree<char>>(std::array<char, 3>{'A', 'B', 'C'});
     TEST_CONST_ITERATE_VARIANT_TREE<VectorTree<std::variant<int, char>>>(std::array<int, 3>{1, 2, 3});
 }
+
+TEST(VectorTreeTest, CustomTree) {
+    using Tree = VectorTree<std::variant<int, char>>;
+
+    Tree root;
+    {
+        Tree leaf_1(1);
+        Tree leaf_2(2);
+        root = Tree({leaf_1, leaf_2});
+    }
+
+    std::ostringstream oss;
+    oss << root;
+
+    std::string out(oss.str());
+    std::cout << out;
+}

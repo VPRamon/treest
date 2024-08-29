@@ -25,7 +25,7 @@ public:
     using Iterator = TreeIterator<ChildrenType, NodeType>;
     friend Iterator;
 
-    NodeInterface() = default;
+    NodeInterface() : data_(std::nullopt), children_(nullptr) { }
 
     NodeInterface(const NodeType& data, const ChildrenType& children)
         : data_(data), children_(std::make_unique<ChildrenType>(children)) { }
