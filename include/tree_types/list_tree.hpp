@@ -3,12 +3,12 @@
 
 #include <list>
 
-#include "generic_tree.hpp"
+#include "generic_node.hpp"
 
 namespace vpr {
 
 template <typename T>
-using ListTree = GenericTree<T, std::list>;
+using ListTree = GenericNode<T, std::list>;
 
 }
 

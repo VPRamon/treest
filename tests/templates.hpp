@@ -1,4 +1,4 @@
-#include "generic_tree.hpp"
+#include "generic_node.hpp"
 
 using namespace vpr;
 

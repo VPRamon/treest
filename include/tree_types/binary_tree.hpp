@@ -3,7 +3,7 @@
 
 #include <utility>
 
-#include "node.hpp"
+#include "node_interface.hpp"
 
 namespace vpr {
 

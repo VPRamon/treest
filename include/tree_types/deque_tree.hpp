@@ -3,12 +3,12 @@
 
 #include <deque>
 
-#include "generic_tree.hpp"
+#include "generic_node.hpp"
 
 namespace vpr {
 
 template <typename T>
-using DequeTree = GenericTree<T, std::deque>;
+using DequeTree = GenericNode<T, std::deque>;
 
 }
 
