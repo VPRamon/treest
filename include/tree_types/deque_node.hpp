@@ -8,7 +8,7 @@
 namespace vpr {
 
 template <typename T>
-using DequeTree = GenericNode<T, std::deque>;
+using DequeNode = GenericNode<T, std::deque>;
 
 }
 

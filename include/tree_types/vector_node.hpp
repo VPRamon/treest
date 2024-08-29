@@ -8,7 +8,7 @@
 namespace vpr {
 
 template <typename T>
-using VectorTree = GenericNode<T, std::vector>;
+using VectorNode = GenericNode<T, std::vector>;
 
 }
 

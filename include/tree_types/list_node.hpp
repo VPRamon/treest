@@ -8,7 +8,7 @@
 namespace vpr {
 
 template <typename T>
-using ListTree = GenericNode<T, std::list>;
+using ListNode = GenericNode<T, std::list>;
 
 }
 
