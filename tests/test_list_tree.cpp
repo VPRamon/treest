@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "list_tree.hpp"
+#include "list_node.hpp"
 #include "templates.hpp"
 
 using namespace vpr;

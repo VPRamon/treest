@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "deque_tree.hpp"
+#include "deque_node.hpp"
 #include "templates.hpp"
 
 using namespace vpr;

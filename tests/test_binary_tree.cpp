@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "binary_tree.hpp"
+#include "binary_node.hpp"
 #include "templates.hpp"
 
 using namespace vpr;
