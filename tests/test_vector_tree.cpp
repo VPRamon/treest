@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "vector_node.hpp"
+#include "custom_node.hpp"
 #include "templates.hpp"
 
 using namespace vpr;
@@ -46,18 +47,13 @@ TEST(VectorNodeTest, ConstIterateTree) {
 }
 
 TEST(VectorNodeTest, CustomTree) {
-    using Tree = VectorNode<std::variant<int, char>>;
+    VectorNode<char> char_node('A');
+    CustomNode<int, VectorNode<char>> int_node(1, char_node);
 
-    Tree root;
-    {
-        Tree leaf_1(1);
-        Tree leaf_2(2);
-        root = Tree({leaf_1, leaf_2});
-    }
+    std::cout << "CHAR_NODE: ";
+    std::cout << char_node;
 
-    std::ostringstream oss;
-    oss << root;
+    std::cout << "\nINT_NODE: ";
+    std::cout << int_node;
 
-    std::string out(oss.str());
-    std::cout << out;
 }
