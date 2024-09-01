@@ -19,6 +19,11 @@ public:
     using ParentType::NodeInterface;
     using Node = ParentType::Node;
 
+    void pushChildren(T child) { 
+        if (ParentType::isLeaf()) ParentType::children_ = std::make_unique<ContainerType>();
+        ParentType::children_->push_back(NodeType(child));
+    }
+
 };
 
 

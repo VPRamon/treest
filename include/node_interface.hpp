@@ -5,6 +5,7 @@
 #include <optional>
 #include <cassert>
 #include <iostream>
+#include <variant>
 
 #include "dfs_iterator.hpp"
 
