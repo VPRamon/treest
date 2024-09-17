@@ -24,8 +24,8 @@ public:
         if (!stack_.empty()) {
             auto* node = stack_.top();
             stack_.pop();
-            if (node->children_) {
-                for (auto it = node->children_->rbegin(); it != node->children_->rend(); ++it) {
+            if (!node->isLeaf()) {
+                for (auto it = node->getChildren()->rbegin(); it != node->getChildren()->rend(); ++it) {
                     stack_.push(&*it);
                 }
             }

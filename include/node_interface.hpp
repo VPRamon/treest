@@ -26,31 +26,19 @@ public:
     using Iterator = TreeIterator<ChildrenType, NodeType>;
     friend Iterator;
 
-    NodeInterface() : data_(std::nullopt), children_(nullptr) { }
+    NodeInterface() : data_(std::nullopt), children_(std::nullopt) { }
 
-    NodeInterface(const NodeType& data, const ChildrenType& children)
-        : data_(data), children_(std::make_unique<ChildrenType>(children)) { }
+    NodeInterface(const std::optional<NodeType>& data, std::optional<ChildrenType> children)
+        : data_(data), children_(std::move(children)) { }
 
-    NodeInterface(const NodeType& data)
-        : data_(data), children_(nullptr) { }
+    NodeInterface(const std::optional<NodeType>& data)
+        : data_(data), children_(std::nullopt) { }
 
-    NodeInterface(const ChildrenType& children)
-        : data_(std::nullopt), children_(std::make_unique<ChildrenType>(children)) { }
+    NodeInterface(std::optional<ChildrenType> children)
+        : data_(std::nullopt), children_(std::move(children)) { }
 
-    NodeInterface(const NodeInterface& other)
-        : data_(other.data_),
-          children_(other.children_ ? std::make_unique<ChildrenType>(*other.children_) : nullptr) { }
-
-    NodeInterface& operator=(const NodeInterface& other) {
-        if (this != &other) {
-            data_ = other.data_;
-            children_ = other.children_ ? std::make_unique<ChildrenType>(*other.children_) : nullptr;
-        }
-        return *this;
-    }
-
-    NodeInterface(NodeInterface&& other) noexcept = default;
-    NodeInterface& operator=(NodeInterface&& other) noexcept = default;
+    //NodeInterface(NodeInterface&& other) noexcept = default;
+    //NodeInterface& operator=(NodeInterface&& other) noexcept = default;
 
     virtual ~NodeInterface() = default;
 
@@ -60,10 +48,18 @@ public:
     auto begin() const { return Iterator(this); }
     auto end() const { return Iterator(static_cast<const Node*>(nullptr)); }
 
-    bool isLeaf() const { return !children_; }
+    bool isLeaf() const { return !children_.has_value(); }
     bool hasValue() const { return data_.has_value(); }
 
-    const ChildrenType& getChildren() const { return *children_; }
+    const ChildrenType& getChildren() const {
+        assert(children_.has_value() && "Attempting to access a value that is not set.");
+        return children_.value();
+    }
+
+    ChildrenType& getChildren() {
+        assert(children_.has_value() && "Attempting to access a value that is not set.");
+        return children_.value();
+    }
 
     const NodeType& value() const {
         assert(data_.has_value() && "Attempting to access a value that is not set.");
@@ -78,7 +74,7 @@ public:
         if (node.children_) {
             os << "[";
             bool first = true;
-            for (const auto& child : *node.children_) {
+            for (const auto& child : *node.getChildren()) {
                 if (!first) {
                     os << ", ";
                 }
@@ -93,7 +89,7 @@ public:
 
 protected:
     std::optional<NodeType> data_;
-    std::unique_ptr<ChildrenType> children_;
+    std::optional<ChildrenType> children_;
 };
 
 

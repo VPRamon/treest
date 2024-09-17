@@ -41,7 +41,7 @@ TEST(BinaryTreeTest, MakeRootedTree) {
 
 TEST(BinaryTreeTest, MakeVariantLeaf) {
     using Tree = BinaryTree<std::variant<int, char>>;
-   
+
     Tree int_leaf(1);
     ASSERT_TRUE(int_leaf.isLeaf());
     ASSERT_TRUE(int_leaf.hasValue());

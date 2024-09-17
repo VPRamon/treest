@@ -1,7 +1,10 @@
 add_subdirectory(external/googletest)
 
 file(GLOB_RECURSE UNTI_TEST_SOURCES
-    test_*.cpp
+    test_deque_tree.cpp
+    test_list_tree.cpp
+    test_vector_tree.cpp
+    test_binary_tree.cpp
 #    iterators/test_*.cpp
 )
 

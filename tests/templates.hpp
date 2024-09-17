@@ -18,7 +18,7 @@ void TEST_LEAF(T value) {
 }
 
 template <typename Node, typename T>
-void ASSERT_VARIANT(Node node, T expected_value) {
+void ASSERT_VARIANT(const Node& node, T expected_value) {
     ASSERT_TRUE(node.hasValue());
     ASSERT_EQ(*std::get_if<T>(&(node.value())), expected_value);
 }

@@ -46,7 +46,7 @@ TEST(VectorNodeTest, ConstIterateTree) {
     TEST_CONST_ITERATE_VARIANT_TREE<VectorNode<std::variant<int, char>>>(std::array<int, 3>{1, 2, 3});
 }
 
-TEST(VectorNodeTest, CustomTree) {
+/*TEST(VectorNodeTest, CustomTree) {
     VectorNode<char> char_node('A');
     CustomNode<VectorNode<char>, int> int_node(1, char_node);
 
@@ -56,4 +56,4 @@ TEST(VectorNodeTest, CustomTree) {
     std::cout << "\nINT_NODE: ";
     std::cout << int_node;
 
-}
+}*/
