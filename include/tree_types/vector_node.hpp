@@ -7,8 +7,8 @@
 namespace vpr {
 
 
-template <typename ChildType, typename Type>
-using VectorNode = vpr::NodeInterface<std::vector<ChildType>, Type>;
+template <typename U, typename T>
+using VectorNode = vpr::NodeInterface<std::vector<U>, T>;
 
 template <typename T>
 class VectorTree;

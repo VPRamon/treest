@@ -7,8 +7,8 @@
 namespace vpr {
 
 
-template <typename ChildType, typename Type>
-using ListNode = vpr::NodeInterface<std::list<ChildType>, Type>;
+template <typename U, typename T>
+using ListNode = vpr::NodeInterface<std::list<U>, T>;
 
 template <typename T>
 class ListTree;

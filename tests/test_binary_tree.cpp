@@ -6,7 +6,7 @@ using namespace vpr;
 
 template <typename T>
 void TEST_ROOTED_BIN_TREE(T value_1, T value_2) {
-    using ContainerType = SimpleBinaryTree<T>;
+    using ContainerType = BinaryTree<T>;
 
     ContainerType leaf_1(value_1);
     ContainerType leaf_2(value_2);
@@ -26,10 +26,10 @@ void TEST_ROOTED_BIN_TREE(T value_1, T value_2) {
 
 
 TEST(BinaryTreeTest, MakeLeaf) {
-    TEST_LEAF<SimpleBinaryTree<int>>(1);
-    TEST_LEAF<SimpleBinaryTree<float>>(1.5);
-    TEST_LEAF<SimpleBinaryTree<char>>('A');
-    TEST_LEAF<SimpleBinaryTree<std::string>>(std::string("This is a string"));
+    TEST_LEAF<BinaryTree<int>>(1);
+    TEST_LEAF<BinaryTree<float>>(1.5);
+    TEST_LEAF<BinaryTree<char>>('A');
+    TEST_LEAF<BinaryTree<std::string>>(std::string("This is a string"));
 }
 
 TEST(BinaryTreeTest, MakeRootedTree) {
@@ -40,7 +40,7 @@ TEST(BinaryTreeTest, MakeRootedTree) {
 }
 
 TEST(BinaryTreeTest, MakeVariantLeaf) {
-    using Tree = SimpleBinaryTree<std::variant<int, char>>;
+    using Tree = BinaryTree<std::variant<int, char>>;
 
     Tree int_leaf(1);
     ASSERT_TRUE(int_leaf.isLeaf());
