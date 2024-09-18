@@ -6,7 +6,23 @@
 namespace vpr {
 
 template <typename T, typename U>
-using BinaryNode = ArrayNode<T, U, 2>;
+class BinaryNode : public ArrayNode<T, U, 2> {
+public:
+    using ArrayNode<T, U, 2>::ArrayNode;
+
+    template <std::size_t Index>
+    BinaryNode& child() {
+        static_assert(Index < 2, "Index out of bounds");
+        return static_cast<BinaryNode&>(ArrayNode<T, U, 2>::template child<Index>());
+    }
+
+    BinaryNode& left() { return child<0>(); }
+    BinaryNode& right() { return child<1>(); }
+
+    const BinaryNode& left() const { return child<0>(); }
+    const BinaryNode& right() const { return child<1>(); }
+};
+
 
 
 template <typename T>
