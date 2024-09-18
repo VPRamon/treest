@@ -1,14 +1,17 @@
 #ifndef LIST_TREE_HPP
 #define LIST_TREE_HPP
 
+#include "container_node.hpp"
 #include <list>
-
-#include "generic_node.hpp"
 
 namespace vpr {
 
-template <typename T>
-using ListNode = GenericNode<T, std::list>;
+
+template <typename ChildType, typename Type>
+using ListNode = ContainerNode<ChildType, Type, std::list>;
+
+template <typename Type>
+using SimpleListNode = SimpleContainerNode<Type, std::list>;
 
 }
 

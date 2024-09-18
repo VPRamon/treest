@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "vector_node.hpp"
-#include "custom_node.hpp"
 #include "templates.hpp"
 
 using namespace vpr;

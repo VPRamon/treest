@@ -1,4 +1,4 @@
-#include "generic_node.hpp"
+#include "container_node.hpp"
 
 using namespace vpr;
 

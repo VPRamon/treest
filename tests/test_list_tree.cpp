@@ -4,43 +4,43 @@
 
 using namespace vpr;
 
-TEST(ListNodeTest, MakeLeaf) {
-    TEST_LEAF<ListNode<int>>(1);
-    TEST_LEAF<ListNode<float>>(1.5);
-    TEST_LEAF<ListNode<char>>('A');
-    TEST_LEAF<ListNode<std::string>>(std::string("This is a string"));
+TEST(SimpleListNodeTest, MakeLeaf) {
+    TEST_LEAF<SimpleListNode<int>>(1);
+    TEST_LEAF<SimpleListNode<float>>(1.5);
+    TEST_LEAF<SimpleListNode<char>>('A');
+    TEST_LEAF<SimpleListNode<std::string>>(std::string("This is a string"));
 }
 
-TEST(ListNodeTest, MakeRootedTree) {
-    TEST_ROOTED_TREE<ListNode<int>>(1, 2);
-    TEST_ROOTED_TREE<ListNode<float>>(1.5, 3.);
-    TEST_ROOTED_TREE<ListNode<char>>('A', 'B');
-    TEST_ROOTED_TREE<ListNode<std::string>>(std::string("This is a string"), std::string("This is another string"));
+TEST(SimpleListNodeTest, MakeRootedTree) {
+    TEST_ROOTED_TREE<SimpleListNode<int>>(1, 2);
+    TEST_ROOTED_TREE<SimpleListNode<float>>(1.5, 3.);
+    TEST_ROOTED_TREE<SimpleListNode<char>>('A', 'B');
+    TEST_ROOTED_TREE<SimpleListNode<std::string>>(std::string("This is a string"), std::string("This is another string"));
 }
 
-TEST(ListNodeTest, MakeVariantLeaf) {
-    TEST_VARIANT_LEAF<ListNode<std::variant<int, char>>>(1, 'A');
-    TEST_VARIANT_LEAF<ListNode<std::variant<char, int>>>('A', 1);
-    TEST_VARIANT_LEAF<ListNode<std::variant<char, std::string>>>('A', std::string("Test"));
+TEST(SimpleListNodeTest, MakeVariantLeaf) {
+    TEST_VARIANT_LEAF<SimpleListNode<std::variant<int, char>>>(1, 'A');
+    TEST_VARIANT_LEAF<SimpleListNode<std::variant<char, int>>>('A', 1);
+    TEST_VARIANT_LEAF<SimpleListNode<std::variant<char, std::string>>>('A', std::string("Test"));
 }
 
-TEST(ListNodeTest, SerializeTree) {
-    TEST_OUT_TREE<ListNode<int>>(1, 2, 3, "[[1, 2], 3]");
-    TEST_OUT_TREE<ListNode<float>>(1.2, 2.3, 3.4, "[[1.2, 2.3], 3.4]");
-    TEST_OUT_TREE<ListNode<char>>('A', 'B', 'C', "[[A, B], C]");
-    TEST_OUT_TREE<ListNode<std::variant<int, char>>>(1, 2, 3, "[[1, 2], 3]");
+TEST(SimpleListNodeTest, SerializeTree) {
+    TEST_OUT_TREE<SimpleListNode<int>>(1, 2, 3, "[[1, 2], 3]");
+    TEST_OUT_TREE<SimpleListNode<float>>(1.2, 2.3, 3.4, "[[1.2, 2.3], 3.4]");
+    TEST_OUT_TREE<SimpleListNode<char>>('A', 'B', 'C', "[[A, B], C]");
+    TEST_OUT_TREE<SimpleListNode<std::variant<int, char>>>(1, 2, 3, "[[1, 2], 3]");
 }
 
-TEST(ListNodeTest, IterateTree) {
-    TEST_ITERATE_TREE<ListNode<int>>(std::array<int, 3>{1, 2, 3});
-    TEST_ITERATE_TREE<ListNode<float>>(std::array<float, 3>{1.2, 2.3, 3.4});
-    TEST_ITERATE_TREE<ListNode<char>>(std::array<char, 3>{'A', 'B', 'C'});
-    TEST_ITERATE_VARIANT_TREE<ListNode<std::variant<int, char>>>(std::array<int, 3>{1, 2, 3});
+TEST(SimpleListNodeTest, IterateTree) {
+    TEST_ITERATE_TREE<SimpleListNode<int>>(std::array<int, 3>{1, 2, 3});
+    TEST_ITERATE_TREE<SimpleListNode<float>>(std::array<float, 3>{1.2, 2.3, 3.4});
+    TEST_ITERATE_TREE<SimpleListNode<char>>(std::array<char, 3>{'A', 'B', 'C'});
+    TEST_ITERATE_VARIANT_TREE<SimpleListNode<std::variant<int, char>>>(std::array<int, 3>{1, 2, 3});
 }
 
-TEST(ListNodeTest, ConstIterateTree) {
-    TEST_CONST_ITERATE_TREE<ListNode<int>>(std::array<int, 3>{1, 2, 3});
-    TEST_CONST_ITERATE_TREE<ListNode<float>>(std::array<float, 3>{1.2, 2.3, 3.4});
-    TEST_CONST_ITERATE_TREE<ListNode<char>>(std::array<char, 3>{'A', 'B', 'C'});
-    TEST_CONST_ITERATE_VARIANT_TREE<ListNode<std::variant<int, char>>>(std::array<int, 3>{1, 2, 3});
+TEST(SimpleListNodeTest, ConstIterateTree) {
+    TEST_CONST_ITERATE_TREE<SimpleListNode<int>>(std::array<int, 3>{1, 2, 3});
+    TEST_CONST_ITERATE_TREE<SimpleListNode<float>>(std::array<float, 3>{1.2, 2.3, 3.4});
+    TEST_CONST_ITERATE_TREE<SimpleListNode<char>>(std::array<char, 3>{'A', 'B', 'C'});
+    TEST_CONST_ITERATE_VARIANT_TREE<SimpleListNode<std::variant<int, char>>>(std::array<int, 3>{1, 2, 3});
 }

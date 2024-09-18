@@ -1,14 +1,17 @@
 #ifndef DEQUE_TREE_HPP
 #define DEQUE_TREE_HPP
 
+#include "container_node.hpp"
 #include <deque>
-
-#include "generic_node.hpp"
 
 namespace vpr {
 
-template <typename T>
-using DequeNode = GenericNode<T, std::deque>;
+
+template <typename ChildType, typename Type>
+using DequeNode = ContainerNode<ChildType, Type, std::deque>;
+
+template <typename Type>
+using SimpleDequeNode = SimpleContainerNode<Type, std::deque>;
 
 }
 
