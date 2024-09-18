@@ -8,10 +8,16 @@ namespace vpr {
 
 
 template <typename ChildType, typename Type>
-using VectorNode = ContainerNode<ChildType, Type, std::vector>;
+using VectorNode = vpr::NodeInterface<std::vector<ChildType>, Type>;
 
-template <typename Type>
-using SimpleVectorNode = SimpleContainerNode<Type, std::vector>;
+template <typename T>
+class VectorTree;
+
+template <typename T>
+class VectorTree : public vpr::Tree<T, std::vector<VectorTree<T>>> {
+    public:
+        using vpr::Tree<T, std::vector<VectorTree<T>>>::Tree;
+};
 
 }
 

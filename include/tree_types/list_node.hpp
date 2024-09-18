@@ -8,10 +8,16 @@ namespace vpr {
 
 
 template <typename ChildType, typename Type>
-using ListNode = ContainerNode<ChildType, Type, std::list>;
+using ListNode = vpr::NodeInterface<std::list<ChildType>, Type>;
 
-template <typename Type>
-using SimpleListNode = SimpleContainerNode<Type, std::list>;
+template <typename T>
+class ListTree;
+
+template <typename T>
+class ListTree : public vpr::Tree<T, std::list<ListTree<T>>> {
+    public:
+        using vpr::Tree<T, std::list<ListTree<T>>>::Tree;
+};
 
 }
 

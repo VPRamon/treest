@@ -8,10 +8,16 @@ namespace vpr {
 
 
 template <typename ChildType, typename Type>
-using DequeNode = ContainerNode<ChildType, Type, std::deque>;
+using DequeNode = vpr::NodeInterface<std::deque<ChildType>, Type>;
 
-template <typename Type>
-using SimpleDequeNode = SimpleContainerNode<Type, std::deque>;
+template <typename T>
+class DequeTree;
+
+template <typename T>
+class DequeTree : public vpr::Tree<T, std::deque<DequeTree<T>>> {
+    public:
+        using vpr::Tree<T, std::deque<DequeTree<T>>>::Tree;
+};
 
 }
 
