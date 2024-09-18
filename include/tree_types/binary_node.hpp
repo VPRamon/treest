@@ -64,11 +64,9 @@ template <typename Type>
 class SimpleBinaryTree : public BinaryTree<SimpleBinaryTree<Type>, Type> {
 public:
 
-    //using BinaryTree<SimpleBinaryTree<Type>, Type>::BinaryTree;
     using ParentType = BinaryTree<SimpleBinaryTree<Type>, Type>;
 
     SimpleBinaryTree() : ParentType() {};
-    //SimpleBinaryTree(SimpleBinaryTree<Type> children) : ParentType(children) {};
     SimpleBinaryTree(Type value, SimpleBinaryTree<Type> children) : ParentType(value, children) {};
     SimpleBinaryTree(Type value) : ParentType(value) {};
     SimpleBinaryTree(const SimpleBinaryTree& other) : ParentType(other) {};
