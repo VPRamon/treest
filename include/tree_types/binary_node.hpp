@@ -8,20 +8,25 @@
 
 namespace vpr {
 
-template <typename T>
-class BinaryTree : public NodeInterface<
-                        std::unique_ptr<std::array<BinaryTree<T>, 2>>, T> {
-    using ChildType = std::array<BinaryTree<T>, 2>;
-    using ParentType = NodeInterface<std::unique_ptr<ChildType>, T>;
+
+template <typename ChildType, typename Type>
+class BinaryTree : public vpr::NodeInterface<std::unique_ptr<std::array<ChildType, 2>>, Type> {
+    using ChildrenType = std::array<ChildType, 2>;
+    using ParentType = NodeInterface<std::unique_ptr<ChildrenType>, Type>;
 
 public:
 
     BinaryTree() : ParentType() {};
-    BinaryTree(ChildType children) : ParentType(std::make_unique<ChildType>(children)) {};
-    BinaryTree(T value) : ParentType(value) {};
+    BinaryTree(ChildrenType children) : ParentType(std::make_unique<ChildrenType>(children)) {};
+    BinaryTree(Type value, ChildrenType children) : ParentType(value, std::make_unique<ChildrenType>(children)) {};
+    BinaryTree(Type value) : ParentType(value) {};
 
     BinaryTree(const BinaryTree& other)
-        : ParentType(other.data_, other.isLeaf() ? std::nullopt : std::optional<std::unique_ptr<ChildType>>(std::make_unique<ChildType>(*other.children_.value()))) {};
+        : ParentType(other.data_, other.isLeaf() ? std::nullopt 
+                                                : std::optional<std::unique_ptr<ChildrenType>>(
+                                                    std::make_unique<ChildrenType>(*other.children_.value())
+                                                )
+                ) {};
 
     BinaryTree& operator=(const BinaryTree& other) {
         if (this != &other) {
@@ -53,6 +58,23 @@ public:
     }
 };
 
+template <typename Type> class SimpleBinaryTree;
+
+template <typename Type>
+class SimpleBinaryTree : public BinaryTree<SimpleBinaryTree<Type>, Type> {
+public:
+
+    //using BinaryTree<SimpleBinaryTree<Type>, Type>::BinaryTree;
+    using ParentType = BinaryTree<SimpleBinaryTree<Type>, Type>;
+
+    SimpleBinaryTree() : ParentType() {};
+    //SimpleBinaryTree(SimpleBinaryTree<Type> children) : ParentType(children) {};
+    SimpleBinaryTree(Type value, SimpleBinaryTree<Type> children) : ParentType(value, children) {};
+    SimpleBinaryTree(Type value) : ParentType(value) {};
+    SimpleBinaryTree(const SimpleBinaryTree& other) : ParentType(other) {};
+    SimpleBinaryTree(const std::array<SimpleBinaryTree, 2>& other) : ParentType(other) {};
+
+};
 
 } // namespace vpr
 
