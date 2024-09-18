@@ -13,10 +13,26 @@ using ArrayNode = vpr::NodeInterface<std::array<U, N>, T>;
 template <typename T, std::size_t N>
 class ArrayTree;
 
-template <typename T, std::size_t N=2>
+template <typename T, std::size_t N = 2>
 class ArrayTree : public vpr::Tree<T, std::array<ArrayTree<T, N>, N>> {
-    public:
-        using vpr::Tree<T, std::array<ArrayTree<T>, N>>::Tree;
+public:
+    using vpr::Tree<T, std::array<ArrayTree<T, N>, N>>::Tree;
+
+    static_assert(N > 0, "ArrayTree must have at least one child");
+
+    template <std::size_t Index>
+    ArrayTree& child() {
+        static_assert(Index < N, "Index out of bounds");
+        assert(this->children_.has_value() && "Attempting to access child of a leaf node.");
+        return (*this->children_.value())[Index];
+    }
+
+    template <std::size_t Index>
+    const ArrayTree& child() const {
+        static_assert(Index < N, "Index out of bounds");
+        assert(this->children_.has_value() && "Attempting to access child of a leaf node.");
+        return (*this->children_.value())[Index];
+    }
 };
 
 }

@@ -13,30 +13,23 @@ template <typename T>
 class BinaryTree;
 
 template <typename T>
-class BinaryTree : public vpr::Tree<T, std::array<BinaryTree<T>, 2>> {
-    public:
-        using vpr::Tree<T, std::array<BinaryTree<T>, 2>>::Tree;
+class BinaryTree : public ArrayTree<T, 2> {
+public:
+    using ArrayTree<T, 2>::ArrayTree;
 
-    const BinaryTree& left() const {
-        assert(this->children_.has_value() && "Attempting to access left child of a leaf node.");
-        return (*this->children_.value())[0];
+    template <std::size_t Index>
+    BinaryTree& child() {
+        static_assert(Index < 2, "Index out of bounds");
+        return static_cast<BinaryTree&>(ArrayTree<T, 2>::template child<Index>());
     }
 
-    BinaryTree& left() {
-        assert(this->children_.has_value() && "Attempting to access left child of a leaf node.");
-        return (*this->children_.value())[0];
-    }
+    BinaryTree& left() { return child<0>(); }
+    BinaryTree& right() { return child<1>(); }
 
-    const BinaryTree& right() const {
-        assert(this->children_.has_value() && "Attempting to access right child of a leaf node.");
-        return (*this->children_.value())[1];
-    }
-
-    BinaryTree& right() {
-        assert(this->children_.has_value() && "Attempting to access right child of a leaf node.");
-        return (*this->children_.value())[1];
-    }
+    const BinaryTree& left() const { return child<0>(); }
+    const BinaryTree& right() const { return child<1>(); }
 };
+
 
 } // namespace vpr
 
