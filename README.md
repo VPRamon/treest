@@ -4,10 +4,10 @@ The Treest Library is a lightweight and versatile C++ library for creating and m
 
 ## Features
 
-- **Generic Tree Structure**: The tree supports storing any data type as leaf  and sub-tree nodes and allows building complex tree structures.
-- **C++ Standard Library**: Utilizes modern C++ features such as `std::variant`, `std::unique_ptr`, and `std::list`.
-- **Header-Only Library**: The tree is implemented as a header-only library, making it easy to integrate into other projects.
-- **Unit Testing**: The project includes unit tests written using Google Test.
+- **Generic Tree Structure**: Supports storing any data type as leaf and subtree nodes, allowing for complex tree structures.
+- **C++ Standard Library**: Utilizes modern C++ features such as `std::vector`, `std::list`, `std::array`, `std::deque`, and`std::unique_ptr` for memory management.
+- **Header-Only Library**: Implemented as a header-only library, making integration into other projects simple and efficient.
+- **Unit Testing**: Includes unit tests written using Google Test to ensure reliability.
 
 ## Requirements
 
@@ -60,20 +60,19 @@ ctest -V
 #include "tree.hpp"
 
 int main() {
-    Tree<int> tree;
-    tree.addChild(1); // Add a leaf
-    tree.addChild(2); // Add a leaf
 
-    Tree<int> subTree;
-    subTree.addChild(3); // Add a leaf
-    tree.addChild(subTree); // Add a subtree
+    VectorTree<int> leaf(1);
 
-    std::cout << tree.toString() << std::endl;
+    assert(leaf.isLeaf() == true);
+    assert(leaf.hasValue() == true);
+    assert(leaf.value() == 1);
+
+    std::cout << leaf << std::endl;
 
     return 0;
 }
 
-// output: "{1,2,{3}}"
+// output: "{1}"
 ```
 
 
@@ -84,12 +83,18 @@ int main() {
 #include "tree.hpp"
 
 int main() {
-    Tree<int, std::string> tree("This is a Node");
-    tree.addChild(1);
-    tree.addChild(2);
+
+    VectorTree<std::string> leaf("This is a leaf");
+    VectorTree<std::string> root("This is the rooot", leaf);
+
+    assert(root.isLeaf() == false);
+    assert(root.hasValue() == true);
+    assert(root.value() == "This is the rooot");
+
+    std::cout << root << std::endl;
 }
 
-// output: "This is a Node{1,2}"
+// output: {"This is the rooot"{"This is a leaf"}"}
 
 ```
 
@@ -100,56 +105,165 @@ int main() {
 #include "tree.hpp"
 
 int main() {
-    using Tree = Tree<int, std::string> 
-    Tree tree("This is a Node");
-    tree.addChild(1);
-    tree.addChild(2);
-
-    // mutable iterator
-     for (Tree::Node& node: tree) {
-        std::visit(overload{
-            [&](const Tree::Leaf& leaf)    { leaf++; }, // increment value of leaf
-            [&](const Tree::SubTree& subTree) { std::cout << subTree;  }, // print subTree
-        }, node);
-    }
+    using Tree = VectorTree<std::string> 
+    Tree leaf_A("A");
+    Tree leaf_B("B");
+    Tree tree("ROOT", {leaf_A, leaf_B});
 
     // const iterator
     for (const Tree::Node& node: tree) {
-        std::visit(overload{
-            [&](const Tree::Leaf& leaf)    { std::cout << leaf; },    // print leaf      
-            [&](const Tree::SubTree& tree) { std::cout << subTree; }, // print subTree
-        }, node);
+        std::cout << node <<  " ";
+    }
+
+    // mutable iterator
+    for (auto& node : tree_root) {
+        node += "x"
+        std::cout << node <<  " ";
     }
 }
+// output: "ROOT A B"
+// output: "ROOTx Ax Bx"
 
 ```
-
 
 ## Documentation
 
-The library consists of two main components: the Tree class and the Iterator class.
+The library provides several flexible tree data structures through the `NodeInterface` and `Tree` class templates, which allow for various container types as children. The library also includes specialized types for common tree structures, such as binary trees and array-based trees.
 
-### Tree Class
+### `NodeInterface` Class Template
 
-The Tree class represents a generic tree structure that supports both leaf and subtree nodes. The main methods are:
-```cpp
-   + void addChild(const Leaf& leaf): Adds a leaf node to the tree.
-   + void addChild(const SubTree& subtree): Adds a subtree node to the tree.
-   + auto begin(), auto end(): Returns iterators for tree traversal.
-   + auto cbegin() const, auto cend() const: Returns const iterators for immutable tree traversal.
-```
+The `NodeInterface` class template represents a generic node that can either store a value (`NodeType`) or children (`ChildrenType`). This allows nodes to act as either leaf nodes (with data) or internal nodes (with children).
 
-### Iterator Class
+#### Template Parameters
 
-The TreeIterator class is used to traverse the Tree. It supports both mutable and const traversal:
+- **`ChildrenType`**: The type representing the node’s children (e.g., `std::array`, `std::deque`, `std::vector`, etc.).
+- **`NodeType`**: The type of data stored in the node (e.g., `int`, `std::string`, etc.).
+
+#### Main Methods
 
 ```cpp
-   + Iterator(Tree<T>& tree, bool end = false): Constructs an iterator, optionally pointing to the end.
-   + Iterator& operator++(): Advances the iterator.
-   + Node& operator*(): Dereferences the iterator to access the current node.
-   + bool operator==(const TreeIterator& other) const: Compares iterators.
-   + bool operator!=(const TreeIterator& other) const: Compares iterators.
+// Constructor: Initializes a node with optional data and children.
+NodeInterface(const std::optional<NodeType>& data, std::optional<ChildrenType> children);
+
+// Constructor: Initializes a node with optional data only.
+NodeInterface(const std::optional<NodeType>& data);
+
+// Constructor: Initializes a node with optional children only.
+NodeInterface(std::optional<ChildrenType> children);
 ```
+
+### Specialized Node and Tree Types
+
+The library includes friendly typedefs and classes for commonly used tree structures. These types make it easier to work with specific kinds of trees, such as binary trees, array trees, and trees with various container types.
+
+#### `ArrayNode` and `ArrayTree`
+
+`ArrayNode` is a node with children stored in a `std::array`, and `ArrayTree` represents a tree structure where each node has a fixed number of children.
+
+```cpp
+template <typename T, std::size_t N>
+class ArrayTree : public vpr::Tree<T, std::array<ArrayTree<T, N>, N>> {
+public:
+    // Access child at a specific index
+    template <std::size_t Index>
+    ArrayTree& child();
+    
+    template <std::size_t Index>
+    const ArrayTree& child() const;
+};
+```
+
+#### `BinaryNode` and `BinaryTree`
+
+`BinaryNode` is a node specifically designed for binary trees, with exactly two children (left and right). `BinaryTree` is a binary tree implementation.
+
+```cpp
+template <typename T>
+class BinaryTree : public ArrayTree<T, 2> {
+public:
+    BinaryTree& left(); // Access the left child
+    BinaryTree& right(); // Access the right child
+
+    const BinaryTree& left() const; // Access the left child (const version)
+    const BinaryTree& right() const; // Access the right child (const version)
+};
+```
+
+#### `DequeNode` and `DequeTree`
+
+`DequeNode` is a node whose children are stored in a `std::deque`, and `DequeTree` is a tree structure using this node type.
+
+```cpp
+template <typename T>
+class DequeTree : public vpr::Tree<T, std::deque<DequeTree<T>>> {
+    // Inherits functionality from vpr::Tree
+};
+```
+
+#### `VectorNode` and `VectorTree`
+
+`VectorNode` uses a `std::vector` to store children, allowing for a dynamic number of children. `VectorTree` is a tree implementation using this structure.
+
+```cpp
+template <typename T>
+class VectorTree : public vpr::Tree<T, std::vector<VectorTree<T>>> {
+    // Inherits functionality from vpr::Tree
+};
+```
+
+#### `ListNode` and `ListTree`
+
+`ListNode` stores children in a `std::list`, making it suitable for tree structures where efficient insertions and deletions are important. `ListTree` is the corresponding tree type.
+
+```cpp
+template <typename T>
+class ListTree : public vpr::Tree<T, std::list<ListTree<T>>> {
+    // Inherits functionality from vpr::Tree
+};
+```
+
+### Example Usage
+
+Here are some practical examples of how to use the provided tree types:
+
+#### Binary Tree Example
+
+```cpp
+BinaryTree<int> root(1);
+root.left() = BinaryTree<int>(2);
+root.right() = BinaryTree<int>(3);
+
+std::cout << root << std::endl; // Output: 1[2, 3]
+```
+
+#### Array Tree Example
+
+```cpp
+ArrayTree<int, 3> root(10);
+root.child<0>() = ArrayTree<int, 3>(20);
+root.child<1>() = ArrayTree<int, 3>(30);
+root.child<2>() = ArrayTree<int, 3>(40);
+
+std::cout << root << std::endl; // Output: 10[20, 30, 40]
+```
+
+#### Deque Tree Example
+
+```cpp
+DequeTree<int> root(10);
+root.getChildren().emplace_back(20);
+root.getChildren().emplace_back(30);
+
+std::cout << root << std::endl; // Output: 10[20, 30]
+```
+
+### Key Features
+
+- **Leaf Nodes**: Nodes without children can be detected using the `isLeaf()` method.
+- **Subtree Nodes**: Internal nodes with children can be accessed via container-based member functions like `getChildren()`.
+- **Pre-order Traversal**: The `TreeIterator` class enables pre-order traversal for both mutable and constant trees.
+
+
 
 ## Contributing
 
