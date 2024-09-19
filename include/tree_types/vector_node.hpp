@@ -7,7 +7,7 @@
 namespace vpr {
 
 
-template <typename U, typename T>
+template <typename T, typename U>
 using VectorNode = vpr::NodeInterface<std::vector<U>, T>;
 
 template <typename T>
