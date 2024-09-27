@@ -9,16 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * Creation of basic tree with DFS iterator
+* Const-correctness support in TreeIterator by templating it on node pointer type (NodePtr).
+* Type aliases (e.g., ChildrenContainer) to improve code readability.
 
 ### Changed
+
+* Return type of getChildren() method from const C`hildrenType&` to const `U&` and `U&` for `non-const` versions.
+* Replaced `node->getChildren()->` with `node->getChildren()`. throughout the code to access the container correctly.
+* Modified `operator<<` overload in NodeInterface to remove unnecessary dereferencing
 
 ### Deprecated
 
 ### Removed
 
+* Redundant `std::optional` usage for children_, replaced with std::unique_ptr management.
+
 ### Fixed
 
 * Missing const child access in BinaryNode
+* Incorrect dereferencing of std::unique_ptr in ArrayTree methods.
+* Compilation errors by properly handling nullptr checks for children_ in various methods.
+* Const-correctness violations in TreeIterator when pushing const nodes into a stack.
 
 ### Security
 

@@ -23,15 +23,15 @@ public:
     template <std::size_t Index>
     ArrayTree& child() {
         static_assert(Index < N, "Index out of bounds");
-        assert(this->children_.has_value() && "Attempting to access child of a leaf node.");
-        return (*this->children_.value())[Index];
+        assert(this->children_ && "Attempting to access child of a leaf node.");
+        return (*this->children_)[Index];
     }
 
     template <std::size_t Index>
     const ArrayTree& child() const {
         static_assert(Index < N, "Index out of bounds");
-        assert(this->children_.has_value() && "Attempting to access child of a leaf node.");
-        return (*this->children_.value())[Index];
+        assert(this->children_ && "Attempting to access child of a leaf node.");
+        return (*this->children_)[Index];
     }
 };
 

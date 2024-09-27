@@ -7,25 +7,24 @@ namespace vpr {
 
 template <typename ChildrenType, typename NodeType> class NodeInterface;
 
-template <typename ChildrenType, typename NodeType>
+template <typename ChildrenType, typename NodeType, typename NodePtr>
 class TreeIterator {
 public:
     using Node = NodeInterface<ChildrenType, NodeType>;
 
-    TreeIterator(Node* root) {
+    TreeIterator(NodePtr root) {
         if (root) {
             stack_.push(root);
         }
     }
 
-    TreeIterator(const Node* root) : TreeIterator(const_cast<Node*>(root)) {}
-
     TreeIterator& operator++() {
         if (!stack_.empty()) {
-            auto* node = stack_.top();
+            NodePtr node = stack_.top();
             stack_.pop();
             if (!node->isLeaf()) {
-                for (auto it = node->getChildren()->rbegin(); it != node->getChildren()->rend(); ++it) {
+                auto& children = node->getChildren();
+                for (auto it = children.rbegin(); it != children.rend(); ++it) {
                     stack_.push(&*it);
                 }
             }
@@ -39,22 +38,13 @@ public:
         return temp;
     }
 
-    Node& operator*() {
+    decltype(auto) operator*() const {
         return *stack_.top();
     }
 
-    Node* operator->() {
+    NodePtr operator->() const {
         return stack_.top();
     }
-
-    const Node& operator*() const {
-        return *stack_.top();
-    }
-
-    const Node* operator->() const {
-        return stack_.top();
-    }
-
 
     bool operator==(const TreeIterator& other) const {
         return stack_ == other.stack_;
@@ -65,8 +55,9 @@ public:
     }
 
 private:
-    std::stack<Node*> stack_;
+    std::stack<NodePtr> stack_;
 };
+
 
 }
 
