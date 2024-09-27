@@ -10,17 +10,25 @@ class BinaryNode : public ArrayNode<T, U, 2> {
 public:
     using ArrayNode<T, U, 2>::ArrayNode;
 
+    // Non-const version
     template <std::size_t Index>
-    BinaryNode& child() {
+    U& child() {
         static_assert(Index < 2, "Index out of bounds");
-        return static_cast<BinaryNode&>(ArrayNode<T, U, 2>::template child<Index>());
+        return ArrayNode<T, U, 2>::getChildren()[Index];
     }
 
-    BinaryNode& left() { return child<0>(); }
-    BinaryNode& right() { return child<1>(); }
+    // Const version
+    template <std::size_t Index>
+    const U& child() const {
+        static_assert(Index < 2, "Index out of bounds");
+        return ArrayNode<T, U, 2>::getChildren()[Index];
+    }
 
-    const BinaryNode& left() const { return child<0>(); }
-    const BinaryNode& right() const { return child<1>(); }
+    U& left() { return child<0>(); }
+    U& right() { return child<1>(); }
+
+    const U& left() const { return child<0>(); }
+    const U& right() const { return child<1>(); }
 };
 
 
