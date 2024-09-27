@@ -1,6 +1,7 @@
 #ifndef FLAT_TREE_ITERATOR_HPP
 #define FLAT_TREE_ITERATOR_HPP
 
+#include "flat_tree.hpp" // Include flat_tree to have access to FlatTree and FlatTreeNode
 #include <vector>
 #include <stack>
 #include <optional>
@@ -8,13 +9,7 @@
 
 namespace vpr {
 
-template <typename T>
-class FlatBinaryTree;  // Forward declaration of FlatBinaryTree
-
-template <typename T>
-class FlatTreeNode;  // Forward declaration of FlatTreeNode
-
-// Pre-order Iterator class
+// Pre-order Iterator class for FlatTree
 template <typename T>
 class FlatTreeIterator {
 public:
@@ -25,16 +20,17 @@ public:
     using reference = FlatTreeNode<T>&;
 
     // Constructor
-    FlatTreeIterator(FlatBinaryTree<T>* tree, int index = -1) 
-        : tree_(tree), currentIndex_(index) {
-        if (currentIndex_ != -1) {
-            nodeStack_.push(currentIndex_);
-            traverseToNext();  // Set up the iterator at the start
+    FlatTreeIterator(FlatTree<T>* tree, int index = -1) 
+        : tree_(tree), currentIndex_(-1) {
+        if (tree && !tree->nodes.empty() && index != -1) {
+            nodeStack_.push(index);   // Push root index
+            traverseToNext();         // Initialize the first node
         }
     }
 
-    reference operator*() { return tree_->nodes[currentIndex_]; }
-    pointer operator->() { return &tree_->nodes[currentIndex_]; }
+    // Dereference operators
+    reference operator*() const { return tree_->nodes[currentIndex_]; }
+    pointer operator->() const { return &tree_->nodes[currentIndex_]; }
 
     // Pre-increment
     FlatTreeIterator& operator++() {
@@ -49,6 +45,7 @@ public:
         return tmp;
     }
 
+    // Equality operators
     bool operator==(const FlatTreeIterator& other) const {
         return currentIndex_ == other.currentIndex_;
     }
@@ -58,23 +55,23 @@ public:
     }
 
 private:
-    FlatBinaryTree<T>* tree_;
+    FlatTree<T>* tree_;
     int currentIndex_;
     std::stack<int> nodeStack_;
 
-    // Traverse to the next node (pre-order traversal)
+    // Traverse to the next node in pre-order
     void traverseToNext() {
         if (nodeStack_.empty()) {
-            currentIndex_ = -1;  // End of traversal
+            currentIndex_ = -1;  // End iterator
             return;
         }
 
-        // Get the next node index from the stack
+        // Pop the current node
         currentIndex_ = nodeStack_.top();
         nodeStack_.pop();
 
-        // Push children onto the stack in reverse order
-        const auto& children = tree_->nodes[currentIndex_].childIndex;
+        // Push children in reverse order to process leftmost child first
+        const auto& children = tree_->nodes[currentIndex_].childIndices;
         for (auto it = children.rbegin(); it != children.rend(); ++it) {
             nodeStack_.push(*it);
         }
