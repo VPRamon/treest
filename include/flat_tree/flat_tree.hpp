@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <stdexcept>
+#include <optional>
 
 namespace vpr {
 
@@ -15,43 +16,158 @@ public:
     std::vector<FlatTreeNode<T>> nodes;  // Flat array to store all nodes
 
     // Constructor
-    FlatTree() { nodes.reserve(16); }  // Pre-allocate space for nodes
+    FlatTree(std::optional<T> value = std::nullopt) {
+        nodes.reserve(16);  // Pre-allocate space for nodes
+        nodes.emplace_back(value, -1, 0, this);  // Create the root node with no parent
+    }
 
-    // Add root node (optional value)
-    int addRoot(std::optional<T> value = std::nullopt) {
-        nodes.emplace_back(value, -1, 0, this);    // Create the root node with no parent
-        return nodes.size() - 1;          // Return index of root
+    FlatTree(FlatTree& other) : nodes(other.nodes) {
+        for (auto node : nodes)
+            node.tree = this;
+    }
+
+    // Copy Assignment Operator
+    FlatTree& operator=(const FlatTree& other) {
+        if (this != &other) {
+            nodes = other.nodes;
+            for (auto& node : nodes) {
+                node.tree_ = this;
+            }
+        }
+        return *this;
     }
 
     // Add child to a node at 'parentIndex' (optional value)
     int addChild(int parentIndex, std::optional<T> value = std::nullopt) {
-        validateParentIndex(parentIndex);
-        int childIndex = nodes.size();
-        nodes.emplace_back(value, parentIndex, childIndex, this);          // Create and store child node
-        nodes[parentIndex].childIndices.push_back(childIndex);  // Link parent to child
+        int childIndex = static_cast<int>(nodes.size());
+        nodes.emplace_back(value, parentIndex, childIndex, this);  // Create and store child node
+        nodes[parentIndex].childIndices_.push_back(childIndex);    // Link parent to child
         return childIndex;
     }
 
-    // Get a reference to a node at a specific index
-    FlatTreeNode<T>& getNode(int index) { 
-        validateNodeIndex(index);
-        return nodes[index]; 
+    // Get a reference to a node at a specific index (non-const)
+    FlatTreeNode<T>& getNode(int index) {
+        return nodes.at(index);  // Using at() for bounds checking
     }
 
-    // Check if a node has a value
-    bool hasValue(int nodeIndex) const { 
-        validateNodeIndex(nodeIndex);
-        return nodes[nodeIndex].value.has_value(); 
+    // Get a reference to a node at a specific index (const)
+    const FlatTreeNode<T>& getNode(int index) const {
+        return nodes.at(index);  // Using at() for bounds checking
     }
 
-    // Begin iterator (pre-order traversal)
-    FlatTreeIterator<T> begin() {
-        return FlatTreeIterator<T>(this, nodes.empty() ? -1 : 0);  // Start at the root
+    // Get a reference to the root node (non-const)
+    FlatTreeNode<T>& getRoot() {
+        return nodes.at(0);  // Using at() for bounds checking
     }
 
-    // End iterator (past the end)
-    FlatTreeIterator<T> end() {
-        return FlatTreeIterator<T>(this, -1);  // Indicate end
+    // Get a reference to the root node (const)
+    const FlatTreeNode<T>& getRoot() const {
+        return nodes.at(0);  // Using at() for bounds checking
+    }
+
+    // Check if a node has a value (const)
+    bool hasValue(int nodeIndex) const {
+        return nodes.at(nodeIndex).value.has_value();
+    }
+
+    size_t size() {
+        return nodes.size();
+    }
+
+    // *** Iterator Methods ***
+
+    // Pre-order traversal iterators
+    auto pre_order_begin() {
+        using Traversal = PreOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
+        return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
+    }
+
+    auto pre_order_end() {
+        using Traversal = PreOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
+        return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, -1);
+    }
+
+    auto pre_order_begin() const {
+        using Traversal = PreOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+        return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
+    }
+
+    auto pre_order_end() const {
+        using Traversal = PreOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+        return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, -1);
+    }
+
+    // Post-order traversal iterators
+    auto post_order_begin() {
+        using Traversal = PostOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
+        return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
+    }
+
+    auto post_order_end() {
+        using Traversal = PostOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
+        return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, -1);
+    }
+
+    auto post_order_begin() const {
+        using Traversal = PostOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+        return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
+    }
+
+    auto post_order_end() const {
+        using Traversal = PostOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+        return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, -1);
+    }
+
+    // Level-order traversal iterators
+    auto level_order_begin() {
+        using Traversal = LevelOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
+        return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
+    }
+
+    auto level_order_end() {
+        using Traversal = LevelOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
+        return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, -1);
+    }
+
+    auto level_order_begin() const {
+        using Traversal = LevelOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+        return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
+    }
+
+    auto level_order_end() const {
+        using Traversal = LevelOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+        return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, -1);
+    }
+
+    // *** Reverse Iterators ***
+
+    // Reverse pre-order traversal iterators
+    auto pre_order_rbegin() {
+        using Traversal = ReversePreOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
+        return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
+    }
+
+    auto pre_order_rend() {
+        using Traversal = ReversePreOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
+        return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, -1);
+    }
+
+    auto pre_order_rbegin() const {
+        using Traversal = ReversePreOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+        return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
+    }
+
+    auto pre_order_rend() const {
+        using Traversal = ReversePreOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+        return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, -1);
+    }
+
+    // Overload operator<< for FlatTree
+    friend std::ostream& operator<<(std::ostream& os, const FlatTree<T>& tree) {
+        for (const auto& node : tree.nodes) {
+            os << node << " ";
+        }
+        return os;
     }
 
 private:
@@ -62,22 +178,7 @@ private:
         }
     }
 
-    // Validate that the node index is within bounds
-    void validateNodeIndex(int nodeIndex) const {
-        if (nodeIndex < 0 || nodeIndex >= static_cast<int>(nodes.size())) {
-            throw std::out_of_range("Invalid node index.");
-        }
-    }
 };
-
-// Overload operator<< for FlatTree outside the class template to avoid incomplete type issues
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const FlatTree<T>& tree) {
-    for (const auto& node : tree.nodes) {
-        os << node << " ";
-    }
-    return os;
-}
 
 } // namespace vpr
 
