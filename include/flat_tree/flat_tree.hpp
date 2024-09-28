@@ -12,8 +12,25 @@ namespace vpr {
 
 template <typename T>
 class FlatTree {
-public:
+    // Grant friendship to all instantiations of FlatTreeIterator
+    template <typename NodeType, typename TreeType, typename TraversalPolicy>
+    friend class FlatTreeIterator;
+
+    template <typename NodeType, typename TreeType>
+    friend class PreOrderTraversal;
+
+    template <typename NodeType, typename TreeType>
+    friend class PostOrderTraversal;
+
+    template <typename NodeType, typename TreeType>
+    friend class LevelOrderTraversal;
+
+    template <typename NodeType, typename TreeType>
+    friend class ReversePreOrderTraversal;
+
     std::vector<FlatTreeNode<T>> nodes;  // Flat array to store all nodes
+
+public:
 
     // Constructor
     FlatTree(std::optional<T> value = std::nullopt) {

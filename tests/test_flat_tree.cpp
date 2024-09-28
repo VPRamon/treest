@@ -180,10 +180,5 @@ TEST_F(FlatTreeTestFixture, TestIteratorStandardAlgorithms) {
     EXPECT_EQ(it->value.value(), "6");
 }
 
-TEST_F(FlatTreeTestFixture, TestMemoryPreAllocation) {
-    // Test that capacity is greater than or equal to size
-    EXPECT_GE(tree.nodes.capacity(), tree.size());
-}
-
 
 #endif // FLAT_TREE_TEST_HPP
