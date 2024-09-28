@@ -30,8 +30,8 @@ protected:
         // Set up a common tree structure for all tests
         tree = vpr::FlatTree<std::string>("0");
 
-        int child1 = tree.getRoot().addChild("1");
-        int child2 = tree.getRoot().addChild("2");
+        size_t child1 = tree.getRoot().addChild("1");
+        size_t child2 = tree.getRoot().addChild("2");
 
         tree.getNode(child1).addChild("3");
         tree.getNode(child1).addChild("4");
@@ -48,7 +48,7 @@ TEST_F(FlatTreeTestFixture, TestTreeInitialization) {
 }
 
 TEST_F(FlatTreeTestFixture, TestAddChild) {
-    int newChild = tree.getRoot().addChild("7");
+    size_t newChild = tree.getRoot().addChild("7");
     EXPECT_EQ(tree.size(), 8);
     EXPECT_EQ(tree.getNode(newChild).value.value(), "7");
 }
@@ -161,8 +161,8 @@ TEST_F(FlatTreeTestFixture, TestVariantNode) {
     auto& root = variantTree.getRoot();
     EXPECT_TRUE(root.value.has_value());
 
-    int child1 = root.addChild(std::string("Child1"));
-    int child2 = root.addChild(84);
+    size_t child1 = root.addChild(std::string("Child1"));
+    size_t child2 = root.addChild(84);
 
     EXPECT_TRUE(std::holds_alternative<int>(variantTree.getNode(child2).value.value()));
     EXPECT_TRUE(std::holds_alternative<std::string>(variantTree.getNode(child1).value.value()));

@@ -21,7 +21,7 @@ class FlatTreeNode;
 template <typename NodeType, typename TreeType>
 class PreOrderTraversal {
 public:
-    using IndexType = int;
+    using IndexType = size_t;
 
     PreOrderTraversal(TreeType* tree, IndexType startIndex) 
         : tree_(tree), currentIndex_(-1) {
@@ -61,7 +61,7 @@ private:
 template <typename NodeType, typename TreeType>
 class ReversePreOrderTraversal {
 public:
-    using IndexType = int;
+    using IndexType = size_t;
 
     ReversePreOrderTraversal(TreeType* tree, IndexType startIndex) 
         : tree_(tree), currentIndex_(-1) {
@@ -101,7 +101,7 @@ private:
 template <typename NodeType, typename TreeType>
 class PostOrderTraversal {
 public:
-    using IndexType = int;
+    using IndexType = size_t;
 
     PostOrderTraversal(TreeType* tree, IndexType startIndex)
         : tree_(tree) {
@@ -159,7 +159,7 @@ private:
 template <typename NodeType, typename TreeType>
 class LevelOrderTraversal {
 public:
-    using IndexType = int;
+    using IndexType = size_t;
 
     LevelOrderTraversal(TreeType* tree, IndexType startIndex)
         : tree_(tree) {
@@ -207,7 +207,7 @@ public:
     using pointer = NodeType*;
     using reference = NodeType&;
 
-    FlatTreeIterator(TreeType* tree, int startIndex = -1)
+    FlatTreeIterator(TreeType* tree, size_t startIndex = 0)
         : traversalPolicy_(tree, startIndex), tree_(tree) {}
 
     reference operator*() const {

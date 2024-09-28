@@ -53,9 +53,9 @@ class FlatTreeNode {
     friend class ReversePreOrderTraversal;
 
 private:
-    int index_;                         // Index of the self node
-    int parentIndex_;                   // Index of the parent node (-1 for the root)
-    std::vector<int> childIndices_;     // Indices of the children nodes
+    size_t index_;                         // Index of the self node
+    size_t parentIndex_;                   // Index of the parent node (-1 for the root)
+    std::vector<size_t> childIndices_;     // Indices of the children nodes
     FlatTree<T>* tree_;
 
 public:
@@ -63,10 +63,10 @@ public:
 
     // Default constructor
     FlatTreeNode() 
-        : value(std::nullopt), parentIndex_(-1), index_(0), tree_(nullptr), childIndices_() {}
+        : value(std::nullopt), parentIndex_(0), index_(0), tree_(nullptr), childIndices_() {}
 
     // Constructor accepting std::optional<T> and parent index
-    FlatTreeNode(std::optional<T> v, int parentIdx = -1, int index = 0, FlatTree<T>* tree = nullptr)
+    FlatTreeNode(std::optional<T> v, size_t parentIdx = 0, size_t index = 0, FlatTree<T>* tree = nullptr)
         : value(v), parentIndex_(parentIdx), index_(index), tree_(tree), childIndices_() {}
 
     // Overload operator<< for FlatTreeNode
@@ -90,19 +90,19 @@ public:
     bool isRoot() const { return parentIndex_ == -1; }
     bool isLeaf() const { return childIndices_.empty(); }
 
-    int nChildren() const { return static_cast<int>(childIndices_.size()); }
-    int index() const { return index_; }
-    int parentIndex() const { return parentIndex_; }
+    size_t nChildren() const { return childIndices_.size(); }
+    size_t index() const { return index_; }
+    size_t parentIndex() const { return parentIndex_; }
     const FlatTree<T>* tree() const { return tree_; }
 
     // Add child to this node (optional value)
-    int addChild(std::optional<T> value = std::nullopt) {
+    size_t addChild(std::optional<T> value = std::nullopt) {
         return tree_->addChild(index_, value);
     }
 
     // Get a reference to a child node at a specific index
-    FlatTreeNode<T>& getChild(int index) {
-        if (index < 0 || index >= static_cast<int>(childIndices_.size())) {
+    FlatTreeNode<T>& getChild(size_t index) {
+        if (index >= childIndices_.size()) {
             throw std::out_of_range("Invalid child index.");
         }
         return tree_->getNode(childIndices_.at(index));
@@ -123,7 +123,7 @@ private:
     std::vector<std::reference_wrapper<NodeType>> getChildrenImpl() const {
         std::vector<std::reference_wrapper<NodeType>> children;
         children.reserve(childIndices_.size()); // Optimize memory allocation
-        for (const int& childIdx : childIndices_) {
+        for (const size_t& childIdx : childIndices_) {
             children.emplace_back(tree_->getNode(childIdx));
         }
         return children;

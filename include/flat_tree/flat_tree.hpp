@@ -54,21 +54,41 @@ public:
         return *this;
     }
 
+    // Move Constructor
+    FlatTree(FlatTree&& other) noexcept 
+        : nodes(std::move(other.nodes)) {
+        for (auto& node : nodes) {
+            node.tree_ = this;
+        }
+    }
+
+    // Move Assignment Operator
+    FlatTree& operator=(FlatTree&& other) noexcept {
+        if (this != &other) {
+            nodes = std::move(other.nodes);
+            for (auto& node : nodes) {
+                node.tree_ = this;
+            }
+        }
+        return *this;
+    }
+
     // Add child to a node at 'parentIndex' (optional value)
-    int addChild(int parentIndex, std::optional<T> value = std::nullopt) {
-        int childIndex = static_cast<int>(nodes.size());
+    size_t addChild(size_t parentIndex, std::optional<T> value = std::nullopt) {
+        validateParentIndex(parentIndex);  // Validate parent index
+        size_t childIndex = nodes.size();
         nodes.emplace_back(value, parentIndex, childIndex, this);  // Create and store child node
         nodes[parentIndex].childIndices_.push_back(childIndex);    // Link parent to child
         return childIndex;
     }
 
     // Get a reference to a node at a specific index (non-const)
-    FlatTreeNode<T>& getNode(int index) {
+    FlatTreeNode<T>& getNode(size_t index) {
         return nodes.at(index);  // Using at() for bounds checking
     }
 
     // Get a reference to a node at a specific index (const)
-    const FlatTreeNode<T>& getNode(int index) const {
+    const FlatTreeNode<T>& getNode(size_t index) const {
         return nodes.at(index);  // Using at() for bounds checking
     }
 
@@ -83,7 +103,7 @@ public:
     }
 
     // Check if a node has a value (const)
-    bool hasValue(int nodeIndex) const {
+    bool hasValue(size_t nodeIndex) const {
         return nodes.at(nodeIndex).value.has_value();
     }
 
@@ -198,8 +218,8 @@ public:
 
 private:
     // Validate that the parent index is within bounds
-    void validateParentIndex(int parentIndex) const {
-        if (parentIndex < 0 || parentIndex >= static_cast<int>(nodes.size())) {
+    void validateParentIndex(size_t parentIndex) const {
+        if (parentIndex >= nodes.size()) {
             throw std::out_of_range("Invalid parent index.");
         }
     }
