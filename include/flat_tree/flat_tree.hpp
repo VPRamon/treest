@@ -25,18 +25,14 @@ class FlatTree {
     template <typename NodeType, typename TreeType, typename TraversalPolicy>
     friend class FlatTreeIterator;
 
-    // Grant friendship to traversal policies
-    template <typename NodeType, typename TreeType>
-    friend class PreOrderTraversal;
-
     template <typename NodeType, typename TreeType>
     friend class PostOrderTraversal;
 
     template <typename NodeType, typename TreeType>
     friend class LevelOrderTraversal;
 
-    template <typename NodeType, typename TreeType>
-    friend class ReversePreOrderTraversal;
+    template <typename NodeType, typename TreeType, typename OrderPolicy>
+    friend class PreOrderTraversalBase;
 
 public:
     // Type aliases for traversal policies

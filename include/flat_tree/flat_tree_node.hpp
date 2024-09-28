@@ -18,8 +18,8 @@ template <typename NodeType, typename TreeType, typename TraversalPolicy>
 class FlatTreeIterator;
 
 // Forward declaration of PreOrderTraversal with all template parameters
-template <typename NodeType, typename TreeType>
-class PreOrderTraversal;
+//template <typename NodeType, typename TreeType>
+//class PreOrderTraversal;
 
 // Forward declaration of PreOrderTraversal with all template parameters
 template <typename NodeType, typename TreeType>
@@ -29,8 +29,8 @@ class PostOrderTraversal;
 template <typename NodeType, typename TreeType>
 class LevelOrderTraversal;
 
-template <typename NodeType, typename TreeType>
-class ReversePreOrderTraversal;
+//template <typename NodeType, typename TreeType>
+//class ReversePreOrderTraversal;
 
 template <typename T>
 class FlatTreeNode {
@@ -41,16 +41,13 @@ class FlatTreeNode {
     friend class FlatTreeIterator;
 
     template <typename NodeType, typename TreeType>
-    friend class PreOrderTraversal;
-
-    template <typename NodeType, typename TreeType>
     friend class PostOrderTraversal;
 
     template <typename NodeType, typename TreeType>
     friend class LevelOrderTraversal;
 
-    template <typename NodeType, typename TreeType>
-    friend class ReversePreOrderTraversal;
+    template <typename NodeType, typename TreeType, typename OrderPolicy>
+    friend class PreOrderTraversalBase;
 
 private:
     size_t index_;                         // Index of the self node
