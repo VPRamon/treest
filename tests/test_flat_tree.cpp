@@ -85,7 +85,7 @@ TEST_F(FlatTreeTestFixture, TestIteratorLevelOrderTraversal) {
     std::vector<std::string> expected = BFS;
     std::vector<std::string> result;
 
-    for (auto it = tree.level_order_begin(); it != tree.level_order_end(); ++it) {
+    for (auto it = tree.bfs_begin(); it != tree.bfs_end(); ++it) {
         result.push_back(it->value.value());
     }
 

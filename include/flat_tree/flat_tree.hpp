@@ -75,6 +75,15 @@ public:
     }
 
     // *** Iterator Methods ***
+    auto begin() { return nodes.begin(); }
+    auto end() { return nodes.end(); }
+    auto rbegin() { return nodes.rbegin(); }
+    auto rend() { return nodes.rend(); }
+
+    const auto begin() const { return nodes.begin(); }
+    const auto end() const { return nodes.end(); }
+    const auto rbegin() const { return nodes.rbegin(); }
+    const auto rend() const { return nodes.rend(); }
 
     // Pre-order traversal iterators
     auto pre_order_begin() {
@@ -119,22 +128,22 @@ public:
     }
 
     // Level-order traversal iterators
-    auto level_order_begin() {
+    auto bfs_begin() {
         using Traversal = LevelOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
         return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
     }
 
-    auto level_order_end() {
+    auto bfs_end() {
         using Traversal = LevelOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
         return FlatTreeIterator<FlatTreeNode<T>, FlatTree<T>, Traversal>(this, -1);
     }
 
-    auto level_order_begin() const {
+    auto bfs_begin() const {
         using Traversal = LevelOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
         return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, nodes.empty() ? -1 : 0);
     }
 
-    auto level_order_end() const {
+    auto bfs_end() const {
         using Traversal = LevelOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
         return FlatTreeIterator<const FlatTreeNode<T>, const FlatTree<T>, Traversal>(this, -1);
     }
