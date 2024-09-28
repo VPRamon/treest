@@ -19,7 +19,7 @@ public:
 
     // Add root node (optional value)
     int addRoot(std::optional<T> value = std::nullopt) {
-        nodes.emplace_back(value, -1);    // Create the root node with no parent
+        nodes.emplace_back(value, -1, 0, this);    // Create the root node with no parent
         return nodes.size() - 1;          // Return index of root
     }
 
@@ -27,7 +27,7 @@ public:
     int addChild(int parentIndex, std::optional<T> value = std::nullopt) {
         validateParentIndex(parentIndex);
         int childIndex = nodes.size();
-        nodes.emplace_back(value, parentIndex);          // Create and store child node
+        nodes.emplace_back(value, parentIndex, childIndex, this);          // Create and store child node
         nodes[parentIndex].childIndices.push_back(childIndex);  // Link parent to child
         return childIndex;
     }

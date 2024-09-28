@@ -17,16 +17,18 @@ class FlatTree;
 template <typename T>
 struct FlatTreeNode {
     std::optional<T> value;            // Optional value for the node
+    int index;                         // Index of the self node
     int parentIndex;                   // Index of the parent node (-1 for the root)
     std::vector<int> childIndices;     // Indices of the children nodes
+    FlatTree<T>* tree;
 
     // Default constructor
     FlatTreeNode() 
-        : value(std::nullopt), parentIndex(-1), childIndices() {}
+        : value(std::nullopt), parentIndex(-1), index(0), tree(nullptr), childIndices() {}
 
     // Constructor accepting std::optional<T> and parent index
-    FlatTreeNode(std::optional<T> v, int parentIdx = -1) 
-        : value(v), parentIndex(parentIdx), childIndices() {}
+    FlatTreeNode(std::optional<T> v, int parentIdx = -1, int index=0, FlatTree<T>* tree=nullptr)
+        : value(v), parentIndex(parentIdx), index(index), tree(tree), childIndices() {}
 
     // Overload operator<< for FlatTreeNode
     friend std::ostream& operator<<(std::ostream& os, const FlatTreeNode<T>& node) {
@@ -45,6 +47,18 @@ struct FlatTreeNode {
         }
         return os;
     }
+
+    // Add child to a node at 'parentIndex' (optional value)
+    int addChild(std::optional<T> value = std::nullopt) {
+        return this->tree->addChild(index, value);
+    }
+
+    // Get a reference to a node at a specific index
+    FlatTreeNode<T>& getChild(int index) {
+        assert(childIndices.size() < index);
+        return this->tree->getNode(childIndices[index]);
+    } 
+
 };
 
 } // namespace vpr

@@ -6,30 +6,36 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <cassert>
 
+// Assuming the FlatTree and FlatTreeNode classes are defined in "flat_tree.h"
 #include "flat_tree.hpp"
 #include "flat_tree_variant.hpp"
 
 using namespace vpr;
 
-// Test Suite for FlatTreeNode with simple types
+// Existing FlatTreeNode Tests
 TEST(FlatTreeNodeTest, DefaultConstructor) {
     FlatTreeNode<int> node;
     EXPECT_FALSE(node.value.has_value());
     EXPECT_EQ(node.parentIndex, -1);
+    EXPECT_EQ(node.index, 0);
+    EXPECT_EQ(node.tree, nullptr);
     EXPECT_TRUE(node.childIndices.empty());
 }
 
 TEST(FlatTreeNodeTest, ConstructorWithValue) {
-    FlatTreeNode<int> node(std::make_optional(42), 1);
+    FlatTreeNode<int> node(std::make_optional(42), 1, 2, nullptr);
     ASSERT_TRUE(node.value.has_value());
     EXPECT_EQ(node.value.value(), 42);
     EXPECT_EQ(node.parentIndex, 1);
+    EXPECT_EQ(node.index, 2);
+    EXPECT_EQ(node.tree, nullptr);
     EXPECT_TRUE(node.childIndices.empty());
 }
 
 TEST(FlatTreeNodeTest, OperatorOutputWithValue) {
-    FlatTreeNode<int> node(std::make_optional(100), 2);
+    FlatTreeNode<int> node(std::make_optional(100), 2, 1, nullptr);
     std::ostringstream oss;
     oss << node;
     EXPECT_EQ(oss.str(), "100");
@@ -44,13 +50,13 @@ TEST(FlatTreeNodeTest, OperatorOutputWithoutValue) {
 
 TEST(FlatTreeNodeTest, OperatorOutputWithVariant) {
     using VarType = std::variant<int, std::string>;
-    FlatTreeNode<VarType> node(std::make_optional<VarType>(std::string("VariantValue")), 3);
+    FlatTreeNode<VarType> node(std::make_optional<VarType>(std::string("VariantValue")), 3, 1, nullptr);
     std::ostringstream oss;
     oss << node;
     EXPECT_EQ(oss.str(), "VariantValue");
 }
 
-// Test Suite for FlatTree with simple types
+// Existing FlatTree Tests
 TEST(FlatTreeTest, DefaultConstructor) {
     FlatTree<int> tree;
     EXPECT_TRUE(tree.nodes.empty());
@@ -63,6 +69,8 @@ TEST(FlatTreeTest, AddRootWithoutValue) {
     ASSERT_EQ(tree.nodes.size(), 1);
     EXPECT_FALSE(tree.nodes[rootIndex].value.has_value());
     EXPECT_EQ(tree.nodes[rootIndex].parentIndex, -1);
+    EXPECT_EQ(tree.nodes[rootIndex].index, 0);
+    EXPECT_EQ(tree.nodes[rootIndex].tree, &tree);
 }
 
 TEST(FlatTreeTest, AddRootWithValue) {
@@ -73,6 +81,8 @@ TEST(FlatTreeTest, AddRootWithValue) {
     EXPECT_TRUE(tree.nodes[rootIndex].value.has_value());
     EXPECT_EQ(tree.nodes[rootIndex].value.value(), 10);
     EXPECT_EQ(tree.nodes[rootIndex].parentIndex, -1);
+    EXPECT_EQ(tree.nodes[rootIndex].index, 0);
+    EXPECT_EQ(tree.nodes[rootIndex].tree, &tree);
 }
 
 TEST(FlatTreeTest, AddChildSuccessfully) {
@@ -87,6 +97,10 @@ TEST(FlatTreeTest, AddChildSuccessfully) {
     EXPECT_EQ(tree.nodes[root].childIndices.size(), 2);
     EXPECT_EQ(tree.nodes[root].childIndices[0], child1);
     EXPECT_EQ(tree.nodes[root].childIndices[1], child2);
+    EXPECT_EQ(tree.nodes[child1].index, child1);
+    EXPECT_EQ(tree.nodes[child2].index, child2);
+    EXPECT_EQ(tree.nodes[child1].tree, &tree);
+    EXPECT_EQ(tree.nodes[child2].tree, &tree);
 }
 
 TEST(FlatTreeTest, GetNodeValidIndex) {
@@ -99,6 +113,10 @@ TEST(FlatTreeTest, GetNodeValidIndex) {
 
     EXPECT_EQ(retrievedRoot.value.value(), 5);
     EXPECT_EQ(retrievedChild.value.value(), 10);
+    EXPECT_EQ(retrievedRoot.index, root);
+    EXPECT_EQ(retrievedChild.index, child);
+    EXPECT_EQ(retrievedRoot.tree, &tree);
+    EXPECT_EQ(retrievedChild.tree, &tree);
 }
 
 TEST(FlatTreeTest, GetNodeInvalidIndexThrows) {
@@ -185,7 +203,7 @@ TEST(FlatTreeTest, SingleNodeIterator) {
     EXPECT_EQ(actualValues, expectedValues);
 }
 
-// Test Suite for FlatTreeVariant
+// Existing FlatTreeVariant Tests
 TEST(FlatTreeVariantTest, AddRootWithDifferentTypes) {
     FlatTreeVariant<int, std::string> tree;
     int rootInt = tree.addRoot(std::make_optional<std::variant<int, std::string>>(42));
@@ -217,6 +235,29 @@ TEST(FlatTreeVariantTest, AddChildWithDifferentTypes) {
     // Verify child2
     EXPECT_TRUE(std::holds_alternative<std::string>(tree.nodes[child2].value.value()));
     EXPECT_EQ(std::get<std::string>(tree.nodes[child2].value.value()), "Child");
+
+    // FlatTreeVariant Tests for FlatTreeNode Methods
+    tree = FlatTreeVariant<int, std::string>();
+    root = tree.addRoot(std::make_optional<std::variant<int, std::string>>("Root"));
+
+    FlatTreeNode<std::variant<int, std::string>>& rootNode = tree.getNode(root);
+    child1 = rootNode.addChild(std::make_optional<std::variant<int, std::string>>(100));
+    child2 = rootNode.addChild(std::make_optional<std::variant<int, std::string>>("Child"));
+    int child3 = rootNode.addChild();
+
+    ASSERT_EQ(tree.nodes.size(), 4);
+    EXPECT_TRUE(std::holds_alternative<int>(tree.nodes[child1].value.value()));
+    EXPECT_EQ(std::get<int>(tree.nodes[child1].value.value()), 100);
+
+    EXPECT_TRUE(std::holds_alternative<std::string>(tree.nodes[child2].value.value()));
+    EXPECT_EQ(std::get<std::string>(tree.nodes[child2].value.value()), "Child");
+
+    EXPECT_FALSE(tree.nodes[child3].value.has_value());
+
+    EXPECT_EQ(tree.nodes[root].childIndices.size(), 3);
+    EXPECT_EQ(tree.nodes[root].childIndices[0], child1);
+    EXPECT_EQ(tree.nodes[root].childIndices[1], child2);
+    EXPECT_EQ(tree.nodes[root].childIndices[2], child3);
 }
 
 TEST(FlatTreeVariantTest, OperatorOutputWithDifferentTypes) {
@@ -241,27 +282,21 @@ TEST(FlatTreeVariantTest, IteratorTraversalWithVariants) {
     tree.addChild(child1, std::make_optional<std::variant<int, std::string>>());
     tree.addChild(child2, std::make_optional<std::variant<int, std::string>>("Grandchild"));
 
-    std::vector<std::optional<std::variant<int, std::string>>> expectedValues = {
-        std::variant<int, std::string>(std::string("Root")),
-        std::variant<int, std::string>(100),
-        std::variant<int, std::string>(200),
-        std::nullopt,
-        std::variant<int, std::string>("Child"),
-        std::variant<int, std::string>("Grandchild")
+    std::vector<std::variant<int, std::string>> expectedValues = {
+        std::string("Root"), 100, 200, std::variant<int, std::string>(), "Child", "Grandchild"
     };
     std::vector<std::variant<int, std::string>> actualValues;
 
     for (auto it = tree.begin(); it != tree.end(); ++it) {
-        actualValues.push_back(it->value.value_or(std::variant<int, std::string>()));
+        if (it->value.has_value()) {
+            actualValues.push_back(it->value.value());
+        } else {
+            actualValues.emplace_back(); // Default-constructed variant represents "None"
+        }
     }
 
-    // Since std::variant cannot hold std::nullopt, we'll interpret "None" as a default-constructed variant
     // Adjust the expectedValues accordingly
-    std::vector<std::variant<int, std::string>> adjustedExpectedValues = {
-        std::string("Root"), 100, 200, std::variant<int, std::string>(), "Child", "Grandchild"
-    };
-
-    EXPECT_EQ(actualValues, adjustedExpectedValues);
+    EXPECT_EQ(actualValues, expectedValues);
 }
 
 TEST(FlatTreeVariantTest, GetNodeWithVariant) {
@@ -327,8 +362,227 @@ TEST(FlatTreeVariantTest, IteratorTraversalSingleNode) {
     std::vector<std::variant<int, std::string>> actualValues;
 
     for (auto it = tree.begin(); it != tree.end(); ++it) {
-        actualValues.push_back(it->value.value_or(std::variant<int, std::string>()));
+        if (it->value.has_value()) {
+            actualValues.push_back(it->value.value());
+        }
     }
 
     EXPECT_EQ(actualValues, expectedValues);
 }
+
+// New Tests for FlatTreeNode's addChild and getChild Methods
+
+// FlatTree<int> Tests for FlatTreeNode Methods
+TEST(FlatTreeNodeTest, AddChildWithValue) {
+    FlatTree<int> tree;
+    int root = tree.addRoot(std::make_optional(10));
+
+    FlatTreeNode<int>& rootNode = tree.getNode(root);
+    int childIndex = rootNode.addChild(std::make_optional(20));
+
+    ASSERT_EQ(tree.nodes.size(), 2);
+    EXPECT_EQ(childIndex, 1);
+    EXPECT_EQ(tree.nodes[childIndex].value.value(), 20);
+    EXPECT_EQ(tree.nodes[childIndex].parentIndex, root);
+    EXPECT_EQ(tree.nodes[root].childIndices.size(), 1);
+    EXPECT_EQ(tree.nodes[root].childIndices[0], childIndex);
+}
+
+TEST(FlatTreeNodeTest, AddChildWithoutValue) {
+    FlatTree<int> tree;
+    int root = tree.addRoot();
+
+    FlatTreeNode<int>& rootNode = tree.getNode(root);
+    int childIndex = rootNode.addChild();
+
+    ASSERT_EQ(tree.nodes.size(), 2);
+    EXPECT_FALSE(tree.nodes[childIndex].value.has_value());
+    EXPECT_EQ(tree.nodes[childIndex].parentIndex, root);
+    EXPECT_EQ(tree.nodes[root].childIndices.size(), 1);
+    EXPECT_EQ(tree.nodes[root].childIndices[0], childIndex);
+}
+
+TEST(FlatTreeNodeTest, AddMultipleChildren) {
+    FlatTree<int> tree;
+    int root = tree.addRoot(std::make_optional(100));
+
+    FlatTreeNode<int>& rootNode = tree.getNode(root);
+    int child1 = rootNode.addChild(std::make_optional(200));
+    int child2 = rootNode.addChild(std::make_optional(300));
+    int child3 = rootNode.addChild();
+
+    ASSERT_EQ(tree.nodes.size(), 4);
+    EXPECT_EQ(tree.nodes[child1].value.value(), 200);
+    EXPECT_EQ(tree.nodes[child2].value.value(), 300);
+    EXPECT_FALSE(tree.nodes[child3].value.has_value());
+
+    EXPECT_EQ(tree.nodes[root].childIndices.size(), 3);
+    EXPECT_EQ(tree.nodes[root].childIndices[0], child1);
+    EXPECT_EQ(tree.nodes[root].childIndices[1], child2);
+    EXPECT_EQ(tree.nodes[root].childIndices[2], child3);
+}
+
+TEST(FlatTreeNodeTest, GetChildValidIndex) {
+    FlatTree<int> tree;
+    int root = tree.addRoot(std::make_optional(1));
+    int child1 = tree.addChild(root, std::make_optional(2));
+    int child2 = tree.addChild(root, std::make_optional(3));
+
+    FlatTreeNode<int>& rootNode = tree.getNode(root);
+    FlatTreeNode<int>& retrievedChild1 = rootNode.getChild(0);
+    FlatTreeNode<int>& retrievedChild2 = rootNode.getChild(1);
+
+    EXPECT_EQ(retrievedChild1.value.value(), 2);
+    EXPECT_EQ(retrievedChild2.value.value(), 3);
+    EXPECT_EQ(retrievedChild1.parentIndex, root);
+    EXPECT_EQ(retrievedChild2.parentIndex, root);
+}
+
+TEST(FlatTreeNodeTest, GetChildMultipleChildren) {
+    FlatTree<int> tree;
+    int root = tree.addRoot();
+    int child1 = tree.addChild(root, std::make_optional(10));
+    int child2 = tree.addChild(root, std::make_optional(20));
+    int child3 = tree.addChild(root, std::make_optional(30));
+
+    FlatTreeNode<int>& rootNode = tree.getNode(root);
+    FlatTreeNode<int>& retrievedChild1 = rootNode.getChild(0);
+    FlatTreeNode<int>& retrievedChild2 = rootNode.getChild(1);
+    FlatTreeNode<int>& retrievedChild3 = rootNode.getChild(2);
+
+    EXPECT_EQ(retrievedChild1.value.value(), 10);
+    EXPECT_EQ(retrievedChild2.value.value(), 20);
+    EXPECT_EQ(retrievedChild3.value.value(), 30);
+}
+
+TEST(FlatTreeNodeTest, AddChildUpdatesParentChildIndices) {
+    FlatTree<int> tree;
+    int root = tree.addRoot(std::make_optional(50));
+
+    FlatTreeNode<int>& rootNode = tree.getNode(root);
+    int child1 = rootNode.addChild(std::make_optional(60));
+    int child2 = rootNode.addChild();
+
+    EXPECT_EQ(tree.nodes[root].childIndices.size(), 2);
+    EXPECT_EQ(tree.nodes[root].childIndices[0], child1);
+    EXPECT_EQ(tree.nodes[root].childIndices[1], child2);
+}
+
+TEST(FlatTreeNodeTest, GetChildReturnsCorrectNode) {
+    FlatTree<int> tree;
+    int root = tree.addRoot(std::make_optional(5));
+    int child1 = tree.addChild(root, std::make_optional(15));
+    int child2 = tree.addChild(root, std::make_optional(25));
+
+    FlatTreeNode<int>& rootNode = tree.getNode(root);
+    FlatTreeNode<int>& retrievedChild1 = rootNode.getChild(0);
+    FlatTreeNode<int>& retrievedChild2 = rootNode.getChild(1);
+
+    EXPECT_EQ(retrievedChild1.value.value(), 15);
+    EXPECT_EQ(retrievedChild2.value.value(), 25);
+    EXPECT_EQ(retrievedChild1.parentIndex, root);
+    EXPECT_EQ(retrievedChild2.parentIndex, root);
+}
+
+
+TEST(FlatTreeVariantTest, GetChildWithDifferentTypes) {
+    FlatTreeVariant<int, std::string> tree;
+    int root = tree.addRoot(std::make_optional<std::variant<int, std::string>>("Root"));
+    int child1 = tree.addChild(root, std::make_optional<std::variant<int, std::string>>(200));
+    int child2 = tree.addChild(root, std::make_optional<std::variant<int, std::string>>("Child"));
+    int child3 = tree.addChild(root);
+
+    FlatTreeNode<std::variant<int, std::string>>& rootNode = tree.getNode(root);
+    FlatTreeNode<std::variant<int, std::string>>& retrievedChild1 = rootNode.getChild(0);
+    FlatTreeNode<std::variant<int, std::string>>& retrievedChild2 = rootNode.getChild(1);
+    FlatTreeNode<std::variant<int, std::string>>& retrievedChild3 = rootNode.getChild(2);
+
+    EXPECT_TRUE(std::holds_alternative<int>(retrievedChild1.value.value()));
+    EXPECT_EQ(std::get<int>(retrievedChild1.value.value()), 200);
+
+    EXPECT_TRUE(std::holds_alternative<std::string>(retrievedChild2.value.value()));
+    EXPECT_EQ(std::get<std::string>(retrievedChild2.value.value()), "Child");
+
+    EXPECT_FALSE(retrievedChild3.value.has_value());
+
+    EXPECT_EQ(retrievedChild1.parentIndex, root);
+    EXPECT_EQ(retrievedChild2.parentIndex, root);
+    EXPECT_EQ(retrievedChild3.parentIndex, root);
+}
+
+TEST(FlatTreeVariantTest, AddMultipleChildrenAndRetrieve) {
+    FlatTreeVariant<int, std::string> tree;
+    int root = tree.addRoot(std::make_optional<std::variant<int, std::string>>("Root"));
+
+    FlatTreeNode<std::variant<int, std::string>>& rootNode = tree.getNode(root);
+    int child1 = rootNode.addChild(std::make_optional<std::variant<int, std::string>>(300));
+    int child2 = rootNode.addChild(std::make_optional<std::variant<int, std::string>>("Child2"));
+    int child3 = rootNode.addChild();
+
+    ASSERT_EQ(tree.nodes.size(), 4);
+    EXPECT_TRUE(std::holds_alternative<int>(tree.nodes[child1].value.value()));
+    EXPECT_EQ(std::get<int>(tree.nodes[child1].value.value()), 300);
+
+    EXPECT_TRUE(std::holds_alternative<std::string>(tree.nodes[child2].value.value()));
+    EXPECT_EQ(std::get<std::string>(tree.nodes[child2].value.value()), "Child2");
+
+    EXPECT_FALSE(tree.nodes[child3].value.has_value());
+
+    EXPECT_EQ(tree.nodes[root].childIndices.size(), 3);
+    EXPECT_EQ(tree.nodes[root].childIndices[0], child1);
+    EXPECT_EQ(tree.nodes[root].childIndices[1], child2);
+    EXPECT_EQ(tree.nodes[root].childIndices[2], child3);
+}
+
+TEST(FlatTreeVariantTest, GetChildReturnsCorrectVariantNode) {
+    FlatTreeVariant<int, std::string> tree;
+    int root = tree.addRoot(std::make_optional<std::variant<int, std::string>>("RootNode"));
+    int child1 = tree.addChild(root, std::make_optional<std::variant<int, std::string>>(400));
+    int child2 = tree.addChild(root, std::make_optional<std::variant<int, std::string>>("ChildNode"));
+
+    FlatTreeNode<std::variant<int, std::string>>& rootNode = tree.getNode(root);
+    FlatTreeNode<std::variant<int, std::string>>& retrievedChild1 = rootNode.getChild(0);
+    FlatTreeNode<std::variant<int, std::string>>& retrievedChild2 = rootNode.getChild(1);
+
+    EXPECT_TRUE(std::holds_alternative<int>(retrievedChild1.value.value()));
+    EXPECT_EQ(std::get<int>(retrievedChild1.value.value()), 400);
+
+    EXPECT_TRUE(std::holds_alternative<std::string>(retrievedChild2.value.value()));
+    EXPECT_EQ(std::get<std::string>(retrievedChild2.value.value()), "ChildNode");
+}
+
+TEST(FlatTreeVariantTest, AddChildUpdatesParentChildIndices) {
+    FlatTreeVariant<int, std::string> tree;
+    int root = tree.addRoot(std::make_optional<std::variant<int, std::string>>("Root"));
+
+    FlatTreeNode<std::variant<int, std::string>>& rootNode = tree.getNode(root);
+    int child1 = rootNode.addChild(std::make_optional<std::variant<int, std::string>>(500));
+    int child2 = rootNode.addChild(std::make_optional<std::variant<int, std::string>>("Child2"));
+
+    EXPECT_EQ(tree.nodes[root].childIndices.size(), 2);
+    EXPECT_EQ(tree.nodes[root].childIndices[0], child1);
+    EXPECT_EQ(tree.nodes[root].childIndices[1], child2);
+}
+
+TEST(FlatTreeVariantTest, GetChildMultipleChildren) {
+    FlatTreeVariant<int, std::string> tree;
+    int root = tree.addRoot(std::make_optional<std::variant<int, std::string>>("Root"));
+    int child1 = tree.addChild(root, std::make_optional<std::variant<int, std::string>>(600));
+    int child2 = tree.addChild(root, std::make_optional<std::variant<int, std::string>>("Child2"));
+    int child3 = tree.addChild(root, std::make_optional<std::variant<int, std::string>>("Child3"));
+
+    FlatTreeNode<std::variant<int, std::string>>& rootNode = tree.getNode(root);
+    FlatTreeNode<std::variant<int, std::string>>& retrievedChild1 = rootNode.getChild(0);
+    FlatTreeNode<std::variant<int, std::string>>& retrievedChild2 = rootNode.getChild(1);
+    FlatTreeNode<std::variant<int, std::string>>& retrievedChild3 = rootNode.getChild(2);
+
+    EXPECT_TRUE(std::holds_alternative<int>(retrievedChild1.value.value()));
+    EXPECT_EQ(std::get<int>(retrievedChild1.value.value()), 600);
+
+    EXPECT_TRUE(std::holds_alternative<std::string>(retrievedChild2.value.value()));
+    EXPECT_EQ(std::get<std::string>(retrievedChild2.value.value()), "Child2");
+
+    EXPECT_TRUE(std::holds_alternative<std::string>(retrievedChild3.value.value()));
+    EXPECT_EQ(std::get<std::string>(retrievedChild3.value.value()), "Child3");
+}
+
