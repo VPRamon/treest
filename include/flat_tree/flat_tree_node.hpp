@@ -87,7 +87,7 @@ public:
         return os;
     }
 
-    bool isRoot() const { return parentIndex_ == -1; }
+    bool isRoot() const { return index_ == 0; }
     bool isLeaf() const { return childIndices_.empty(); }
 
     size_t nChildren() const { return childIndices_.size(); }
