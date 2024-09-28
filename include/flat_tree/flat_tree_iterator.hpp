@@ -3,6 +3,7 @@
 
 #include <iterator>
 #include <stack>
+#include <vector>
 #include <queue>
 #include <algorithm> // Added to use std::reverse
 
@@ -17,101 +18,129 @@ class FlatTreeNode;
 
 // *** Traversal Policies ***
 
-#include <stack>
-#include <vector>
-
-// Policy for normal order (rightmost child first)
-struct NormalOrderPolicy {
-    static void push_children(std::stack<size_t>& stack, const std::vector<size_t>& children) {
-        for (auto it = children.begin(); it != children.end(); ++it) {
-            stack.push(*it);
+template <typename TreeType, template <typename...> class Container, bool straight>
+struct OrderPolicy {
+    static inline void push_children(const TreeType& tree, Container<size_t>& container, size_t currentIndex) {
+        const auto& children = tree.nodes.at(currentIndex).childIndices_;
+        if constexpr (straight) {
+            for (auto it = children.begin(); it != children.end(); ++it) {
+                container.push(*it);
+            }
+        } else {
+            for (auto it = children.rbegin(); it != children.rend(); ++it) {
+                container.push(*it);
+            }
         }
     }
 };
 
-// Policy for reverse order (leftmost child first)
-struct ReverseOrderPolicy {
-    static void push_children(std::stack<size_t>& stack, const std::vector<size_t>& children) {
-        for (auto it = children.rbegin(); it != children.rend(); ++it) {
-            stack.push(*it);
-        }
-    }
-};
 
+template <typename TreeType>
+struct IteratorProperties {
+    TreeType* tree_;
+    size_t currentIndex_;
+
+    size_t currentIndex() const {
+        return this->currentIndex_;
+    }
+
+};
 
 // Pre-order traversal policy
 // General PreOrder Traversal with customizable order policy
-template <typename NodeType, typename TreeType, typename OrderPolicy>
-class PreOrderTraversalBase {
+template <typename NodeType, typename TreeType, bool straight>
+class PreOrderTraversalBase : public IteratorProperties<TreeType> {
+
+    std::stack<size_t> nodeStack_;
+
 public:
-    PreOrderTraversalBase(TreeType* tree, size_t startIndex) 
-        : tree_(tree), currentIndex_(-1) {
+    PreOrderTraversalBase(TreeType* tree, size_t startIndex) : IteratorProperties<TreeType>(tree, -1)
+        {
         if (startIndex != static_cast<size_t>(-1)) {
-            nodeStack_.push(startIndex);
+            this->nodeStack_.push(startIndex);
             advance();
         }
     }
 
     void advance() {
-        if (nodeStack_.empty()) {
-            currentIndex_ = static_cast<size_t>(-1);
+        if (this->nodeStack_.empty()) {
+            this->currentIndex_ = static_cast<size_t>(-1);
             return;
         }
 
-        currentIndex_ = nodeStack_.top();
-        nodeStack_.pop();
+        this->currentIndex_ = this->nodeStack_.top();
+        this->nodeStack_.pop();
 
-        const auto& children = tree_->nodes.at(currentIndex_).childIndices_;
-        OrderPolicy::push_children(nodeStack_, children);
+        OrderPolicy<TreeType, std::stack, straight>::push_children(*this->tree_, this->nodeStack_, this->currentIndex_);
     }
 
-    size_t currentIndex() const {
-        return currentIndex_;
+};
+
+// Level-order traversal policy
+template <typename NodeType, typename TreeType>
+class LevelOrderTraversal : public IteratorProperties<TreeType> {
+
+    std::queue<size_t> nodeQueue_;
+
+public:
+
+    LevelOrderTraversal(TreeType* tree, size_t startIndex) : IteratorProperties<TreeType>(tree, -1) {
+        if (startIndex != -1) {
+            this->nodeQueue_.push(startIndex);
+            advance();
+        }
     }
 
-private:
-    TreeType* tree_;
-    std::stack<size_t> nodeStack_;
-    size_t currentIndex_;
+    void advance() {
+        if (this->nodeQueue_.empty()) {
+            this->currentIndex_ = -1;
+            return;
+        }
+
+        this->currentIndex_ = nodeQueue_.front();
+        this->nodeQueue_.pop();
+
+        OrderPolicy<TreeType, std::queue, true>::push_children(*this->tree_, this->nodeQueue_, this->currentIndex_);
+    }
 };
 
 // Type alias for standard Pre-Order Traversal (leftmost child first)
 template <typename NodeType, typename TreeType>
-using PreOrderTraversal = PreOrderTraversalBase<NodeType, TreeType, ReverseOrderPolicy>;
+using PreOrderTraversal = PreOrderTraversalBase<NodeType, TreeType, false>;
 
 // Type alias for Reverse Pre-Order Traversal (rightmost child first)
 template <typename NodeType, typename TreeType>
-using ReversePreOrderTraversal = PreOrderTraversalBase<NodeType, TreeType, NormalOrderPolicy>;
+using ReversePreOrderTraversal = PreOrderTraversalBase<NodeType, TreeType, true>;
 
 
 // Post-order traversal policy
 template <typename NodeType, typename TreeType>
-class PostOrderTraversal {
+class PostOrderTraversal : public IteratorProperties<TreeType> {
+
+    std::stack<size_t> nodeStack_;
+
 public:
 
-    PostOrderTraversal(TreeType* tree, size_t startIndex)
-        : tree_(tree) {
+    PostOrderTraversal(TreeType* tree, size_t startIndex) : IteratorProperties<TreeType>(tree, -1) {
         if (startIndex != -1) {
             traverseToLeftmostLeaf(startIndex);
             advance();
-        } else {
-            currentIndex_ = -1;
         }
     }
 
     void advance() {
-        if (nodeStack_.empty()) {
-            currentIndex_ = -1;
+        if (this->nodeStack_.empty()) {
+            this->currentIndex_ = -1;
             return;
         }
 
-        currentIndex_ = nodeStack_.top();
-        nodeStack_.pop();
+        this->currentIndex_ = this->nodeStack_.top();
+        this->nodeStack_.pop();
 
-        if (!nodeStack_.empty()) {
-            size_t parentIndex = nodeStack_.top();
-            const auto& siblings = tree_->nodes.at(parentIndex).childIndices_;
-            auto it = std::find(siblings.begin(), siblings.end(), currentIndex_);
+        if (!this->nodeStack_.empty()) {
+            size_t parentIndex = this->nodeStack_.top();
+            const auto& siblings = this->tree_->nodes.at(parentIndex).childIndices_;
+            auto it = std::find(siblings.begin(), siblings.end(), this->currentIndex_);
             if (it != siblings.end() && ++it != siblings.end()) {
                 // There is a next sibling
                 traverseToLeftmostLeaf(*it);
@@ -119,15 +148,11 @@ public:
         }
     }
 
-    size_t currentIndex() const {
-        return currentIndex_;
-    }
-
 private:
     void traverseToLeftmostLeaf(size_t index) {
         while (true) {
-            nodeStack_.push(index);
-            const auto& children = tree_->nodes.at(index).childIndices_;
+            this->nodeStack_.push(index);
+            const auto& children = this->tree_->nodes.at(index).childIndices_;
             if (!children.empty()) {
                 index = children.front(); // Leftmost child
             } else {
@@ -135,51 +160,9 @@ private:
             }
         }
     }
-
-    TreeType* tree_;
-    std::stack<size_t> nodeStack_;
-    size_t currentIndex_;
 };
 
-// Level-order traversal policy
-template <typename NodeType, typename TreeType>
-class LevelOrderTraversal {
-public:
 
-    LevelOrderTraversal(TreeType* tree, size_t startIndex)
-        : tree_(tree) {
-        if (startIndex != -1) {
-            nodeQueue_.push(startIndex);
-            advance();
-        } else {
-            currentIndex_ = -1;
-        }
-    }
-
-    void advance() {
-        if (nodeQueue_.empty()) {
-            currentIndex_ = -1;
-            return;
-        }
-
-        currentIndex_ = nodeQueue_.front();
-        nodeQueue_.pop();
-
-        const auto& children = tree_->nodes.at(currentIndex_).childIndices_;
-        for (const auto& childIndex : children) {
-            nodeQueue_.push(childIndex);
-        }
-    }
-
-    size_t currentIndex() const {
-        return currentIndex_;
-    }
-
-private:
-    TreeType* tree_;
-    std::queue<size_t> nodeQueue_;
-    size_t currentIndex_;
-};
 
 // *** Iterator Class Template ***
 

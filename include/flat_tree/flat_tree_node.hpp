@@ -36,6 +36,9 @@ template <typename T>
 class FlatTreeNode {
     friend FlatTree<T>;
 
+    template <typename TreeType, template <typename...> class Container, bool straight>
+    friend struct OrderPolicy;
+
     // Grant friendship to all instantiations of FlatTreeIterator
     template <typename NodeType, typename TreeType, typename TraversalPolicy>
     friend class FlatTreeIterator;
@@ -46,7 +49,7 @@ class FlatTreeNode {
     template <typename NodeType, typename TreeType>
     friend class LevelOrderTraversal;
 
-    template <typename NodeType, typename TreeType, typename OrderPolicy>
+    template <typename NodeType, typename TreeType, bool straight>
     friend class PreOrderTraversalBase;
 
 private:
