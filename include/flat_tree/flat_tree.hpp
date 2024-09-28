@@ -3,6 +3,7 @@
 
 #include "flat_tree_node.hpp"
 #include "flat_tree_iterator.hpp"
+#include "preorder_iterator.hpp"
 #include <vector>
 #include <iostream>
 #include <stdexcept>
@@ -22,35 +23,29 @@ namespace vpr {
 template <typename T>
 class FlatTree {
 
-    template <typename TreeType, template <typename...> class Container, bool straight>
-    friend struct OrderPolicy;
-
-    // Grant friendship to all instantiations of FlatTreeIterator
     template <typename NodeType, typename TreeType, typename TraversalPolicy>
     friend class FlatTreeIterator;
 
     template <typename NodeType, typename TreeType>
     friend class PostOrderTraversal;
 
-    template <typename NodeType, typename TreeType>
-    friend class LevelOrderTraversal;
+    friend class ReversePush;
+    friend class StraightPush;
 
-    template <typename NodeType, typename TreeType, bool straight>
-    friend class PreOrderTraversalBase;
-
-public:
     // Type aliases for traversal policies
-    using PreOrderTraversalType = PreOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
-    using ConstPreOrderTraversalType = PreOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+    using PreOrderTraversalType = PreOrderTraversal<FlatTree<T>>;
+    using ConstPreOrderTraversalType = PreOrderTraversal<const FlatTree<T>>;
 
     using PostOrderTraversalType = PostOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
     using ConstPostOrderTraversalType = PostOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
 
-    using LevelOrderTraversalType = LevelOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
-    using ConstLevelOrderTraversalType = LevelOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+    using LevelOrderTraversalType = LevelOrderTraversal<FlatTree<T>>;
+    using ConstLevelOrderTraversalType = LevelOrderTraversal<const FlatTree<T>>;
 
-    using ReversePreOrderTraversalType = ReversePreOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
-    using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+    using ReversePreOrderTraversalType = ReversePreOrderTraversal<FlatTree<T>>;
+    using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const FlatTree<T>>;
+
+public:
 
     /**
      * @brief Constructs a FlatTree with an optional root value and initial capacity.
