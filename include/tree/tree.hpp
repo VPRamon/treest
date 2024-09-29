@@ -2,8 +2,9 @@
 #define TREE_HPP
 
 #include "tree_node.hpp"
-#include "tree_iterator.hpp"
+#include "postorder_iterator.hpp"
 #include "preorder_iterator.hpp"
+#include "bfs_iterator.hpp"
 #include <vector>
 #include <iostream>
 #include <stdexcept>
@@ -39,8 +40,8 @@ class Tree {
     using PostOrderTraversalType = PostOrderTraversal<TreeNode<T>, Tree<T>>;
     using ConstPostOrderTraversalType = PostOrderTraversal<const TreeNode<T>, const Tree<T>>;
 
-    using LevelOrderTraversalType = LevelOrderTraversal<Tree<T>>;
-    using ConstLevelOrderTraversalType = LevelOrderTraversal<const Tree<T>>;
+    using BFSTraversalType = BFSTraversal<Tree<T>>;
+    using ConstBFSTraversalType = BFSTraversal<const Tree<T>>;
 
     using ReversePreOrderTraversalType = ReversePreOrderTraversal<Tree<T>>;
     using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const Tree<T>>;
@@ -219,10 +220,10 @@ public:
     auto post_order_begin() const { return TraversalIterator<ConstPostOrderTraversalType, false>(); }
     auto post_order_end()   const { return TraversalIterator<ConstPostOrderTraversalType, true>(); }
 
-    auto bfs_begin() { return TraversalIterator<LevelOrderTraversalType, false>(); }
-    auto bfs_end()   { return TraversalIterator<LevelOrderTraversalType, true>(); }
-    auto bfs_begin() const { return TraversalIterator<ConstLevelOrderTraversalType, false>(); }
-    auto bfs_end()   const { return TraversalIterator<ConstLevelOrderTraversalType, true>(); }
+    auto bfs_begin() { return TraversalIterator<BFSTraversalType, false>(); }
+    auto bfs_end()   { return TraversalIterator<BFSTraversalType, true>(); }
+    auto bfs_begin() const { return TraversalIterator<ConstBFSTraversalType, false>(); }
+    auto bfs_end()   const { return TraversalIterator<ConstBFSTraversalType, true>(); }
 
     auto pre_order_rbegin() { return TraversalIterator<ReversePreOrderTraversalType, false>(); }
     auto pre_order_rend()   { return TraversalIterator<ReversePreOrderTraversalType, true>(); }

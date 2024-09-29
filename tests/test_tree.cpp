@@ -9,114 +9,28 @@
 #include <algorithm>
 #include <stdexcept>
 
-//         0
-//       /   \
-//      1     2
-//     / \   / \
-//    3   4 5   6
+#include "test_fixture.hpp"
 
-#define INORDER std::vector<std::string> {"3", "1", "4", "0", "5", "2", "6" }
-#define PREORDER std::vector<std::string> {"0", "1", "3", "4", "2", "5", "6" }
-#define R_PREORDER std::vector<std::string> { "0", "2", "6", "5", "1", "4", "3" }
-#define POSTORDER std::vector<std::string> {"3", "4", "1", "5", "6", "2", "0" }
-#define BFS std::vector<std::string> {"0", "1", "2", "3", "4", "5", "6" }
-#define DFS PREORDER
+class TreeTest : public TestFixture { };
 
-class TreeTestFixture : public ::testing::Test {
-protected:
-    vpr::Tree<std::string> tree;
-
-    virtual void SetUp() override {
-        // Set up a common tree structure for all tests
-        tree = vpr::Tree<std::string>("0");
-
-        size_t child1 = tree.getRoot().addChild("1");
-        size_t child2 = tree.getRoot().addChild("2");
-
-        tree.getNode(child1).addChild("3");
-        tree.getNode(child1).addChild("4");
-
-        tree.getNode(child2).addChild("5");
-        tree.getNode(child2).addChild("6");
-    }
-};
-
-
-TEST_F(TreeTestFixture, TestTreeInitialization) {
+TEST_F(TreeTest, TestTreeInitialization) {
     EXPECT_EQ(tree.size(), 7); // Root + 3 children + 5 grandchildren + initial reserve
     EXPECT_EQ(tree.getRoot().value.value(), "0");
 }
 
-TEST_F(TreeTestFixture, TestAddChild) {
+TEST_F(TreeTest, TestAddChild) {
     size_t newChild = tree.getRoot().addChild("7");
     EXPECT_EQ(tree.size(), 8);
     EXPECT_EQ(tree.getNode(newChild).value.value(), "7");
 }
 
-TEST_F(TreeTestFixture, TestGetNode) {
+TEST_F(TreeTest, TestGetNode) {
     EXPECT_EQ(tree.getNode(0).value.value(), "0");
     EXPECT_THROW(tree.getNode(-1), std::out_of_range);
     EXPECT_THROW(tree.getNode(100), std::out_of_range);
 }
 
-TEST_F(TreeTestFixture, TestIteratorPreOrderTraversal) {
-    std::vector<std::string> expected = PREORDER;
-    std::vector<std::string> result;
-
-    for (auto it = tree.pre_order_begin(); it != tree.pre_order_end(); ++it) {
-        result.push_back(it->value.value());
-    }
-
-    EXPECT_EQ(result, expected);
-}
-
-TEST_F(TreeTestFixture, TestIteratorPostOrderTraversal) {
-    std::vector<std::string> expected = POSTORDER;
-    std::vector<std::string> result;
-
-    for (auto it = tree.post_order_begin(); it != tree.post_order_end(); ++it) {
-        result.push_back(it->value.value());
-    }
-
-    EXPECT_EQ(result, expected);
-}
-
-TEST_F(TreeTestFixture, TestIteratorLevelOrderTraversal) {
-    std::vector<std::string> expected = BFS;
-    std::vector<std::string> result;
-
-    for (auto it = tree.bfs_begin(); it != tree.bfs_end(); ++it) {
-        result.push_back(it->value.value());
-    }
-
-    EXPECT_EQ(result, expected);
-}
-
-TEST_F(TreeTestFixture, TestReversePreOrderTraversal) {
-    std::vector<std::string> expected = R_PREORDER;
-
-    std::vector<std::string> result;
-
-    for (auto it = tree.pre_order_rbegin(); it != tree.pre_order_rend(); ++it) {
-        result.push_back(it->value.value());
-    }
-
-    EXPECT_EQ(result, expected);
-}
-
-TEST_F(TreeTestFixture, TestConstIterator) {
-    const auto& constTree = tree;
-    std::vector<std::string> expected = PREORDER;
-    std::vector<std::string> result;
-
-    for (auto it = constTree.pre_order_begin(); it != constTree.pre_order_end(); ++it) {
-        result.push_back(it->value.value());
-    }
-
-    EXPECT_EQ(result, expected);
-}
-
-TEST_F(TreeTestFixture, TestNodeProperties) {
+TEST_F(TreeTest, TestNodeProperties) {
     auto& root = tree.getRoot();
     EXPECT_TRUE(root.isRoot());
     EXPECT_FALSE(root.isLeaf());
@@ -133,7 +47,7 @@ TEST_F(TreeTestFixture, TestNodeProperties) {
     EXPECT_EQ(grandchild1.nChildren(), 0);
 }
 
-TEST_F(TreeTestFixture, TestGetChildren) {
+TEST_F(TreeTest, TestGetChildren) {
     auto& child1 = tree.getNode(1);
     auto children = child1.getChildren();
     EXPECT_EQ(children.size(), 2);
@@ -141,14 +55,14 @@ TEST_F(TreeTestFixture, TestGetChildren) {
     EXPECT_EQ(children[1].get().value.value(), "4");
 }
 
-TEST_F(TreeTestFixture, TestExceptionSafety) {
+TEST_F(TreeTest, TestExceptionSafety) {
     EXPECT_THROW(tree.getNode(-1), std::out_of_range);
     EXPECT_THROW(tree.getNode(100), std::out_of_range);
     EXPECT_THROW(tree.getRoot().getChild(-1), std::out_of_range);
     EXPECT_THROW(tree.getRoot().getChild(100), std::out_of_range);
 }
 
-TEST_F(TreeTestFixture, TestOperatorOverloading) {
+TEST_F(TreeTest, TestOperatorOverloading) {
     std::stringstream ss;
     ss << tree;
     std::string output = ss.str();
@@ -156,7 +70,7 @@ TEST_F(TreeTestFixture, TestOperatorOverloading) {
     EXPECT_NE(output.find("0"), std::string::npos);
 }
 
-TEST_F(TreeTestFixture, TestVariantNode) {
+TEST_F(TreeTest, TestVariantNode) {
     vpr::TreeVariant<int, std::string> variantTree(42);
     auto& root = variantTree.getRoot();
     EXPECT_TRUE(root.value.has_value());
@@ -167,18 +81,5 @@ TEST_F(TreeTestFixture, TestVariantNode) {
     EXPECT_TRUE(std::holds_alternative<int>(variantTree.getNode(child2).value.value()));
     EXPECT_TRUE(std::holds_alternative<std::string>(variantTree.getNode(child1).value.value()));
 }
-
-TEST_F(TreeTestFixture, TestIteratorStandardAlgorithms) {
-    auto it = std::find_if(
-        tree.pre_order_begin(), tree.pre_order_end(),
-        [](const vpr::TreeNode<std::string>& node) {
-            return node.value.value() == "6";
-        }
-    );
-
-    EXPECT_NE(it, tree.pre_order_end());
-    EXPECT_EQ(it->value.value(), "6");
-}
-
 
 #endif // TREE_TEST_HPP
