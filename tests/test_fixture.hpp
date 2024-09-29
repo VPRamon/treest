@@ -2,12 +2,8 @@
 #define TEST_FIXTURE_HPP
 
 #include "tree.hpp"
-#include "tree_variant.hpp"
 #include <gtest/gtest.h>
 #include <string>
-#include <vector>
-#include <algorithm>
-#include <stdexcept>
 
 //         0
 //       /   \

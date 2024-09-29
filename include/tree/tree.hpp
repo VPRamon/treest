@@ -42,6 +42,8 @@ class Tree {
 
     using BFSTraversalType = BFSTraversal<Tree<T>>;
     using ConstBFSTraversalType = BFSTraversal<const Tree<T>>;
+    using ReverseBFSTraversalType = ReverseBFSTraversal<Tree<T>>;
+    using ConstReverseBFSTraversalType = ReverseBFSTraversal<const Tree<T>>;
 
     using ReversePreOrderTraversalType = ReversePreOrderTraversal<Tree<T>>;
     using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const Tree<T>>;
@@ -224,6 +226,11 @@ public:
     auto bfs_end()   { return TraversalIterator<BFSTraversalType, true>(); }
     auto bfs_begin() const { return TraversalIterator<ConstBFSTraversalType, false>(); }
     auto bfs_end()   const { return TraversalIterator<ConstBFSTraversalType, true>(); }
+
+    auto bfs_rbegin() { return TraversalIterator<ReverseBFSTraversalType, false>(); }
+    auto bfs_rend()   { return TraversalIterator<ReverseBFSTraversalType, true>(); }
+    auto bfs_rbegin() const { return TraversalIterator<ConstReverseBFSTraversalType, false>(); }
+    auto bfs_rend()   const { return TraversalIterator<ConstReverseBFSTraversalType, true>(); }
 
     auto pre_order_rbegin() { return TraversalIterator<ReversePreOrderTraversalType, false>(); }
     auto pre_order_rend()   { return TraversalIterator<ReversePreOrderTraversalType, true>(); }

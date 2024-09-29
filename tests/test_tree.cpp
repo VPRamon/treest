@@ -1,15 +1,9 @@
 #ifndef TREE_TEST_HPP
 #define TREE_TEST_HPP
 
-#include "tree.hpp"
-#include "tree_variant.hpp"
-#include <gtest/gtest.h>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <stdexcept>
-
 #include "test_fixture.hpp"
+
+#include "tree_variant.hpp"
 
 class TreeTest : public TestFixture { };
 

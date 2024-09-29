@@ -34,8 +34,8 @@ namespace vpr {
 template <typename TreeType>
 using BFSTraversal = GeneralTraversal<TreeType, std::queue<size_t>, StraightPush>;
 
-//template <typename TreeType>
-//using ReverseBFSTraversal = GeneralTraversal<TreeType, std::queue<size_t>, ReversePush>;
+template <typename TreeType>
+using ReverseBFSTraversal = GeneralTraversal<TreeType, std::queue<size_t>, ReversePush>;
 
 } // namespace vpr
 
