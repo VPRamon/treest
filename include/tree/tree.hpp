@@ -1,8 +1,8 @@
-#ifndef FLAT_TREE_HPP
-#define FLAT_TREE_HPP
+#ifndef TREE_HPP
+#define TREE_HPP
 
-#include "flat_tree_node.hpp"
-#include "flat_tree_iterator.hpp"
+#include "tree_node.hpp"
+#include "tree_iterator.hpp"
 #include "preorder_iterator.hpp"
 #include <vector>
 #include <iostream>
@@ -13,18 +13,18 @@
 namespace vpr {
 
 /**
- * @brief Represents a flat tree structure using a vector to store nodes.
+ * @brief Represents a tree structure using a vector to store nodes.
  *
- * The FlatTree class manages a collection of nodes stored in a flat vector,
+ * The Tree class manages a collection of nodes stored in a vector,
  * allowing efficient traversal and manipulation of the tree structure.
  *
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class FlatTree {
+class Tree {
 
     template <typename NodeType, typename TreeType, typename TraversalPolicy>
-    friend class FlatTreeIterator;
+    friend class TreeIterator;
 
     template <typename NodeType, typename TreeType>
     friend class PostOrderTraversal;
@@ -33,27 +33,27 @@ class FlatTree {
     friend class StraightPush;
 
     // Type aliases for traversal policies
-    using PreOrderTraversalType = PreOrderTraversal<FlatTree<T>>;
-    using ConstPreOrderTraversalType = PreOrderTraversal<const FlatTree<T>>;
+    using PreOrderTraversalType = PreOrderTraversal<Tree<T>>;
+    using ConstPreOrderTraversalType = PreOrderTraversal<const Tree<T>>;
 
-    using PostOrderTraversalType = PostOrderTraversal<FlatTreeNode<T>, FlatTree<T>>;
-    using ConstPostOrderTraversalType = PostOrderTraversal<const FlatTreeNode<T>, const FlatTree<T>>;
+    using PostOrderTraversalType = PostOrderTraversal<TreeNode<T>, Tree<T>>;
+    using ConstPostOrderTraversalType = PostOrderTraversal<const TreeNode<T>, const Tree<T>>;
 
-    using LevelOrderTraversalType = LevelOrderTraversal<FlatTree<T>>;
-    using ConstLevelOrderTraversalType = LevelOrderTraversal<const FlatTree<T>>;
+    using LevelOrderTraversalType = LevelOrderTraversal<Tree<T>>;
+    using ConstLevelOrderTraversalType = LevelOrderTraversal<const Tree<T>>;
 
-    using ReversePreOrderTraversalType = ReversePreOrderTraversal<FlatTree<T>>;
-    using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const FlatTree<T>>;
+    using ReversePreOrderTraversalType = ReversePreOrderTraversal<Tree<T>>;
+    using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const Tree<T>>;
 
 public:
 
     /**
-     * @brief Constructs a FlatTree with an optional root value and initial capacity.
+     * @brief Constructs a Tree with an optional root value and initial capacity.
      *
      * @param value Optional value for the root node. Defaults to `std::nullopt`.
      * @param initialCapacity Initial capacity for the nodes vector. Defaults to 16.
      */
-    explicit FlatTree(std::optional<T> value = std::nullopt, size_t initialCapacity = 16) {
+    explicit Tree(std::optional<T> value = std::nullopt, size_t initialCapacity = 16) {
         nodes.reserve(initialCapacity);
         nodes.emplace_back(std::move(value), static_cast<size_t>(-1), 0, this);  // Root node with no parent
     }
@@ -61,20 +61,20 @@ public:
     /**
      * @brief Copy constructor. Performs a deep copy of the tree.
      *
-     * @param other The FlatTree to copy from.
+     * @param other The Tree to copy from.
      */
-    FlatTree(const FlatTree& other) : nodes(other.nodes) {
+    Tree(const Tree& other) : nodes(other.nodes) {
         for (auto& node : nodes) {
             node.tree_ = this;
         }
     }
 
     /**
-     * @brief Move constructor. Transfers ownership of the tree from another FlatTree.
+     * @brief Move constructor. Transfers ownership of the tree from another Tree.
      *
-     * @param other The FlatTree to move from.
+     * @param other The Tree to move from.
      */
-    FlatTree(FlatTree&& other) noexcept : nodes(std::move(other.nodes)) {
+    Tree(Tree&& other) noexcept : nodes(std::move(other.nodes)) {
         for (auto& node : nodes) {
             node.tree_ = this;
         }
@@ -83,10 +83,10 @@ public:
     /**
      * @brief Copy assignment operator. Performs a deep copy of the tree.
      *
-     * @param other The FlatTree to copy from.
-     * @return Reference to the assigned FlatTree.
+     * @param other The Tree to copy from.
+     * @return Reference to the assigned Tree.
      */
-    FlatTree& operator=(const FlatTree& other) {
+    Tree& operator=(const Tree& other) {
         if (this != &other) {
             nodes = other.nodes;
             for (auto& node : nodes) {
@@ -97,12 +97,12 @@ public:
     }
 
     /**
-     * @brief Move assignment operator. Transfers ownership of the tree from another FlatTree.
+     * @brief Move assignment operator. Transfers ownership of the tree from another Tree.
      *
-     * @param other The FlatTree to move from.
-     * @return Reference to the assigned FlatTree.
+     * @param other The Tree to move from.
+     * @return Reference to the assigned Tree.
      */
-    FlatTree& operator=(FlatTree&& other) noexcept {
+    Tree& operator=(Tree&& other) noexcept {
         if (this != &other) {
             nodes = std::move(other.nodes);
             for (auto& node : nodes) {
@@ -138,7 +138,7 @@ public:
      *
      * @throws std::out_of_range if the index is invalid.
      */
-    FlatTreeNode<T>& getNode(size_t index) {
+    TreeNode<T>& getNode(size_t index) {
         return nodes.at(index);  // Using at() for bounds checking
     }
 
@@ -150,7 +150,7 @@ public:
      *
      * @throws std::out_of_range if the index is invalid.
      */
-    const FlatTreeNode<T>& getNode(size_t index) const {
+    const TreeNode<T>& getNode(size_t index) const {
         return nodes.at(index);  // Using at() for bounds checking
     }
 
@@ -161,7 +161,7 @@ public:
      *
      * @throws std::out_of_range if the tree is empty.
      */
-    FlatTreeNode<T>& getRoot() {
+    TreeNode<T>& getRoot() {
         return nodes.at(0);  // Using at() for bounds checking
     }
 
@@ -172,7 +172,7 @@ public:
      *
      * @throws std::out_of_range if the tree is empty.
      */
-    const FlatTreeNode<T>& getRoot() const {
+    const TreeNode<T>& getRoot() const {
         return nodes.at(0);  // Using at() for bounds checking
     }
 
@@ -233,10 +233,10 @@ public:
      * @brief Overloads the output stream operator to print the tree nodes.
      *
      * @param os The output stream.
-     * @param tree The FlatTree to print.
+     * @param tree The Tree to print.
      * @return Reference to the output stream.
      */
-    friend std::ostream& operator<<(std::ostream& os, const FlatTree<T>& tree) {
+    friend std::ostream& operator<<(std::ostream& os, const Tree<T>& tree) {
         for (const auto& node : tree.nodes) {
             os << node << " ";
         }
@@ -244,7 +244,7 @@ public:
     }
 
 private:
-    std::vector<FlatTreeNode<T>> nodes;  ///< Flat array to store all nodes
+    std::vector<TreeNode<T>> nodes;  ///<  array to store all nodes
 
     /**
      * @brief Validates that the parent index is within the bounds of the nodes vector.
@@ -267,17 +267,17 @@ private:
      *
      * @tparam Traversal The traversal policy type.
      * @tparam IsEnd `false` to create a begin iterator, `true` to create an end iterator.
-     * @tparam NodeType The type of node (`FlatTreeNode<T>` or `const FlatTreeNode<T>`).
-     * @tparam TreeType The type of tree (`FlatTree<T>` or `const FlatTree<T>`).
+     * @tparam NodeType The type of node (`TreeNode<T>` or `const TreeNode<T>`).
+     * @tparam TreeType The type of tree (`Tree<T>` or `const Tree<T>`).
      *
-     * @return A FlatTreeIterator configured for the specified traversal.
+     * @return A TreeIterator configured for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = FlatTreeNode<T>, typename TreeType = FlatTree<T>>
-    FlatTreeIterator<NodeType, TreeType, Traversal> TraversalIterator() {
+    template <typename Traversal, bool IsEnd, typename NodeType = TreeNode<T>, typename TreeType = Tree<T>>
+    TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() {
         if constexpr (IsEnd) {
-            return FlatTreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
+            return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
         } else {
-            return FlatTreeIterator<NodeType, TreeType, Traversal>(this, nodes.empty() ? static_cast<size_t>(-1) : 0);
+            return TreeIterator<NodeType, TreeType, Traversal>(this, nodes.empty() ? static_cast<size_t>(-1) : 0);
         }
     }
 
@@ -288,21 +288,21 @@ private:
      *
      * @tparam Traversal The traversal policy type.
      * @tparam IsEnd `false` to create a begin iterator, `true` to create an end iterator.
-     * @tparam NodeType The type of node (`const FlatTreeNode<T>`).
-     * @tparam TreeType The type of tree (`const FlatTree<T>`).
+     * @tparam NodeType The type of node (`const TreeNode<T>`).
+     * @tparam TreeType The type of tree (`const Tree<T>`).
      *
-     * @return A FlatTreeIterator configured for the specified traversal.
+     * @return A TreeIterator configured for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = const FlatTreeNode<T>, typename TreeType = const FlatTree<T>>
-    FlatTreeIterator<NodeType, TreeType, Traversal> TraversalIterator() const {
+    template <typename Traversal, bool IsEnd, typename NodeType = const TreeNode<T>, typename TreeType = const Tree<T>>
+    TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() const {
         if constexpr (IsEnd) {
-            return FlatTreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
+            return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
         } else {
-            return FlatTreeIterator<NodeType, TreeType, Traversal>(this, nodes.empty() ? static_cast<size_t>(-1) : 0);
+            return TreeIterator<NodeType, TreeType, Traversal>(this, nodes.empty() ? static_cast<size_t>(-1) : 0);
         }
     }
 };
 
 } // namespace vpr
 
-#endif // FLAT_TREE_HPP
+#endif // TREE_HPP

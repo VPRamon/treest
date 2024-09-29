@@ -1,5 +1,5 @@
-#ifndef FLAT_TREE_ITERATOR_HPP
-#define FLAT_TREE_ITERATOR_HPP
+#ifndef TREE_ITERATOR_HPP
+#define TREE_ITERATOR_HPP
 
 #include <iterator>
 #include <stack>
@@ -12,10 +12,10 @@ namespace vpr {
 
 // Forward declarations
 template <typename T>
-class FlatTree;
+class Tree;
 
 template <typename T>
-class FlatTreeNode;
+class TreeNode;
 
 // *** Iterator Properties ***
 
@@ -82,13 +82,13 @@ private:
 // *** Iterator Class Template ***
 
 template <typename NodeType, typename TreeType, typename TraversalPolicy>
-class FlatTreeIterator {
+class TreeIterator {
 public:
     using iterator_category = std::forward_iterator_tag;
     using value_type = NodeType;
     using difference_type = std::ptrdiff_t;
 
-    FlatTreeIterator(TreeType* tree, size_t startIndex = 0)
+    TreeIterator(TreeType* tree, size_t startIndex = 0)
         : traversalPolicy_(tree, startIndex), tree_(tree) {}
 
     auto operator*() const {
@@ -99,22 +99,22 @@ public:
         return &tree_->nodes.at(traversalPolicy_.currentIndex());
     }
 
-    FlatTreeIterator& operator++() {
+    TreeIterator& operator++() {
         traversalPolicy_.advance();
         return *this;
     }
 
-    FlatTreeIterator operator++(int) {
-        FlatTreeIterator tmp = *this;
+    TreeIterator operator++(int) {
+        TreeIterator tmp = *this;
         traversalPolicy_.advance();
         return tmp;
     }
 
-    bool operator==(const FlatTreeIterator& other) const {
+    bool operator==(const TreeIterator& other) const {
         return traversalPolicy_.currentIndex() == other.traversalPolicy_.currentIndex();
     }
 
-    bool operator!=(const FlatTreeIterator& other) const {
+    bool operator!=(const TreeIterator& other) const {
         return !(*this == other);
     }
 
@@ -125,4 +125,4 @@ private:
 
 } // namespace vpr
 
-#endif // FLAT_TREE_ITERATOR_HPP
+#endif // TREE_ITERATOR_HPP

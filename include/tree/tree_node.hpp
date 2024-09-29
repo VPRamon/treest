@@ -1,5 +1,5 @@
-#ifndef FLAT_TREE_NODE_HPP
-#define FLAT_TREE_NODE_HPP
+#ifndef TREE_NODE_HPP
+#define TREE_NODE_HPP
 
 #include <optional>
 #include <vector>
@@ -10,16 +10,16 @@
 namespace vpr {
 
 template <typename T>
-class FlatTree;
+class Tree;
 
 template <typename NodeType, typename TreeType>
 class PostOrderTraversal;
 
 template <typename NodeType, typename TreeType, typename TraversalPolicy>
-class FlatTreeIterator;
+class TreeIterator;
 
 template <typename T>
-class FlatTreeNode {
+class TreeNode {
 
     template <typename NodeType, typename TreeType>
     friend class PostOrderTraversal;
@@ -27,26 +27,22 @@ class FlatTreeNode {
     friend class ReversePush;
     friend class StraightPush;
 
-    friend FlatTree<T>;
+    friend Tree<T>;
 
 private:
     size_t index_;                         // Index of the self node
     size_t parentIndex_;                   // Index of the parent node (-1 for the root)
     std::vector<size_t> childIndices_;     // Indices of the children nodes
-    FlatTree<T>* tree_;
+    Tree<T>* tree_;
 
 public:
     std::optional<T> value;                // Optional value for the node
 
-    FlatTreeNode() 
-        : value(std::nullopt), parentIndex_(0), index_(0), tree_(nullptr), childIndices_()
-    {}
-
-    FlatTreeNode(std::optional<T> v, size_t parentIdx = 0, size_t index = 0, FlatTree<T>* tree = nullptr)
+    TreeNode(std::optional<T> v, size_t parentIdx = 0, size_t index = 0, Tree<T>* tree = nullptr)
         : value(v), parentIndex_(parentIdx), index_(index), tree_(tree), childIndices_()
     {}
 
-    friend std::ostream& operator<<(std::ostream& os, const FlatTreeNode<T>& node) {
+    friend std::ostream& operator<<(std::ostream& os, const TreeNode<T>& node) {
         if (node.value.has_value()) {
             if constexpr (is_variant<T>::value) {
                 // Handle std::variant by visiting the current value
@@ -70,25 +66,25 @@ public:
     size_t index() const { return index_; }
     size_t parentIndex() const { return parentIndex_; }
 
-    const FlatTree<T>* tree() const { return tree_; }
+    const Tree<T>* tree() const { return tree_; }
 
     size_t addChild(std::optional<T> value = std::nullopt) {
         return tree_->addChild(index_, value);
     }
 
-    FlatTreeNode<T>& getChild(size_t index) {
+    TreeNode<T>& getChild(size_t index) {
         if (index >= childIndices_.size()) {
             throw std::out_of_range("Invalid child index.");
         }
         return tree_->getNode(childIndices_.at(index));
     }
 
-    std::vector<std::reference_wrapper<FlatTreeNode<T>>> getChildren() {
-        return getChildrenImpl<FlatTreeNode<T>>();
+    std::vector<std::reference_wrapper<TreeNode<T>>> getChildren() {
+        return getChildrenImpl<TreeNode<T>>();
     }
 
-    std::vector<std::reference_wrapper<const FlatTreeNode<T>>> getChildren() const {
-        return getChildrenImpl<const FlatTreeNode<T>>();
+    std::vector<std::reference_wrapper<const TreeNode<T>>> getChildren() const {
+        return getChildrenImpl<const TreeNode<T>>();
     }
 
 private:
@@ -105,4 +101,4 @@ private:
 
 } // namespace vpr
 
-#endif // FLAT_TREE_NODE_HPP
+#endif // TREE_NODE_HPP

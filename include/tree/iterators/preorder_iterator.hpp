@@ -12,10 +12,10 @@ namespace vpr {
 
 // Forward declarations
 template <typename T>
-class FlatTree;
+class Tree;
 
 template <typename T>
-class FlatTreeNode;
+class TreeNode;
 
 // Pre-order push children (leftmost child first)
 struct ReversePush {
@@ -97,4 +97,4 @@ using LevelOrderTraversal = GeneralTraversal<TreeType, std::queue<size_t>, Strai
 
 } // namespace vpr
 
-#endif // FLAT_TREE_ITERATOR_HPP
+#endif // PREORDER_ITERATOR_HPP
