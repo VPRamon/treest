@@ -1,12 +1,11 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include "node.hpp"
+#include "graph_node.hpp"
 #include <vector>
 #include <iostream>
 #include <stdexcept>
 #include <optional>
-#include <stack>
 
 namespace vpr {
 
@@ -21,7 +20,7 @@ namespace vpr {
 template <typename T>
 class Graph {
 
-    friend class Node<T>;
+    friend class GraphNode<T>;
 
 public:
 
@@ -89,92 +88,31 @@ public:
     }
 
     /**
-     * @brief Adds a node and all the connected nodes into the graph.
-     *        The indexes are updated accordingly.
-     *
-     * @param node Node to be pushed into the graph.
-     * @return The index of the newly added node.
-     */
-    size_t push_back(const Node<T>& node) {
-        /*
-        std::set<size_t> visited_nodes{node.index()};
-        std::stack<const Node<T>*> to_visit{&node};
-        while (!to_visit.empty()) {
-            for (auto n : to_visit.top()->getNeighbour()) {
-                if (!visited_nodes.contains(n->index())) {
-                    visited_nodes.insert(n->index());
-                    to_visit.push(&n);
-                }
-            }
-           to_visit.pop();
-        }
-
-
-        size_t base_id = nodes.size();
-        auto getNewId = [&visited_nodes, base_id](size_t id){
-            auto it = visited_nodes.find(id);
-            return base_id + std::distance(visited_nodes.begin(), it) -1;
-        };
-
-        nodes.resize(base_id + visited_nodes.size());
-        for (auto id : visited_nodes) {
-            size_t newId = getNewId(id);
-            Node<T>& NewNode = node[newId];
-            auto n = node.tree->getNode(id);
-            NewNode.value(n.value());
-            for (auto neighbours : n.getNeighbours()) {
-                NewNode.addEdge(neighbours.index());
-            }
-        }
-        return base_id; // FALSE
-        */
-       return 0;
-    }
-
-    template <typename... Args>
-    size_t push_back(Args&&... args) {
-        size_t nodeIndex = nodes.size();
-        nodes.emplace_back(nodeIndex, this, std::forward<Args>(args)...);
-        return nodeIndex;
-    }
-
-    /**
-     * @brief Adds a node with no edges.
+     * @brief Adds a node to the graph with an optional value.
      *
      * @param value Optional value for the node. Defaults to `std::nullopt`.
      * @return The index of the newly added node.
      */
-    size_t addChild(std::optional<T> value = std::nullopt) {
-        size_t index = nodes.size();
-        nodes.emplace_back(index, this, std::move(value));
-        return index;
-    }
-
-    /**
-     * @brief Creates a node in the graph.
-     *
-     * @param args Arguments needed to create an object of type T.
-     * @return The index of the newly added node.
-     */
-    template <typename... Args>
-    size_t emplace_back(Args&&... args) {
+    size_t addNode(std::optional<T> value = std::nullopt) {
         size_t nodeIndex = nodes.size();
-        nodes.emplace_back(nodeIndex, this, std::forward<Args>(args)...);
+        nodes.emplace_back(std::move(value), nodeIndex, this);
         return nodeIndex;
     }
-
 
     /**
      * @brief Adds a directed edge from one node to another.
      *
-     * @param from The index of the source node.
-     * @param to The index of the target node.
+     * @param fromIndex The index of the source node.
+     * @param toIndex The index of the target node.
      *
      * @throws std::out_of_range if either index is invalid.
      */
-    void addEdge(size_t from, size_t to) {
-        validateIndex(to);
-        nodes.at(from).addEdge(to);
+    void addEdge(size_t fromIndex, size_t toIndex) {
+        validateNodeIndex(fromIndex);
+        validateNodeIndex(toIndex);
+
+        nodes[fromIndex].addOutgoingEdge(toIndex);
+        nodes[toIndex].addIncomingEdge(fromIndex);
     }
 
     /**
@@ -185,7 +123,7 @@ public:
      *
      * @throws std::out_of_range if the index is invalid.
      */
-    Node<T>& getNode(size_t index) {
+    GraphNode<T>& getNode(size_t index) {
         return nodes.at(index);  // Using at() for bounds checking
     }
 
@@ -197,8 +135,8 @@ public:
      *
      * @throws std::out_of_range if the index is invalid.
      */
-    const Node<T>& getNode(size_t index) const {
-        return nodes.at(index);
+    const GraphNode<T>& getNode(size_t index) const {
+        return nodes.at(index);  // Using at() for bounds checking
     }
 
     /**
@@ -236,7 +174,7 @@ public:
     }
 
 private:
-    std::vector<Node<T>> nodes;  ///<  vector to store all nodes
+    std::vector<GraphNode<T>> nodes;  ///<  vector to store all nodes
 
     /**
      * @brief Validates that the parent index is within the bounds of the nodes vector.
@@ -245,9 +183,9 @@ private:
      *
      * @throws std::out_of_range if the parentIndex is invalid.
      */
-    inline void validateIndex(size_t index) const {
-        if (index >= nodes.size()) {
-            throw std::out_of_range("Invalid node index.");
+    inline void validateNodeIndex(size_t parentIndex) const {
+        if (parentIndex >= nodes.size()) {
+            throw std::out_of_range("Invalid parent index.");
         }
     }
 
