@@ -1,7 +1,7 @@
 add_subdirectory(external/googletest)
 
 file(GLOB_RECURSE UNTI_TEST_SOURCES
-    test_node.cpp
+    graph/test_*.cpp
     #test_*.cpp
 )
 
