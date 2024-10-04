@@ -30,7 +30,10 @@ public:
     }
 
     virtual void addEdge(size_t from, size_t to) override {
-        Base::addEdge(from, to);
+        GraphNode<T>& orig = Base::getNode(from);
+        GraphNode<T>& dest = Base::getNode(to);
+        orig.addEdge(to);
+        dest.addEdge(from);
     }
  
 };

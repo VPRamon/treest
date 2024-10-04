@@ -1,78 +1,37 @@
-#ifndef NODE_HPP
-#define NODE_HPP
+#ifndef DIGRAPH_NODE_HPP
+#define DIGRAPH_NODE_HPP
 
-#include <optional>
-#include <vector>
-#include <iostream>
-#include <variant>
-#include <memory>
-#include "type_traits.hpp"
+#include "node_impl.hpp"
 
 namespace vpr {
 
 template <typename T>
-class DigraphNode : public Node {
+class DigraphNode : public NodeImpl<T> {
+    using Base = NodeImpl<T>;
 
-private:
-
-    std::vector<size_t>& out_edges_ = &edges_;
+    std::vector<size_t>& out_edges_;
     std::vector<size_t> in_edges_;
 
 public:
 
-    Node(size_t index, std::optional<T> v = std::nullopt)
-        : index_(index), value_(v), edges_()
+    DigraphNode(size_t index, std::optional<T> v = std::nullopt)
+        : Base(index, v), out_edges_(Base::edges_), in_edges_()
     {}
 
-    template <typename... Args>
-    void emplace(Args&&... args) {
-        value_.emplace(std::forward<Args>(args)...);
-    }
+    const std::vector<size_t>& inEdges()  const { return in_edges_;  }
+    const std::vector<size_t>& outEdges() const { return out_edges_; }
 
-    size_t index() const { return index_; }
+    size_t inDegree() const { return inEdges().size(); }
+    size_t outDegree() const { return outEdges().size(); }
+    size_t totalDegree() const { return inDegree() + outDegree(); }
 
-    const std::vector<size_t>& edges() const { return edges_; }
+    void addInEdge(size_t fromIndex) { in_edges_.push_back(fromIndex); }
+    void addOutEdge(size_t fromIndex) { out_edges_.push_back(fromIndex); }
 
-    bool hasValue() const { return value_.has_value(); }
-
-    T& value() {
-        if (hasValue()) {
-            return *value_;
-        } else {
-            throw std::bad_optional_access();
-        }
-    }
-
-    const T& value() const {
-        if (hasValue()) {
-            return *value_;
-        } else {
-            throw std::bad_optional_access();
-        }
-    }
-
-    T& operator*() { return value(); }
-
-    const T& operator*() const { return value(); }
-
-    T* operator->() { return &(value()); }
-
-    const T* operator->() const { return &(value()); }
-
-    size_t degree() const { return edges_.size(); }
-
-    void addEdge(size_t fromIndex) { edges_.push_back(fromIndex); }
-
-    const std::vector<size_t>& getEdges(size_t index) const { return edges_; }
-
-    bool isolated() const { return edges_.empty(); }
-
-    std::vector<size_t> path(size_t index) const { return {/*TODO*/}; }
-
-private:
+    bool isolated() const { return inEdges().empty() && outEdges().empty(); }
 
 };
 
 } // namespace vpr
 
-#endif // NODE_HPP
+#endif // DIGRAPH_NODE_HPP

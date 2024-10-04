@@ -24,27 +24,11 @@ public:
     bool isLeaf() const { return Base::isolated(); }
 
     size_t nChildren() const { return Base::degree(); }
-    size_t index() const { return Base::index(); }
-    size_t parentId() const { return parent_id_; }
+    size_t parentId()  const { return parent_id_; }
 
-    const auto& getChildren() const {
-        return Base::edges();
-    }
+    const auto& getChildren() const { return Base::edges(); }
 
-    void addChild(size_t child_id) {
-        Base::addEdge(child_id);
-    }
-    
-
-private:
-
-    virtual void addEdge(size_t child_id) override {
-        Base::addEdge(child_id);
-    }
-
-
-
-
+    void addChild(size_t child_id) { Base::addEdge(child_id); }
 
 };
 

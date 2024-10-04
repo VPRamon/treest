@@ -2,7 +2,7 @@
 #define DIGRAPH_HPP
 
 #include "graph_impl.hpp"
-#include "node.hpp"
+#include "digraph_node.hpp"
 
 namespace vpr {
 
@@ -15,8 +15,8 @@ namespace vpr {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Digraph : public GraphImpl<Node<T>> {
-    using Base = GraphImpl<Node<T>>;
+class Digraph : public GraphImpl<DigraphNode<T>> {
+    using Base = GraphImpl<DigraphNode<T>>;
 public:
 
     /**
@@ -30,7 +30,10 @@ public:
     }
 
     virtual void addEdge(size_t from, size_t to) override {
-        Base::addEdge(from, to);
+        DigraphNode<T>& orig = Base::getNode(from);
+        DigraphNode<T>& dest = Base::getNode(to);
+        orig.addOutEdge(to);
+        dest.addInEdge(from);
     }
  
 };
