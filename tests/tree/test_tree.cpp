@@ -76,4 +76,12 @@ TEST_F(TreeTest, TestVariantNode) {
     EXPECT_TRUE(std::holds_alternative<std::string>(variantTree.getNode(child1).value()));
 }
 
+/*
+TEST_F(TreeTest, TestShouldNotCompile) {
+    auto root = tree.getRoot();
+    size_t root_child_id = root.getChildren()[0];
+    tree.addEdge(root_child_id, root.index());
+}
+*/
+
 #endif // TREE_TEST_HPP

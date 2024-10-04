@@ -20,6 +20,8 @@ namespace vpr {
 template <typename Node>
 class GraphImpl {
 
+    std::vector<Node> nodes;  ///<  vector to store all nodes
+
 public:
 
     /**
@@ -100,19 +102,6 @@ public:
     }
 
     /**
-     * @brief Adds a directed edge from one node to another.
-     *
-     * @param from The index of the source node.
-     * @param to The index of the target node.
-     *
-     * @throws std::out_of_range if either index is invalid.
-     */
-    void addEdge(size_t from, size_t to) {
-        validateIndex(to);
-        nodes.at(from).addEdge(to);
-    }
-
-    /**
      * @brief Retrieves a reference to the node at the specified index.
      *
      * @param index The index of the node to retrieve.
@@ -121,7 +110,7 @@ public:
      * @throws std::out_of_range if the index is invalid.
      */
     Node& getNode(size_t index) {
-        return nodes.at(index);  // Using at() for bounds checking
+        return nodes.at(index);
     }
 
     /**
@@ -174,8 +163,23 @@ public:
         return os;
     }
 
+protected:
+
+    /**
+     * @brief Adds a directed edge from one node to another.
+     *
+     * @param from The index of the source node.
+     * @param to The index of the target node.
+     *
+     * @throws std::out_of_range if either index is invalid.
+     */
+    virtual void addEdge(size_t from, size_t to) {
+        validateIndex(to);
+        nodes.at(from).addEdge(to);
+    }
+
+
 private:
-    std::vector<Node> nodes;  ///<  vector to store all nodes
 
     /**
      * @brief Validates that the parent index is within the bounds of the nodes vector.

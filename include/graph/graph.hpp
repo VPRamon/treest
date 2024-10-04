@@ -29,6 +29,10 @@ public:
         return Base::template addNode(value);
     }
 
+    virtual void addEdge(size_t from, size_t to) override {
+        Base::addEdge(from, to);
+    }
+ 
 };
 
 } // namespace vpr
