@@ -48,6 +48,8 @@ public:
     using iterator_category = std::forward_iterator_tag; ///< Iterator category for forward traversal.
     using value_type = NodeType; ///< The type of the values (nodes) being iterated over.
     using difference_type = std::ptrdiff_t; ///< Type used for iterator arithmetic.
+    using pointer = NodeType*;  ///< Pointer to the type the iterator points to.
+    using reference = NodeType&; ///< Reference to the type the iterator points to.
 
     /**
      * @brief Constructs a tree iterator starting at a specific node.
@@ -63,7 +65,7 @@ public:
      * 
      * @return A reference to the current node being iterated over.
      */
-    auto operator*() const {
+    reference operator*() const {
         return tree_->getNode(traversalPolicy_.currentIndex());
     }
 
@@ -72,7 +74,7 @@ public:
      * 
      * @return A pointer to the current node being iterated over.
      */
-    auto operator->() const {
+    pointer operator->() const {
         return &tree_->getNode(traversalPolicy_.currentIndex());
     }
 

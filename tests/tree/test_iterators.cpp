@@ -22,7 +22,8 @@ const std::vector<std::string> IteratorTest::BFS        = std::vector<std::strin
 const std::vector<std::string> IteratorTest::R_BFS      = std::vector<std::string> {"0", "2", "1", "6", "5", "4", "3"};
 const std::vector<std::string> IteratorTest::DFS = PREORDER;
 
-void CHECK_ITERATOR(auto begin, auto end, std::vector<std::string> expected) {
+template <typename T>
+void CHECK_ITERATOR(T begin, T end, std::vector<std::string> expected) {
     std::vector<std::string> result;
 
     for (auto it = begin; it != end; ++it) {
