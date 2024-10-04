@@ -11,23 +11,23 @@ protected:
     // Setup code executed before each test
     void SetUp() override {
         // Initialize with some nodes for use in various tests
-        graph.addChild(1);   // Node 0
-        graph.addChild(2);   // Node 1
-        graph.addChild(3);   // Node 2
+        graph.addNode(1);   // Node 0
+        graph.addNode(2);   // Node 1
+        graph.addNode(3);   // Node 2
     }
 };
 
 // Test for adding nodes to the graph
 TEST_F(GraphTest, AddNode) {
     // Add a new node and verify its index
-    size_t newIndex = graph.addChild(4);
+    size_t newIndex = graph.addNode(4);
     EXPECT_EQ(newIndex, 3);
     EXPECT_EQ(graph.size(), 4);
 }
 
-// Test for adding nodes using emplace_back
+// Test for adding nodes using emplace_node
 TEST_F(GraphTest, EmplaceNode) {
-    size_t newIndex = graph.emplace_back(5);
+    size_t newIndex = graph.emplace_node(5);
     EXPECT_EQ(newIndex, 3);
     EXPECT_EQ(graph.size(), 4);
     EXPECT_EQ(graph.getNode(3).value(), 5);
@@ -101,7 +101,7 @@ TEST_F(GraphTest, AddEdgeInvalidIndex) {
 // Test the size method
 TEST_F(GraphTest, SizeMethod) {
     EXPECT_EQ(graph.size(), 3);
-    graph.addChild(10);
+    graph.addNode(10);
     EXPECT_EQ(graph.size(), 4);
 }
 
