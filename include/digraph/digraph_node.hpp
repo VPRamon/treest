@@ -1,92 +1,78 @@
-#ifndef GRAPH_NODE_HPP
-#define GRAPH_NODE_HPP
+#ifndef NODE_HPP
+#define NODE_HPP
 
 #include <optional>
 #include <vector>
 #include <iostream>
 #include <variant>
+#include <memory>
 #include "type_traits.hpp"
 
 namespace vpr {
 
 template <typename T>
-class Graph;
-
-template <typename T>
-class GraphNode {
-
-    friend class Graph<T>;
+class DigraphNode : public Node {
 
 private:
-    size_t index_;                             // Index of the node
-    std::vector<size_t> incomingEdges_;        // Indices of incoming edges (nodes pointing to this node)
-    std::vector<size_t> outgoingEdges_;        // Indices of outgoing edges (nodes this node points to)
-    Graph<T>* graph_;                          // Pointer to the graph
+
+    std::vector<size_t>& out_edges_ = &edges_;
+    std::vector<size_t> in_edges_;
 
 public:
-    std::optional<T> value;                    // Optional value for the node
 
-    GraphNode(std::optional<T> v, size_t index = 0, Graph<T>* graph = nullptr)
-        : value(v), index_(index), graph_(graph), incomingEdges_(), outgoingEdges_()
+    Node(size_t index, std::optional<T> v = std::nullopt)
+        : index_(index), value_(v), edges_()
     {}
 
-    friend std::ostream& operator<<(std::ostream& os, const GraphNode<T>& node) {
-        if (node.value.has_value()) {
-            if constexpr (is_variant<T>::value) {
-                // Handle std::variant by visiting the current value
-                std::visit([&os](const auto& val) {
-                    os << val;
-                }, node.value.value());
-            } else {
-                // Handle non-variant types directly
-                os << node.value.value();
-            }
-        } else {
-            os << "None";
-        }
-        return os;
+    template <typename... Args>
+    void emplace(Args&&... args) {
+        value_.emplace(std::forward<Args>(args)...);
     }
 
     size_t index() const { return index_; }
 
-    const std::vector<size_t>& incomingEdges() const { return incomingEdges_; }
-    const std::vector<size_t>& outgoingEdges() const { return outgoingEdges_; }
+    const std::vector<size_t>& edges() const { return edges_; }
 
-    Graph<T>* graph() const { return graph_; }
+    bool hasValue() const { return value_.has_value(); }
 
-    size_t nOutgoingEdges() const { return outgoingEdges_.size(); }
-    size_t nIncomingEdges() const { return incomingEdges_.size(); }
-
-    void addOutgoingEdge(size_t toIndex) {
-        outgoingEdges_.push_back(toIndex);
-    }
-
-    void addIncomingEdge(size_t fromIndex) {
-        incomingEdges_.push_back(fromIndex);
-    }
-
-    GraphNode<T>& getEdge(size_t index) { return graph_->getNode(outgoingEdges_.at(index)); }
-    GraphNode<const T>& getEdge(size_t index) const { return graph_->getNode(outgoingEdges_.at(index)); }
-
-    std::vector<std::reference_wrapper<GraphNode<T>>> getOutgoingEdges() {
-        std::vector<std::reference_wrapper<GraphNode<T>>> neighbors;
-        neighbors.reserve(outgoingEdges_.size());
-        for (const size_t& neighborIdx : outgoingEdges_) {
-            neighbors.emplace_back(graph_->getNode(neighborIdx));
+    T& value() {
+        if (hasValue()) {
+            return *value_;
+        } else {
+            throw std::bad_optional_access();
         }
-        return neighbors;
     }
 
-    std::vector<std::reference_wrapper<const GraphNode<T>>> getOutgoingEdges() const {
-        std::vector<std::reference_wrapper<const GraphNode<T>>> neighbors;
-        neighbors.reserve(outgoingEdges_.size());
-        for (const size_t& neighborIdx : outgoingEdges_) {
-            neighbors.emplace_back(graph_->getNode(neighborIdx));
+    const T& value() const {
+        if (hasValue()) {
+            return *value_;
+        } else {
+            throw std::bad_optional_access();
         }
-        return neighbors;
     }
+
+    T& operator*() { return value(); }
+
+    const T& operator*() const { return value(); }
+
+    T* operator->() { return &(value()); }
+
+    const T* operator->() const { return &(value()); }
+
+    size_t degree() const { return edges_.size(); }
+
+    void addEdge(size_t fromIndex) { edges_.push_back(fromIndex); }
+
+    const std::vector<size_t>& getEdges(size_t index) const { return edges_; }
+
+    bool isolated() const { return edges_.empty(); }
+
+    std::vector<size_t> path(size_t index) const { return {/*TODO*/}; }
+
+private:
+
 };
 
 } // namespace vpr
 
-#endif // GRAPH_NODE_HPP
+#endif // NODE_HPP

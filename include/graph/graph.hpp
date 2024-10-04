@@ -2,7 +2,7 @@
 #define GRAPH_HPP
 
 #include "graph_impl.hpp"
-#include "node.hpp"
+#include "graph_node.hpp"
 
 namespace vpr {
 
@@ -15,8 +15,8 @@ namespace vpr {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Graph : public GraphImpl<Node<T>> {
-    using Base = GraphImpl<Node<T>>;
+class Graph : public GraphImpl<GraphNode<T>> {
+    using Base = GraphImpl<GraphNode<T>>;
 public:
 
     /**

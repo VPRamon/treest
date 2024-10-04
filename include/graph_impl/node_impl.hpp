@@ -1,5 +1,5 @@
-#ifndef NODE_HPP
-#define NODE_HPP
+#ifndef NODE_IMPL_HPP
+#define NODE_IMPL_HPP
 
 #include <optional>
 #include <vector>
@@ -11,21 +11,23 @@
 namespace vpr {
 
 template <typename T>
-class Node {
+class NodeImpl {
 
-private:
     size_t index_;                     // Index of the node
     std::optional<T> value_;           // Optional value for the node
-    std::vector<size_t> edges_;        // Indices of incoming edges (nodes pointing to this node)
+
+protected:
+
+    std::vector<size_t> edges_;        // Indices of edges
 
 public:
 
-    Node(size_t index, std::optional<T> v = std::nullopt)
+    NodeImpl(size_t index, std::optional<T> v = std::nullopt)
         : index_(index), value_(v), edges_()
     {}
 
     template <typename... Args>
-    Node(size_t index, Args&&... args)
+    NodeImpl(size_t index, Args&&... args)
         : index_(index), edges_()
     {
         value_.emplace(std::forward<Args>(args)...);
@@ -36,7 +38,7 @@ public:
         value_.emplace(std::forward<Args>(args)...);
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const Node<T>& node) {
+    friend std::ostream& operator<<(std::ostream& os, const NodeImpl<T>& node) {
         if (node.hasValue()) {
             if constexpr (is_variant<T>::value) {
                 // Handle std::variant by visiting the current value
@@ -54,8 +56,6 @@ public:
     }
 
     size_t index() const { return index_; }
-
-    const std::vector<size_t>& edges() const { return edges_; }
 
     bool hasValue() const { return value_.has_value(); }
 
@@ -83,20 +83,20 @@ public:
 
     const T* operator->() const { return &(value()); }
 
-    size_t degree() const { return edges_.size(); }
-
-    void addEdge(size_t fromIndex) { edges_.push_back(fromIndex); }
-
-    const std::vector<size_t>& getEdges(size_t index) const { return edges_; }
-
-    bool isolated() const { return edges_.empty(); }
-
     std::vector<size_t> path(size_t index) const { return {/*TODO*/}; }
 
-private:
+protected:
+
+    virtual size_t degree() const { return edges_.size(); }
+
+    virtual const std::vector<size_t>& edges() const { return edges_; }
+
+    virtual void addEdge(size_t fromIndex) { edges_.push_back(fromIndex); }
+
+    virtual bool isolated() const { return edges_.empty(); }
 
 };
 
 } // namespace vpr
 
-#endif // NODE_HPP
+#endif // NODE_IMLP_HPP

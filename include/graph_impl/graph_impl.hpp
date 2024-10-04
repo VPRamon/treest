@@ -5,7 +5,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <optional>
-#include <stack>
 
 namespace vpr {
 

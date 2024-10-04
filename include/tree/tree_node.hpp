@@ -1,16 +1,18 @@
 #ifndef TREE_NODE_HPP
 #define TREE_NODE_HPP
 
-#include "node.hpp"
+#include "node_impl.hpp"
 
 namespace vpr {
 
-template <typename T>
-class TreeNode : public Node<T> {
-    using Base = Node<T>;
+template <typename TreeNode> class GraphImpl;
 
-private:
-    size_t parent_id_;                   // Index of the parent node (-1 for the root)
+template <typename T>
+class TreeNode : public NodeImpl<T> {
+    using Base = NodeImpl<T>;
+    friend GraphImpl<TreeNode<T>>;
+
+    size_t parent_id_;
 
 public:
 
@@ -32,6 +34,17 @@ public:
     void addChild(size_t child_id) {
         Base::addEdge(child_id);
     }
+    
+
+private:
+
+    virtual void addEdge(size_t child_id) override {
+        Base::addEdge(child_id);
+    }
+
+
+
+
 
 };
 
