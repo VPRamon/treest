@@ -3,8 +3,6 @@
 
 #include "test_fixture.hpp"
 
-#include "tree_variant.hpp"
-
 class TreeTest : public TestFixture { };
 
 TEST_F(TreeTest, TestTreeInitialization) {
@@ -65,7 +63,7 @@ TEST_F(TreeTest, TestOperatorOverloading) {
 }
 
 TEST_F(TreeTest, TestVariantNode) {
-    vpr::TreeVariant<int, std::string> variantTree(42);
+    vpr::Tree<std::variant<int, std::string>> variantTree(42);
     auto& root = variantTree.getRoot();
     EXPECT_TRUE(root.hasValue());
 

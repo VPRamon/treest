@@ -60,7 +60,7 @@ TEST_F(IteratorTest, TestConstIterator) {
 TEST_F(IteratorTest, TestStandardAlgorithms) {
     auto it = std::find_if(
         tree.pre_order_begin(), tree.pre_order_end(),
-        [](const vpr::TreeNode<std::string>& node) {
+        [](const vpr::tree::Node<std::string>& node) {
             return node.value() == "6";
         }
     );

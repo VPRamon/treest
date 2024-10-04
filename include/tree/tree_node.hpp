@@ -4,19 +4,20 @@
 #include "node_impl.hpp"
 
 namespace vpr {
-
 template <typename U> class GraphImpl;
 
+namespace tree {
+
 template <typename T>
-class TreeNode : public NodeImpl<T> {
+class Node : public NodeImpl<T> {
     using Base = NodeImpl<T>;
-    friend GraphImpl<TreeNode<T>>;
+    friend GraphImpl<Node<T>>;
 
     size_t parent_id_;
 
 public:
 
-    TreeNode(size_t index, size_t parent_id, std::optional<T> v)
+    Node(size_t index, size_t parent_id, std::optional<T> v = std::nullopt)
         : Base(index, v), parent_id_(parent_id)
     {}
 
@@ -32,6 +33,7 @@ public:
 
 };
 
+} // namespace tree
 } // namespace vpr
 
 #endif // TREE_NODE_HPP

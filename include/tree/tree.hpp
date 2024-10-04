@@ -19,15 +19,15 @@ namespace vpr {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Tree : public GraphImpl<TreeNode<T>> {
-    using Base = GraphImpl<TreeNode<T>>;
+class Tree : public GraphImpl<tree::Node<T>> {
+    using Base = GraphImpl<tree::Node<T>>;
 
     // Type aliases for traversal policies
     using PreOrderTraversalType = PreOrderTraversal<Tree<T>>;
     using ConstPreOrderTraversalType = PreOrderTraversal<const Tree<T>>;
 
-    using PostOrderTraversalType = PostOrderTraversal<TreeNode<T>, Tree<T>>;
-    using ConstPostOrderTraversalType = PostOrderTraversal<const TreeNode<T>, const Tree<T>>;
+    using PostOrderTraversalType = PostOrderTraversal<tree::Node<T>, Tree<T>>;
+    using ConstPostOrderTraversalType = PostOrderTraversal<const tree::Node<T>, const Tree<T>>;
 
     using BFSTraversalType = BFSTraversal<Tree<T>>;
     using ConstBFSTraversalType = BFSTraversal<const Tree<T>>;
@@ -58,13 +58,13 @@ public:
      * @throws std::out_of_range if the parentIndex is invalid.
      */
     size_t addChild(size_t parentIndex, std::optional<T> value = std::nullopt) {
-        TreeNode<T>& parent = Base::getNode(parentIndex);
+        tree::Node<T>& parent = Base::getNode(parentIndex);
         size_t id = Base::emplace_node(parentIndex, std::move(value));
         parent.addChild(id);
         return id;
     }
 
-    const TreeNode<T>& getRoot() const {
+    const tree::Node<T>& getRoot() const {
         return Base::getNode(0);
     }
 
@@ -105,12 +105,12 @@ private:
      *
      * @tparam Traversal The traversal policy type.
      * @tparam IsEnd `false` to create a begin iterator, `true` to create an end iterator.
-     * @tparam NodeType The type of node (`TreeNode<T>` or `const TreeNode<T>`).
+     * @tparam NodeType The type of node (`tree::Node<T>` or `const tree::Node<T>`).
      * @tparam TreeType The type of tree (`Tree<T>` or `const Tree<T>`).
      *
      * @return A TreeIterator configured for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = TreeNode<T>, typename TreeType = Tree<T>>
+    template <typename Traversal, bool IsEnd, typename NodeType = tree::Node<T>, typename TreeType = Tree<T>>
     TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() {
         if constexpr (IsEnd) {
             return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
@@ -126,12 +126,12 @@ private:
      *
      * @tparam Traversal The traversal policy type.
      * @tparam IsEnd `false` to create a begin iterator, `true` to create an end iterator.
-     * @tparam NodeType The type of node (`const TreeNode<T>`).
+     * @tparam NodeType The type of node (`const tree::Node<T>`).
      * @tparam TreeType The type of tree (`const Tree<T>`).
      *
      * @return A TreeIterator configured for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = const TreeNode<T>, typename TreeType = const Tree<T>>
+    template <typename Traversal, bool IsEnd, typename NodeType = const tree::Node<T>, typename TreeType = const Tree<T>>
     TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() const {
         if constexpr (IsEnd) {
             return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
