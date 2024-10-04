@@ -10,9 +10,10 @@ option(BUILD_TESTS "Build tests for the project" ON)
 set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include/tree/iterators
     ${PROJECT_SOURCE_DIR}/include/tree
-    ${PROJECT_SOURCE_DIR}/include/graph
+    ${PROJECT_SOURCE_DIR}/include/digraph_impl
     ${PROJECT_SOURCE_DIR}/include/digraph
     ${PROJECT_SOURCE_DIR}/include/graph_impl
+    ${PROJECT_SOURCE_DIR}/include/graph
 )
 
 add_library(Tree INTERFACE)

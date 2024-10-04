@@ -1,7 +1,7 @@
 #ifndef DIGRAPH_HPP
 #define DIGRAPH_HPP
 
-#include "graph_impl.hpp"
+#include "digraph_impl.hpp"
 #include "digraph_node.hpp"
 
 namespace vpr {
@@ -14,10 +14,13 @@ namespace vpr {
  *
  * @tparam T The type of the value stored in each node.
  */
+
 template <typename T>
-class Digraph : public GraphImpl<digraph::Node<T>> {
-    using Base = GraphImpl<digraph::Node<T>>;
+class Digraph : public DigraphImpl<digraph::Node<T>> {
+    using Base = DigraphImpl<digraph::Node<T>>;
 public:
+
+    using Base::DigraphImpl;
 
     /**
      * @brief Adds a node with no edges.
@@ -29,14 +32,8 @@ public:
         return Base::template addNode(value);
     }
 
-    virtual void addEdge(size_t from, size_t to) override {
-        digraph::Node<T>& orig = Base::getNode(from);
-        digraph::Node<T>& dest = Base::getNode(to);
-        orig.addOutEdge(to);
-        dest.addInEdge(from);
-    }
- 
 };
+
 
 } // namespace vpr
 
