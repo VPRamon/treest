@@ -47,7 +47,7 @@ public:
      * @param initialCapacity Initial capacity for the tree's node vector. Defaults to 16.
      */
     explicit Tree(std::optional<T> root = std::nullopt, size_t initialCapacity = 16) : Base(initialCapacity) {
-        Base::emplace_node(0, std::move(root));  // Add root node
+        Base::emplace_node(0, std::move(root));
     }
 
     /**
@@ -71,35 +71,33 @@ public:
      *
      * @return A constant reference to the root node.
      */
-    const tree::Node<T>& getRoot() const {
-        return Base::getNode(0);
-    }
+    inline const tree::Node<T>& getRoot() const { return Base::getNode(0); }
 
     // *** Traversal Iterator Methods ***
-    auto pre_order_begin() { return TraversalIterator<PreOrderTraversalType, false>(); }
-    auto pre_order_end()   { return TraversalIterator<PreOrderTraversalType, true>(); }
-    auto pre_order_begin() const { return TraversalIterator<ConstPreOrderTraversalType, false>(); }
-    auto pre_order_end()   const { return TraversalIterator<ConstPreOrderTraversalType, true>(); }
+    inline auto pre_order_begin() { return TraversalIterator<PreOrderTraversalType, false>(); }
+    inline auto pre_order_end()   { return TraversalIterator<PreOrderTraversalType, true>(); }
+    inline auto pre_order_begin() const { return TraversalIterator<ConstPreOrderTraversalType, false>(); }
+    inline auto pre_order_end()   const { return TraversalIterator<ConstPreOrderTraversalType, true>(); }
 
-    auto post_order_begin() { return TraversalIterator<PostOrderTraversalType, false>(); }
-    auto post_order_end()   { return TraversalIterator<PostOrderTraversalType, true>(); }
-    auto post_order_begin() const { return TraversalIterator<ConstPostOrderTraversalType, false>(); }
-    auto post_order_end()   const { return TraversalIterator<ConstPostOrderTraversalType, true>(); }
+    inline auto post_order_begin() { return TraversalIterator<PostOrderTraversalType, false>(); }
+    inline auto post_order_end()   { return TraversalIterator<PostOrderTraversalType, true>(); }
+    inline auto post_order_begin() const { return TraversalIterator<ConstPostOrderTraversalType, false>(); }
+    inline auto post_order_end()   const { return TraversalIterator<ConstPostOrderTraversalType, true>(); }
 
-    auto bfs_begin() { return TraversalIterator<BFSTraversalType, false>(); }
-    auto bfs_end()   { return TraversalIterator<BFSTraversalType, true>(); }
-    auto bfs_begin() const { return TraversalIterator<ConstBFSTraversalType, false>(); }
-    auto bfs_end()   const { return TraversalIterator<ConstBFSTraversalType, true>(); }
+    inline auto bfs_begin() { return TraversalIterator<BFSTraversalType, false>(); }
+    inline auto bfs_end()   { return TraversalIterator<BFSTraversalType, true>(); }
+    inline auto bfs_begin() const { return TraversalIterator<ConstBFSTraversalType, false>(); }
+    inline auto bfs_end()   const { return TraversalIterator<ConstBFSTraversalType, true>(); }
 
-    auto bfs_rbegin() { return TraversalIterator<ReverseBFSTraversalType, false>(); }
-    auto bfs_rend()   { return TraversalIterator<ReverseBFSTraversalType, true>(); }
-    auto bfs_rbegin() const { return TraversalIterator<ConstReverseBFSTraversalType, false>(); }
-    auto bfs_rend()   const { return TraversalIterator<ConstReverseBFSTraversalType, true>(); }
+    inline auto bfs_rbegin() { return TraversalIterator<ReverseBFSTraversalType, false>(); }
+    inline auto bfs_rend()   { return TraversalIterator<ReverseBFSTraversalType, true>(); }
+    inline auto bfs_rbegin() const { return TraversalIterator<ConstReverseBFSTraversalType, false>(); }
+    inline auto bfs_rend()   const { return TraversalIterator<ConstReverseBFSTraversalType, true>(); }
 
-    auto pre_order_rbegin() { return TraversalIterator<ReversePreOrderTraversalType, false>(); }
-    auto pre_order_rend()   { return TraversalIterator<ReversePreOrderTraversalType, true>(); }
-    auto pre_order_rbegin() const { return TraversalIterator<ConstReversePreOrderTraversalType, false>(); }
-    auto pre_order_rend()   const { return TraversalIterator<ConstReversePreOrderTraversalType, true>(); }
+    inline auto pre_order_rbegin() { return TraversalIterator<ReversePreOrderTraversalType, false>(); }
+    inline auto pre_order_rend()   { return TraversalIterator<ReversePreOrderTraversalType, true>(); }
+    inline auto pre_order_rbegin() const { return TraversalIterator<ConstReversePreOrderTraversalType, false>(); }
+    inline auto pre_order_rend()   const { return TraversalIterator<ConstReversePreOrderTraversalType, true>(); }
 
 private:
 

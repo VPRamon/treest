@@ -43,42 +43,42 @@ public:
      *
      * @return true If the node is the root (index 0), false otherwise.
      */
-    bool isRoot() const { return Base::index() == 0; }
+    inline bool isRoot() const { return Base::index() == 0; }
 
     /**
      * @brief Checks if the node is a leaf (i.e., has no children).
      *
      * @return true If the node has no children, false otherwise.
      */
-    bool isLeaf() const { return Base::isolated(); }
+    inline bool isLeaf() const { return Base::isolated(); }
 
     /**
      * @brief Retrieves the number of children this node has.
      *
      * @return The number of children (degree of the node).
      */
-    size_t nChildren() const { return Base::degree(); }
+    inline size_t nChildren() const { return Base::degree(); }
 
     /**
      * @brief Retrieves the index of the parent node.
      *
      * @return The parent node's index.
      */
-    size_t parentId() const { return parent_id_; }
+    inline size_t parentId() const { return parent_id_; }
 
     /**
      * @brief Gets a constant reference to the list of children.
      *
      * @return const std::vector<size_t>& The vector of child node indices.
      */
-    const auto& getChildren() const { return Base::edges(); }
+    inline const auto& getChildren() const { return Base::edges(); }
 
     /**
      * @brief Adds a child to this node.
      *
      * @param child_id The index of the child node.
      */
-    void addChild(size_t child_id) { Base::addEdge(child_id); }
+    inline void addChild(size_t child_id) { Base::addEdge(child_id); }
 
 };
 
