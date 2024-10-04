@@ -4,9 +4,10 @@
 #include "node_impl.hpp"
 
 namespace vpr {
+namespace graph {
 
 template <typename T>
-class GraphNode : public NodeImpl<T> {
+class Node : public NodeImpl<T> {
     using Base = NodeImpl<T>;
 
 public:
@@ -23,6 +24,7 @@ public:
 
 };
 
+} // namespace graph
 } // namespace vpr
 
 #endif // GRAPH_NODE_HPP

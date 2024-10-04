@@ -2,6 +2,7 @@
 #include "graph.hpp"  // Assuming your Graph and Node implementation
 
 using namespace vpr;
+using namespace vpr::graph;
 
 // Test fixture
 class GraphTest : public ::testing::Test {
@@ -38,7 +39,7 @@ TEST_F(GraphTest, AddEdge) {
     graph.addEdge(0, 1); // Add an edge from node 0 to node 1
 
     // Check that the edge has been added to node 0
-    GraphNode<int>& node0 = graph.getNode(0);
+    Node<int>& node0 = graph.getNode(0);
     EXPECT_EQ(node0.degree(), 1);
     EXPECT_EQ(node0.edges().at(0), 1);
 }
@@ -85,7 +86,7 @@ TEST_F(GraphTest, MoveAssignment) {
 
 // Test getNode method and accessing valid/invalid nodes
 TEST_F(GraphTest, GetNode) {
-    GraphNode<int>& node = graph.getNode(1);
+    Node<int>& node = graph.getNode(1);
     EXPECT_EQ(node.value(), 2);
 
     // Test out-of-range access (should throw an exception)

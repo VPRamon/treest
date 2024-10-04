@@ -15,8 +15,8 @@ namespace vpr {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Graph : public GraphImpl<GraphNode<T>> {
-    using Base = GraphImpl<GraphNode<T>>;
+class Graph : public GraphImpl<graph::Node<T>> {
+    using Base = GraphImpl<graph::Node<T>>;
 public:
 
     /**
@@ -30,8 +30,8 @@ public:
     }
 
     virtual void addEdge(size_t from, size_t to) override {
-        GraphNode<T>& orig = Base::getNode(from);
-        GraphNode<T>& dest = Base::getNode(to);
+        graph::Node<T>& orig = Base::getNode(from);
+        graph::Node<T>& dest = Base::getNode(to);
         orig.addEdge(to);
         dest.addEdge(from);
     }
