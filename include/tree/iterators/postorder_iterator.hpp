@@ -1,5 +1,5 @@
-#ifndef TREE_ITERATOR_HPP
-#define TREE_ITERATOR_HPP
+#ifndef POSTORDER_ITERATOR_HPP
+#define POSTORDER_ITERATOR_HPP
 
 #include "base_iterator.hpp"
 #include <stack>
@@ -91,4 +91,4 @@ private:
 
 } // namespace vpr
 
-#endif // TREE_ITERATOR_HPP
+#endif // POSTORDER_ITERATOR_HPP

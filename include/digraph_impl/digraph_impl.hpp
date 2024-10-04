@@ -7,25 +7,40 @@
 namespace vpr {
 
 /**
- * @brief Represents a directed graph using a vector to store nodes.
+ * @class DigraphImpl
+ * @brief A directed graph implementation derived from GraphImpl.
  *
- * The Graph class manages a collection of nodes stored in a vector,
- * allowing efficient traversal and manipulation of the graph structure.
+ * This class represents a directed graph, where edges have a direction 
+ * (from a source node to a target node). It specializes the behavior of 
+ * `GraphImpl` by managing both incoming and outgoing edges for each node.
  *
- * @tparam T The type of the value stored in each node.
+ * @tparam Node The type of the nodes in the graph.
  */
 template <typename Node>
 class DigraphImpl : public GraphImpl<Node> {
     using Graph = GraphImpl<Node>;
+
 public:
 
+    /**
+     * @brief Adds a directed edge from one node to another.
+     *
+     * This method overrides the base class's `addEdge` to ensure that an 
+     * outgoing edge is added from the source node, and an incoming edge 
+     * is added to the target node.
+     *
+     * @param from The index of the source node.
+     * @param to The index of the target node.
+     *
+     * @throws std::out_of_range if either node index is invalid.
+     */
     virtual void addEdge(size_t from, size_t to) override {
         Node& orig = Graph::getNode(from);
         Node& dest = Graph::getNode(to);
         orig.addOutEdge(to);
         dest.addInEdge(from);
     }
- 
+
 };
 
 } // namespace vpr

@@ -11,12 +11,13 @@
 namespace vpr {
 
 /**
- * @brief Represents a tree structure using a vector to store nodes.
+ * @class Tree
+ * @brief A tree structure that extends GraphImpl, providing node management and various traversal methods.
  *
- * The Tree class manages a collection of nodes stored in a vector,
- * allowing efficient traversal and manipulation of the tree structure.
+ * This class represents a tree, which is a hierarchical data structure. Each node has a single parent (except the root),
+ * and can have multiple children. The tree supports different types of traversal, such as pre-order, post-order, and breadth-first.
  *
- * @tparam T The type of the value stored in each node.
+ * @tparam T The type of value stored in each node.
  */
 template <typename T>
 class Tree : public GraphImpl<tree::Node<T>> {
@@ -40,12 +41,13 @@ class Tree : public GraphImpl<tree::Node<T>> {
 public:
 
     /**
-     * @brief Constructs a GraphImpl with an optional initial capacity.
+     * @brief Constructs a tree with an optional root value and an initial node capacity.
      *
-     * @param initialCapacity Initial capacity for the nodes vector. Defaults to 16.
+     * @param root Optional value for the root node. Defaults to `std::nullopt`.
+     * @param initialCapacity Initial capacity for the tree's node vector. Defaults to 16.
      */
     explicit Tree(std::optional<T> root = std::nullopt, size_t initialCapacity = 16) : Base(initialCapacity) {
-        Base::emplace_node(0, std::move(root));
+        Base::emplace_node(0, std::move(root));  // Add root node
     }
 
     /**
@@ -64,6 +66,11 @@ public:
         return id;
     }
 
+    /**
+     * @brief Retrieves the root node of the tree.
+     *
+     * @return A constant reference to the root node.
+     */
     const tree::Node<T>& getRoot() const {
         return Base::getNode(0);
     }

@@ -9,23 +9,21 @@
 namespace vpr {
 
 /**
- * @brief Represents a directed graph using a vector to store nodes.
+ * @class GraphImpl
+ * @brief A base graph implementation using a vector to store nodes.
  *
- * The GraphImpl class manages a collection of nodes stored in a vector,
- * allowing efficient traversal and manipulation of the graph structure.
- *
- * @tparam Node The type of the value stored in each node.
+ * @tparam Node The type of the nodes in the graph.
  */
 template <typename Node>
 class GraphImpl {
 
-    std::vector<Node> nodes;  ///<  vector to store all nodes
+    std::vector<Node> nodes;  ///< Vector to store all nodes
 
 public:
 
     /**
-     * @brief Constructs a GraphImpl with an optional initial capacity.
-     *
+     * @brief Constructs a GraphImpl with an optional initial capacity for nodes.
+     * 
      * @param initialCapacity Initial capacity for the nodes vector. Defaults to 16.
      */
     explicit GraphImpl(size_t initialCapacity = 16) {
@@ -75,8 +73,9 @@ public:
     }
 
     /**
-     * @brief Adds a node with no edges.
+     * @brief Adds a new node to the graph.
      *
+     * @tparam T Type of the value to store in the node.
      * @param value Optional value for the node. Defaults to `std::nullopt`.
      * @return The index of the newly added node.
      */
@@ -88,9 +87,10 @@ public:
     }
 
     /**
-     * @brief Creates a node in the graph.
+     * @brief Constructs a node with arguments and adds it to the graph.
      *
-     * @param args Arguments needed to create an object of type T.
+     * @tparam Args Types of arguments to construct the node.
+     * @param args Arguments needed to construct the node.
      * @return The index of the newly added node.
      */
     template <typename... Args>
@@ -103,9 +103,9 @@ public:
     /**
      * @brief Retrieves a reference to the node at the specified index.
      *
-     * @param index The index of the node to retrieve.
+     * @param index The index of the node.
      * @return Reference to the node.
-     *
+     * 
      * @throws std::out_of_range if the index is invalid.
      */
     Node& getNode(size_t index) {
@@ -115,9 +115,9 @@ public:
     /**
      * @brief Retrieves a const reference to the node at the specified index.
      *
-     * @param index The index of the node to retrieve.
+     * @param index The index of the node.
      * @return Const reference to the node.
-     *
+     * 
      * @throws std::out_of_range if the index is invalid.
      */
     const Node& getNode(size_t index) const {
@@ -133,26 +133,78 @@ public:
         return nodes.size();
     }
 
+    /**
+     * @brief Checks if the graph is empty.
+     *
+     * @return true if the graph has no nodes, false otherwise.
+     */
     constexpr bool empty() const noexcept {
         return nodes.empty();
     }
 
     // *** Iterator Methods ***
+
+    /**
+     * @brief Returns an iterator to the beginning of the nodes.
+     *
+     * @return Iterator to the beginning of the nodes.
+     */
     auto begin() { return nodes.begin(); }
+
+    /**
+     * @brief Returns an iterator to the end of the nodes.
+     *
+     * @return Iterator to the end of the nodes.
+     */
     auto end() { return nodes.end(); }
+
+    /**
+     * @brief Returns a reverse iterator to the beginning of the nodes.
+     *
+     * @return Reverse iterator to the beginning of the nodes.
+     */
     auto rbegin() { return nodes.rbegin(); }
+
+    /**
+     * @brief Returns a reverse iterator to the end of the nodes.
+     *
+     * @return Reverse iterator to the end of the nodes.
+     */
     auto rend() { return nodes.rend(); }
 
+    /**
+     * @brief Returns a constant iterator to the beginning of the nodes.
+     *
+     * @return Constant iterator to the beginning of the nodes.
+     */
     const auto begin() const { return nodes.begin(); }
+
+    /**
+     * @brief Returns a constant iterator to the end of the nodes.
+     *
+     * @return Constant iterator to the end of the nodes.
+     */
     const auto end() const { return nodes.end(); }
+
+    /**
+     * @brief Returns a constant reverse iterator to the beginning of the nodes.
+     *
+     * @return Constant reverse iterator to the beginning of the nodes.
+     */
     const auto rbegin() const { return nodes.rbegin(); }
+
+    /**
+     * @brief Returns a constant reverse iterator to the end of the nodes.
+     *
+     * @return Constant reverse iterator to the end of the nodes.
+     */
     const auto rend() const { return nodes.rend(); }
 
     /**
-     * @brief Overloads the output stream operator to print the graph nodes.
+     * @brief Overloads the output stream operator to print all nodes in the graph.
      *
-     * @param os The output stream.
-     * @param graph The GraphImpl to print.
+     * @param os Output stream.
+     * @param graph The graph to print.
      * @return Reference to the output stream.
      */
     friend std::ostream& operator<<(std::ostream& os, const GraphImpl<Node>& graph) {
@@ -169,7 +221,7 @@ protected:
      *
      * @param from The index of the source node.
      * @param to The index of the target node.
-     *
+     * 
      * @throws std::out_of_range if either index is invalid.
      */
     virtual void addEdge(size_t from, size_t to) {
@@ -177,15 +229,14 @@ protected:
         nodes.at(from).addEdge(to);
     }
 
-
 private:
 
     /**
-     * @brief Validates that the parent index is within the bounds of the nodes vector.
+     * @brief Validates if a node index is within bounds.
      *
-     * @param parentIndex The index of the parent node to validate.
-     *
-     * @throws std::out_of_range if the parentIndex is invalid.
+     * @param index The index to validate.
+     * 
+     * @throws std::out_of_range if the index is invalid.
      */
     inline void validateIndex(size_t index) const {
         if (index >= nodes.size()) {

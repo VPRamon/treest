@@ -7,13 +7,14 @@
 
 namespace vpr {
 
-
 /**
+ * @struct IteratorProperties
  * @brief Struct holding the properties of a tree iterator.
  * 
  * This struct stores the tree being iterated over and the current index in the traversal.
+ * It provides utility methods for accessing the current state of the traversal.
  * 
- * @tparam TreeType The type of the tree.
+ * @tparam TreeType The type of the tree being iterated over.
  */
 template <typename TreeType>
 struct IteratorProperties {
@@ -30,28 +31,28 @@ struct IteratorProperties {
     }
 };
 
-
 /**
- * @brief A class template for tree iterators.
+ * @class TreeIterator
+ * @brief A class template for iterating over tree-like structures.
  * 
- * This class defines an iterator for traversing tree-like structures using 
- * a specified traversal policy, container type, and node type.
+ * This iterator supports different traversal policies (e.g., pre-order, post-order) 
+ * for tree structures. The traversal is defined by the policy passed to the template.
  * 
  * @tparam NodeType The type of the nodes in the tree.
  * @tparam TreeType The type of the tree being traversed.
- * @tparam TraversalPolicy The traversal policy used (e.g., pre-order, reverse pre-order).
+ * @tparam TraversalPolicy The traversal policy (e.g., pre-order, reverse pre-order).
  */
 template <typename NodeType, typename TreeType, typename TraversalPolicy>
 class TreeIterator {
 public:
-    using iterator_category = std::forward_iterator_tag; ///< Iterator category is forward iterator.
+    using iterator_category = std::forward_iterator_tag; ///< Iterator category for forward traversal.
     using value_type = NodeType; ///< The type of the values (nodes) being iterated over.
-    using difference_type = std::ptrdiff_t; ///< The difference type used for iterator arithmetic.
+    using difference_type = std::ptrdiff_t; ///< Type used for iterator arithmetic.
 
     /**
-     * @brief Constructs a tree iterator.
+     * @brief Constructs a tree iterator starting at a specific node.
      * 
-     * @param tree Pointer to the tree to iterate over.
+     * @param tree Pointer to the tree structure being traversed.
      * @param startIndex The index of the node to start the iteration from (default is 0).
      */
     TreeIterator(TreeType* tree, size_t startIndex = 0)
@@ -60,16 +61,16 @@ public:
     /**
      * @brief Dereferences the iterator to access the current node.
      * 
-     * @return A reference to the current node.
+     * @return A reference to the current node being iterated over.
      */
     auto operator*() const {
         return tree_->getNode(traversalPolicy_.currentIndex());
     }
 
     /**
-     * @brief Accesses the current node using pointer-like syntax.
+     * @brief Accesses the current node using pointer syntax.
      * 
-     * @return A pointer to the current node.
+     * @return A pointer to the current node being iterated over.
      */
     auto operator->() const {
         return &tree_->getNode(traversalPolicy_.currentIndex());
@@ -78,7 +79,7 @@ public:
     /**
      * @brief Advances the iterator to the next node (prefix increment).
      * 
-     * @return A reference to the iterator after advancing.
+     * @return A reference to the iterator after advancing to the next node.
      */
     TreeIterator& operator++() {
         traversalPolicy_.advance();
@@ -117,8 +118,8 @@ public:
     }
 
 private:
-    TraversalPolicy traversalPolicy_; ///< The traversal policy used by the iterator.
-    TreeType* tree_; ///< Pointer to the tree being iterated.
+    TraversalPolicy traversalPolicy_; ///< The traversal policy defining the iterator's behavior.
+    TreeType* tree_; ///< Pointer to the tree structure being iterated.
 };
 
 } // namespace vpr
