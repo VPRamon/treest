@@ -5,9 +5,12 @@
 
 namespace vpr {
 
+template <typename U> class GraphImpl;
+
 template <typename T>
 class DigraphNode : public NodeImpl<T> {
     using Base = NodeImpl<T>;
+    friend GraphImpl<DigraphNode<T>>;
 
     std::vector<size_t>& out_edges_;
     std::vector<size_t> in_edges_;

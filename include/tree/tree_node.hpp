@@ -5,7 +5,7 @@
 
 namespace vpr {
 
-template <typename TreeNode> class GraphImpl;
+template <typename U> class GraphImpl;
 
 template <typename T>
 class TreeNode : public NodeImpl<T> {
