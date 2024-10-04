@@ -7,17 +7,19 @@ namespace vpr {
 
 template <typename U> class GraphImpl;
 
+namespace digraph {
+
 template <typename T>
-class DigraphNode : public NodeImpl<T> {
+class Node : public NodeImpl<T> {
     using Base = NodeImpl<T>;
-    friend GraphImpl<DigraphNode<T>>;
+    friend GraphImpl<digraph::Node<T>>;
 
     std::vector<size_t>& out_edges_;
     std::vector<size_t> in_edges_;
 
 public:
 
-    DigraphNode(size_t index, std::optional<T> v = std::nullopt)
+    Node(size_t index, std::optional<T> v = std::nullopt)
         : Base(index, v), out_edges_(Base::edges_), in_edges_()
     {}
 
@@ -28,6 +30,7 @@ public:
     size_t outDegree() const { return outEdges().size(); }
     size_t totalDegree() const { return inDegree() + outDegree(); }
 
+
     void addInEdge(size_t fromIndex) { in_edges_.push_back(fromIndex); }
     void addOutEdge(size_t fromIndex) { out_edges_.push_back(fromIndex); }
 
@@ -35,6 +38,7 @@ public:
 
 };
 
+} // namespace digraph
 } // namespace vpr
 
 #endif // DIGRAPH_NODE_HPP

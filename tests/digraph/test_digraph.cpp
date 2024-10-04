@@ -2,6 +2,7 @@
 #include "digraph.hpp"
 
 using namespace vpr;
+using namespace digraph;
 
 // Test fixture
 class DigraphTest : public ::testing::Test {

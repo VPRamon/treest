@@ -15,8 +15,8 @@ namespace vpr {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Digraph : public GraphImpl<DigraphNode<T>> {
-    using Base = GraphImpl<DigraphNode<T>>;
+class Digraph : public GraphImpl<digraph::Node<T>> {
+    using Base = GraphImpl<digraph::Node<T>>;
 public:
 
     /**
@@ -30,8 +30,8 @@ public:
     }
 
     virtual void addEdge(size_t from, size_t to) override {
-        DigraphNode<T>& orig = Base::getNode(from);
-        DigraphNode<T>& dest = Base::getNode(to);
+        digraph::Node<T>& orig = Base::getNode(from);
+        digraph::Node<T>& dest = Base::getNode(to);
         orig.addOutEdge(to);
         dest.addInEdge(from);
     }
