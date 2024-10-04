@@ -19,14 +19,15 @@ protected:
         // Set up a common tree structure for all tests
         tree = vpr::Tree<std::string>("0");
 
-        size_t child1 = tree.getRoot().addChild("1");
-        size_t child2 = tree.getRoot().addChild("2");
+        auto root = tree.getRoot();
+        size_t child1_id = tree.addChild(root.index(), "1");
+        size_t child2_id = tree.addChild(root.index(), "2");
 
-        tree.getNode(child1).addChild("3");
-        tree.getNode(child1).addChild("4");
+        tree.addChild(child1_id, "3");
+        tree.addChild(child1_id, "4");
 
-        tree.getNode(child2).addChild("5");
-        tree.getNode(child2).addChild("6");
+        tree.addChild(child2_id, "5");
+        tree.addChild(child2_id, "6");
     }
 };
 

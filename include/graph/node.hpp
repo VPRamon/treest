@@ -89,6 +89,8 @@ public:
 
     const std::vector<size_t>& getEdges(size_t index) const { return edges_; }
 
+    bool isolated() const { return edges_.empty(); }
+
     std::vector<size_t> path(size_t index) const { return {/*TODO*/}; }
 
 private:

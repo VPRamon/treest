@@ -26,7 +26,7 @@ void CHECK_ITERATOR(auto begin, auto end, std::vector<std::string> expected) {
     std::vector<std::string> result;
 
     for (auto it = begin; it != end; ++it) {
-        result.push_back(it->value.value());
+        result.push_back(it->value());
     }
 
     EXPECT_EQ(result, expected);
@@ -61,12 +61,12 @@ TEST_F(IteratorTest, TestStandardAlgorithms) {
     auto it = std::find_if(
         tree.pre_order_begin(), tree.pre_order_end(),
         [](const vpr::TreeNode<std::string>& node) {
-            return node.value.value() == "6";
+            return node.value() == "6";
         }
     );
 
     EXPECT_NE(it, tree.pre_order_end());
-    EXPECT_EQ(it->value.value(), "6");
+    EXPECT_EQ(it->value(), "6");
 }
 
 

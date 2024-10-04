@@ -63,7 +63,7 @@ public:
      * @return A reference to the current node.
      */
     auto operator*() const {
-        return tree_->nodes.at(traversalPolicy_.currentIndex());
+        return tree_->getNode(traversalPolicy_.currentIndex());
     }
 
     /**
@@ -72,7 +72,7 @@ public:
      * @return A pointer to the current node.
      */
     auto operator->() const {
-        return &tree_->nodes.at(traversalPolicy_.currentIndex());
+        return &tree_->getNode(traversalPolicy_.currentIndex());
     }
 
     /**

@@ -145,6 +145,10 @@ public:
         return nodes.size();
     }
 
+    constexpr bool empty() const noexcept {
+        return nodes.empty();
+    }
+
     // *** Iterator Methods ***
     auto begin() { return nodes.begin(); }
     auto end() { return nodes.end(); }

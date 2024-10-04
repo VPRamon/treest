@@ -58,7 +58,7 @@ public:
 
         if (!this->nodeStack_.empty()) {
             size_t parentIndex = this->nodeStack_.top();
-            const auto& siblings = this->tree_->nodes.at(parentIndex).childIndices_;
+            const auto& siblings = this->tree_->getNode(parentIndex).getChildren();
             auto it = std::find(siblings.begin(), siblings.end(), this->currentIndex_);
             if (it != siblings.end() && ++it != siblings.end()) {
                 traverseToLeftmostLeaf(*it);
@@ -79,7 +79,7 @@ private:
     void traverseToLeftmostLeaf(size_t index) {
         while (true) {
             this->nodeStack_.push(index);
-            const auto& children = this->tree_->nodes.at(index).childIndices_;
+            const auto& children = this->tree_->getNode(index).getChildren();
             if (!children.empty()) {
                 index = children.front();
             } else {
