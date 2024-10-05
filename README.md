@@ -8,11 +8,11 @@ The **VPR Data Structures Library** is a lightweight and versatile C++ library f
 - **Traversal Algorithms**: Includes pre-order, post-order, breadth-first, and reverse traversals for trees.
 - **Iterator Support**: Provides iterator classes for easy and efficient traversal of data structures.
 - **Header-Only Library**: Implemented as a header-only library for simple integration into existing projects.
-- **Modern C++**: Utilizes C++17 and C++20 features like templates, `std::optional`, and `constexpr` for enhanced performance and usability.
+- **Modern C++**: Utilizes C++17 and C++17 features like templates, `std::optional`, and `constexpr` for enhanced performance and usability.
 
 ## Requirements
 
-- **C++17** or later (C++20 recommended for full feature support)
+- **C++17** or later (C++17 recommended for full feature support)
 - **CMake** 3.10 or later (for building tests)
 - **Google Test** (included as a submodule for unit testing)
 
