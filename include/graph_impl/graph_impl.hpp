@@ -229,7 +229,7 @@ protected:
         nodes.at(from).addEdge(to);
     }
 
-private:
+protected:
 
     /**
      * @brief Validates if a node index is within bounds.
