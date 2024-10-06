@@ -60,9 +60,9 @@ public:
      * @throws std::out_of_range if the parentIndex is invalid.
      */
     size_t addChild(size_t parentIndex, std::optional<T> value = std::nullopt) {
-        tree::Node<T>& parent = Base::getNode(parentIndex);
+        Base::validateIndex(parentIndex);
         size_t id = Base::emplace_node(parentIndex, std::move(value));
-        parent.addChild(id);
+        Base::getNode(parentIndex).addChild(id);
         return id;
     }
 

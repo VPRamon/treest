@@ -15,5 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ### Fixed
+* AddChild was crashing due to an invalid reference when resizing nodes vector.
 
 ### Security
