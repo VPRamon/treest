@@ -2,12 +2,12 @@
 #include "graph.hpp"  // Assuming your Graph and Node implementation
 
 using namespace vpr;
-using namespace vpr::graph;
+using namespace vpr::lightweight::graph;
 
 // Test fixture
 class GraphTest : public ::testing::Test {
 protected:
-    vpr::Graph<int> graph;
+    lightweight::Graph<int> graph;
 
     // Setup code executed before each test
     void SetUp() override {

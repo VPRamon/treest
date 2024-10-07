@@ -16,6 +16,7 @@ namespace vpr {
  */
 template <typename Node>
 class GraphImpl {
+protected:
 
     std::vector<Node> nodes;  ///< Vector to store all nodes
 

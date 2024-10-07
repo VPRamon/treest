@@ -14,6 +14,7 @@ set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include/digraph
     ${PROJECT_SOURCE_DIR}/include/graph_impl
     ${PROJECT_SOURCE_DIR}/include/graph
+    ${PROJECT_SOURCE_DIR}/include/lightweight_graph
 )
 
 add_library(Tree INTERFACE)

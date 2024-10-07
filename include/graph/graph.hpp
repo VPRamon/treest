@@ -22,14 +22,74 @@ class Graph : public GraphImpl<graph::Node<T>> {
 
 public:
 
+    using Base::GraphImpl;
+
+    /**
+     * @brief Copy constructor. Performs a deep copy of the graph.
+     *
+     * @param other The Graph to copy from.
+     */
+    Graph(const Graph& other) : Base(other)
+    { syncNodes(); }
+
+    /**
+     * @brief Move constructor. Transfers ownership of the graph from another Graph.
+     *
+     * @param other The Graph to move from.
+     */
+    Graph(Graph&& other) noexcept : Base(other)
+    { syncNodes(); }
+
+    /**
+     * @brief Move assignment operator. Transfers ownership of the graph from another Graph.
+     *
+     * @param other The Graph to move from.
+     * @return Reference to the assigned Graph.
+     */
+    Graph& operator=(Graph&& other) noexcept {
+        if (this != &other) {
+            Base::nodes = std::move(other.nodes);
+            syncNodes();
+        }
+        return *this;
+    }
+
     /**
      * @brief Adds a node with an optional value and no edges.
      *
      * @param value Optional value for the node. Defaults to `std::nullopt`.
      * @return The index of the newly added node.
      */
+    Graph operator=(Graph& other) {
+        Base::nodes = other.nodes;
+        syncNodes();
+    }
+
+    /**
+     * @brief Adds a new node to the graph.
+     *
+     * @tparam T Type of the value to store in the node.
+     * @param value Optional value for the node. Defaults to `std::nullopt`.
+     * @return The index of the newly added node.
+     */
     size_t addNode(std::optional<T> value = std::nullopt) {
-        return Base::template addNode(value);
+        size_t index = Base::size();
+        Base::nodes.emplace_back(this, index, std::move(value));
+        return index;
+    }
+
+    /**
+     * @brief Constructs a node with arguments and adds it to the graph.
+     *
+     * @tparam Args Types of arguments to construct the node.
+     * @param args Arguments needed to construct the node.
+     * @return The index of the newly added node.
+     */
+    template <typename... Args>
+    size_t emplace_node(Args&&... args {
+        size_t nodeIndex = nodes.size();
+        nodes.emplace_back(this nodeIndex, std::forward<Args>(args)...);
+        return nodeIndex;
     }
 
     /**
@@ -49,6 +109,15 @@ public:
         orig.addEdge(to);
         dest.addEdge(from);
     }
+
+private:
+
+    inline void syncNodes() {
+        for (auto& node : Base::nodes) {
+            node.graph(this);
+        }
+    }
+
 };
 
 } // namespace vpr
