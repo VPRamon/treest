@@ -8,8 +8,8 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(BUILD_TESTS "Build tests for the project" ON)
 
 set(INCLUDE_DIRS
-    ${PROJECT_SOURCE_DIR}/include/graph_template
-    ${PROJECT_SOURCE_DIR}/include/lightweight_graph
+    ${PROJECT_SOURCE_DIR}/include/graph
+    ${PROJECT_SOURCE_DIR}/include/graph/lightweight
     ${PROJECT_SOURCE_DIR}/include/lightweight_digraph
     ${PROJECT_SOURCE_DIR}/include/tree
     ${PROJECT_SOURCE_DIR}/include/tree/lightweight
