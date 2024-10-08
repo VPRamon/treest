@@ -8,69 +8,73 @@ namespace lightweight {
 namespace tree {
 
 /**
- * @class Node
- * @brief Represents a tree node that inherits from NodeImpl and supports parent-child relationships.
+ * @brief A specialized Node class with additional parent tracking.
  *
- * This class extends `NodeImpl` to represent a node in a tree structure. 
- * Each node maintains a reference to its parent and manages its children.
+ * This class extends the functionality of the base `templates::Node` class by adding the concept of
+ * a parent node. It stores the parent node's index and provides utility functions to check whether
+ * the node is a root, a leaf, and retrieve the number of children.
  *
- * @tparam T The type of the value stored in the node.
+ * @tparam T The type of data stored in the node.
  */
 template <typename T>
 class Node : public templates::Node<T, std::vector> {
     using Base = templates::Node<T, std::vector>;
 
-    size_t parent_id_;  ///< Index of the parent node
+    size_t parent_id_;  ///< Index of the parent node.
 
 public:
 
     /**
-     * @brief Constructs a tree node.
+     * @brief Constructs a Node object.
      *
-     * @param index Index of the node.
-     * @param parent_id Index of the parent node.
-     * @param v Optional value stored in the node. Defaults to `std::nullopt`.
+     * This constructor initializes a node with an index, a parent ID, and associated data.
+     *
+     * @param index The index of the node in the graph.
+     * @param parent_id The index of the parent node.
+     * @param data The value of type `T` stored in the node.
      */
     Node(size_t index, size_t parent_id, T data)
         : Base(index, data), parent_id_(parent_id)
     {}
 
     /**
-     * @brief Checks if the node is the root of the tree.
+     * @brief Checks if the node is the root node.
      *
-     * @return true If the node is the root (index 0), false otherwise.
+     * A node is considered the root if its index is 0.
+     *
+     * @return `true` if the node is the root, `false` otherwise.
      */
-    bool isRoot() const { return Base::index() == 0; }
+    inline bool isRoot() const { return Base::index() == 0; }
 
     /**
-     * @brief Checks if the node is a leaf (i.e., has no children).
+     * @brief Checks if the node is a leaf node.
      *
-     * @return true If the node has no children, false otherwise.
+     * A node is considered a leaf if it has no children (i.e., it is no outgoing edges).
+     *
+     * @return `true` if the node is a leaf, `false` otherwise.
      */
-    bool isLeaf() const { return Base::isolated(); }
+    inline bool isLeaf() const { return Base::isolated(); }
 
     /**
-     * @brief Retrieves the number of children this node has.
+     * @brief Retrieves the number of children of the node.
      *
-     * @return The number of children (degree of the node).
+     * The number of children corresponds to the degree of the node, i.e., the number of outgoing edges.
+     *
+     * @return The number of children.
      */
-    size_t nChildren() const { return Base::degree(); }
+    inline size_t nChildren() const { return Base::degree(); }
 
     /**
-     * @brief Retrieves the index of the parent node.
+     * @brief Gets the parent node's index.
      *
-     * @return The parent node's index.
-     */
-    size_t parentId() const { return parent_id_; }
-
-    /**
-     * @brief Gets a constant reference to the list of children.
+     * This method returns the index of the parent node.
      *
-     * @return const std::vector<size_t>& The vector of child node indices.
+     * @return The index of the parent node.
      */
-    //const auto& getChildren() const { return Base::edges(); }
+    inline size_t parentId() const { return parent_id_; }
 
 };
+
 
 } // namespace tree
 } // namespace lightweight

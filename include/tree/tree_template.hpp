@@ -11,13 +11,15 @@ namespace vpr {
 namespace templates {
 
 /**
- * @class Tree
- * @brief A tree structure that extends GraphImpl, providing node management and various traversal methods.
+ * @brief A Tree data structure template class.
  *
- * This class represents a tree, which is a hierarchical data structure. Each node has a single parent (except the root),
- * and can have multiple children. The tree supports different types of traversal, such as pre-order, post-order, and breadth-first.
+ * This class represents a tree structure where each node stores a value of type `T`.
+ * It provides methods to manipulate the tree, including adding child nodes, retrieving
+ * the root node, and performing various traversals (pre-order, post-order, breadth-first search).
  *
- * @tparam T The type of value stored in each node.
+ * @tparam Node_ Type of the node in the tree, which should have a nested DataType.
+ * @tparam Container The container type used to store edges, defaulting to std::vector.
+ * @tparam Allocator The allocator type used for managing memory, defaulting to std::allocator.
  */
 template <typename Node_,
          template <typename, typename> class Container = std::vector,
@@ -51,10 +53,14 @@ protected:
 public:
 
     /**
-     * @brief Constructs a tree with an optional root value and an initial node capacity.
+     * @brief Constructs a tree with a root value and an initial capacity for nodes.
      *
-     * @param root Optional value for the root node. Defaults to `std::nullopt`.
-     * @param initial_capacity Initial capacity for the tree's node vector. Defaults to 16.
+     * Creates a tree and initializes it with a root node containing the specified value.
+     * Optionally, the initial capacity of the underlying container can be specified to
+     * avoid reallocation overhead.
+     *
+     * @param root The value to be stored in the root node.
+     * @param initial_capacity The initial capacity for the tree's container. Defaults to 16.
      */
     explicit Tree(T root, size_t initial_capacity = 16) : Base(initial_capacity) {
         Base::emplace_node(0, std::move(root));
@@ -63,11 +69,12 @@ public:
     /**
      * @brief Adds a child node to the specified parent node.
      *
-     * @param parent_index The index of the parent node.
-     * @param value Optional value for the child node. Defaults to `std::nullopt`.
-     * @return The index of the newly added child node.
+     * This method adds a new node with the specified value as a child of the parent node
+     * identified by `parent_index`. The new node is connected to the parent node via an edge.
      *
-     * @throws std::out_of_range if the parentIndex is invalid.
+     * @param parent_index The index of the parent node.
+     * @param value The value to be stored in the child node.
+     * @return The index of the newly created child node.
      */
     size_t addChild(size_t parent_index, T value) {
         Base::validateIndex(parent_index);
@@ -76,11 +83,7 @@ public:
         return id;
     }
 
-    /**
-     * @brief Retrieves the root node of the tree.
-     *
-     * @return A constant reference to the root node.
-     */
+
     inline const Node& getRoot() const { return Base::getNode(0); }
 
     // *** Traversal Iterator Methods ***
@@ -111,56 +114,70 @@ public:
 
 private:
 
-
     /**
-     * @brief Internal helper function to create traversal iterators.
+     * @brief Helper method to create traversal iterators.
      *
-     * This function consolidates the creation of traversal iterators for both const
-     * and non-const instances, reducing code duplication.
+     * Creates an iterator for a specific traversal type. It is a helper function used
+     * internally to generate both begin and end iterators for different traversal strategies.
      *
-     * @tparam Traversal The traversal policy type.
-     * @tparam IsEnd `false` to create a begin iterator, `true` to create an end iterator.
-     * @tparam NodeType The type of node (`tree::Node<T>` or `const tree::Node<T>`).
-     * @tparam TreeType The type of tree (`Tree<T>` or `const Tree<T>`).
-     *
-     * @return A TreeIterator configured for the specified traversal.
+     * @tparam Traversal The type of traversal strategy (pre-order, post-order, BFS, etc.).
+     * @tparam IsEnd Boolean flag indicating whether this is the end iterator.
+     * @return A `TreeIterator` for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = Node, typename TreeType = Tree>
-    typename std::enable_if<IsEnd, TreeIterator<NodeType, TreeType, Traversal>>::type
+    template <typename Traversal, bool IsEnd>
+    typename std::enable_if<IsEnd, TreeIterator<Node, Tree, Traversal>>::type
     TraversalIterator() {
-        return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
+        return TreeIterator<Node, Tree, Traversal>(this, static_cast<size_t>(-1));
     }
 
-    template <typename Traversal, bool IsEnd, typename NodeType = Node, typename TreeType = Tree>
-    typename std::enable_if<!IsEnd, TreeIterator<NodeType, TreeType, Traversal>>::type
+    /**
+     * @brief Helper method to create traversal iterators (begin).
+     *
+     * This method creates a non-end traversal iterator. It is specialized based on
+     * the traversal strategy.
+     *
+     * @tparam Traversal The type of traversal strategy.
+     * @tparam IsEnd Whether this is an end iterator.
+     * @return A traversal iterator that starts at the beginning.
+     */
+    template <typename Traversal, bool IsEnd>
+    typename std::enable_if<!IsEnd, TreeIterator<Node, Tree, Traversal>>::type
     TraversalIterator() {
-        return TreeIterator<NodeType, TreeType, Traversal>(
+        return TreeIterator<Node, Tree, Traversal>(
             this, Base::empty() ? static_cast<size_t>(-1) : 0
         );
     }
 
     /**
-     * @brief Internal helper function to create const traversal iterators.
+     * @brief Helper method to create const traversal iterators.
      *
-     * This function consolidates the creation of const traversal iterators, reducing code duplication.
+     * Creates a constant traversal iterator for a specific traversal type.
+     * It is used internally to handle both begin and end traversal cases.
      *
-     * @tparam Traversal The traversal policy type.
-     * @tparam IsEnd `false` to create a begin iterator, `true` to create an end iterator.
-     * @tparam NodeType The type of node (`const tree::Node<T>`).
-     * @tparam TreeType The type of tree (`const Tree<T>`).
-     *
-     * @return A TreeIterator configured for the specified traversal.
+     * @tparam Traversal The type of traversal strategy (pre-order, post-order, BFS, etc.).
+     * @tparam IsEnd Boolean flag indicating whether this is the end iterator.
+     * @return A constant `TreeIterator` for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = const Node, typename TreeType = const Tree>
-    typename std::enable_if<IsEnd, TreeIterator<NodeType, TreeType, Traversal>>::type
+    template <typename Traversal, bool IsEnd>
+    typename std::enable_if<IsEnd, TreeIterator<const Node, const Tree, Traversal>>::type
     TraversalIterator() const {
-        return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
+        return TreeIterator<const Node, const Tree, Traversal>(this, static_cast<size_t>(-1));
     }
 
-    template <typename Traversal, bool IsEnd, typename NodeType = const Node, typename TreeType = const Tree>
-    typename std::enable_if<!IsEnd, TreeIterator<NodeType, TreeType, Traversal>>::type
+    /**
+     * @brief Helper method to create const traversal iterators (begin).
+     *
+     * This method creates a constant, non-end traversal iterator. It is specialized based
+     * on the traversal strategy.
+     *
+     * @tparam Traversal The type of traversal strategy.
+     * @tparam IsEnd Whether this is an end iterator.
+     * @return A constant traversal iterator that starts at the beginning.
+     */
+    template <typename Traversal, bool IsEnd>
+    typename std::enable_if<!IsEnd, TreeIterator<const Node, const Tree, Traversal>>::type
     TraversalIterator() const {
-        return TreeIterator<NodeType, TreeType, Traversal>(
+        return TreeIterator<const Node, const Tree, Traversal>(
             this, Base::empty() ? static_cast<size_t>(-1) : 0
         );
     }

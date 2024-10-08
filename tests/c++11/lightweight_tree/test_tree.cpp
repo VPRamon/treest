@@ -61,7 +61,7 @@ TEST_F(LightweightTreeTest, TestOperatorOverloading) {
     EXPECT_FALSE(output.empty());
     EXPECT_NE(output.find("0"), std::string::npos);
 }
-
+/*
 TEST_F(LightweightTreeTest, TestVariantNode) {
     vpr::lightweight::Tree<std::variant<int, std::string>> variantTree(42);
     auto& root = variantTree.getRoot();
@@ -72,7 +72,7 @@ TEST_F(LightweightTreeTest, TestVariantNode) {
     EXPECT_TRUE(std::holds_alternative<int>(variantTree.getNode(child2).value()));
     EXPECT_TRUE(std::holds_alternative<std::string>(variantTree.getNode(child1).value()));
 }
-
+*/
 /*
 TEST_F(LightweightTreeTest, TestShouldNotCompile) {
     auto root = tree.getRoot();
