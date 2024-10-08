@@ -21,7 +21,7 @@ const std::vector<std::string> IteratorTest::POSTORDER  = std::vector<std::strin
 const std::vector<std::string> IteratorTest::BFS        = std::vector<std::string> {"0", "1", "2", "3", "4", "5", "6"};
 const std::vector<std::string> IteratorTest::R_BFS      = std::vector<std::string> {"0", "2", "1", "6", "5", "4", "3"};
 const std::vector<std::string> IteratorTest::DFS = PREORDER;
-/*
+
 template <typename T>
 void CHECK_ITERATOR(T begin, T end, std::vector<std::string> expected) {
     std::vector<std::string> result;
@@ -61,7 +61,7 @@ TEST_F(IteratorTest, TestConstIterator) {
 TEST_F(IteratorTest, TestStandardAlgorithms) {
     auto it = std::find_if(
         tree.pre_order_begin(), tree.pre_order_end(),
-        [](const vpr::tree::Node<std::string>& node) {
+        [](const Node& node) {
             return node.value() == "6";
         }
     );
@@ -70,5 +70,4 @@ TEST_F(IteratorTest, TestStandardAlgorithms) {
     EXPECT_EQ(it->value(), "6");
 }
 
-*/
 #endif // TREE_TEST_HPP
