@@ -1,12 +1,7 @@
-#ifndef NODE_IMPL_HPP
-#define NODE_IMPL_HPP
+#ifndef NODE_INTERFACE_HPP
+#define NODE_INTERFACE_HPP
 
-#include <optional>
-#include <vector>
-#include <iostream>
-#include <variant>
 #include <memory>
-#include "type_traits.hpp"
 
 namespace vpr {
 
@@ -16,15 +11,15 @@ namespace vpr {
  * 
  * @tparam T The type of the optional value held by the node.
  */
-template <typename T>
-class NodeImpl {
+template <template <typename, typename> class Container, typename T, typename Allocator = std::allocator<T>>
+class NodeInterface {
 
-    size_t index_;                     ///< Index of the node
-    std::optional<T> value_;           ///< Optional value stored in the node
+    size_t index_;      ///< Index of the node
+    T value_;           ///< Optional value stored in the node
 
 protected:
 
-    std::vector<size_t> edges_;        ///< Vector of indices representing edges
+    Container<size_t, Allocator> edges_;        ///< Vector of indices representing edges
 
 public:
 
@@ -34,7 +29,7 @@ public:
      * @param index Index of the node.
      * @param v Optional value of type T (defaults to std::nullopt).
      */
-    NodeImpl(size_t index, std::optional<T> v = std::nullopt)
+    NodeInterface(size_t index, T v)
         : index_(index), value_(v), edges_()
     {}
 
@@ -46,10 +41,10 @@ public:
      * @param args Arguments to construct the value.
      */
     template <typename... Args>
-    NodeImpl(size_t index, Args&&... args)
+    NodeInterface(size_t index, Args&&... args)
         : index_(index), edges_()
     {
-        value_.emplace(std::forward<Args>(args)...);
+        value_(std::forward<Args>(args)...);
     }
 
     /**
@@ -64,28 +59,6 @@ public:
     }
 
     /**
-     * @brief Outputs the node's value or "None" if it has no value.
-     * 
-     * @param os The output stream.
-     * @param node The node to be printed.
-     * @return std::ostream& The output stream reference.
-     */
-    friend std::ostream& operator<<(std::ostream& os, const NodeImpl<T>& node) {
-        if (node.hasValue()) {
-            if constexpr (is_variant<T>::value) {
-                std::visit([&os](const auto& val) {
-                    os << val;
-                }, node.value());
-            } else {
-                os << node.value();
-            }
-        } else {
-            os << "None";
-        }
-        return os;
-    }
-
-    /**
      * @brief Gets the index of the node.
      * 
      * @return size_t The index of the node.
@@ -93,26 +66,12 @@ public:
     size_t index() const { return index_; }
 
     /**
-     * @brief Checks if the node holds a value.
-     * 
-     * @return true If the node has a value.
-     * @return false If the node does not have a value.
-     */
-    bool hasValue() const { return value_.has_value(); }
-
-    /**
      * @brief Gets a reference to the value stored in the node.
      * 
      * @throws std::bad_optional_access If the node has no value.
      * @return T& Reference to the value.
      */
-    T& value() {
-        if (hasValue()) {
-            return *value_;
-        } else {
-            throw std::bad_optional_access();
-        }
-    }
+    virtual T& value() { return value_; }
 
     /**
      * @brief Gets a constant reference to the value stored in the node.
@@ -120,51 +79,35 @@ public:
      * @throws std::bad_optional_access If the node has no value.
      * @return const T& Constant reference to the value.
      */
-    const T& value() const {
-        if (hasValue()) {
-            return *value_;
-        } else {
-            throw std::bad_optional_access();
-        }
-    }
+    virtual const T& value() const { return value_; }
 
     /**
      * @brief Dereferences the node to access its value.
      * 
      * @return T& Reference to the value.
      */
-    T& operator*() { return value(); }
+    virtual T& operator*() { return value_; }
 
     /**
      * @brief Dereferences the node to access its constant value.
      * 
      * @return const T& Constant reference to the value.
      */
-    const T& operator*() const { return value(); }
+    virtual const T& operator*() const { return value(); }
 
     /**
      * @brief Accesses the value through the arrow operator.
      * 
      * @return T* Pointer to the value.
      */
-    T* operator->() { return &(value()); }
+    virtual T* operator->() { return &(value()); }
 
     /**
      * @brief Accesses the constant value through the arrow operator.
      * 
      * @return const T* Pointer to the constant value.
      */
-    const T* operator->() const { return &(value()); }
-
-    /**
-     * @brief Returns a vector representing the path to another node by index.
-     * 
-     * @param index Target node index.
-     * @return std::vector<size_t> Vector representing the path (to be implemented).
-     */
-    std::vector<size_t> path(size_t index) const { return {/*TODO*/}; }
-
-protected:
+    virtual const  T* operator->() const { return &(value()); }
 
     /**
      * @brief Gets the degree (number of edges) of the node.

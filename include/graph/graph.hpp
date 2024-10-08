@@ -17,7 +17,7 @@ namespace vpr {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Graph : public GraphImpl<graph::Node<T>> {
+class Graph {
     using Base = GraphImpl<graph::Node<T>>;
 
 public:
