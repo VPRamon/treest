@@ -15,13 +15,6 @@ protected:
     void TearDown() override { }
 };
 
-// Test constructor with optional value
-TEST_F(SmartTreeNodeTest, ConstructorWithOptionalValue) {
-    Node<std::optional<int>> node(0, 0, 5);
-    EXPECT_EQ(node.index(), 0);
-    EXPECT_TRUE(node->has_value());
-    EXPECT_EQ(node->value(), 5);
-}
 
 // Test constructor without value
 TEST_F(SmartTreeNodeTest, ConstructorWithRawValue) {

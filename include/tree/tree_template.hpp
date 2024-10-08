@@ -126,12 +126,17 @@ private:
      * @return A TreeIterator configured for the specified traversal.
      */
     template <typename Traversal, bool IsEnd, typename NodeType = Node, typename TreeType = Tree>
-    TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() {
-        if constexpr (IsEnd) {
-            return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
-        } else {
-            return TreeIterator<NodeType, TreeType, Traversal>(this, Base::empty() ? static_cast<size_t>(-1) : 0);
-        }
+    typename std::enable_if<IsEnd, TreeIterator<NodeType, TreeType, Traversal>>::type
+    TraversalIterator() {
+        return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
+    }
+
+    template <typename Traversal, bool IsEnd, typename NodeType = Node, typename TreeType = Tree>
+    typename std::enable_if<!IsEnd, TreeIterator<NodeType, TreeType, Traversal>>::type
+    TraversalIterator() {
+        return TreeIterator<NodeType, TreeType, Traversal>(
+            this, Base::empty() ? static_cast<size_t>(-1) : 0
+        );
     }
 
     /**
@@ -147,12 +152,17 @@ private:
      * @return A TreeIterator configured for the specified traversal.
      */
     template <typename Traversal, bool IsEnd, typename NodeType = const Node, typename TreeType = const Tree>
-    TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() const {
-        if constexpr (IsEnd) {
-            return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
-        } else {
-            return TreeIterator<NodeType, TreeType, Traversal>(this, Base::empty() ? static_cast<size_t>(-1) : 0);
-        }
+    typename std::enable_if<IsEnd, TreeIterator<NodeType, TreeType, Traversal>>::type
+    TraversalIterator() const {
+        return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
+    }
+
+    template <typename Traversal, bool IsEnd, typename NodeType = const Node, typename TreeType = const Tree>
+    typename std::enable_if<!IsEnd, TreeIterator<NodeType, TreeType, Traversal>>::type
+    TraversalIterator() const {
+        return TreeIterator<NodeType, TreeType, Traversal>(
+            this, Base::empty() ? static_cast<size_t>(-1) : 0
+        );
     }
 };
 
