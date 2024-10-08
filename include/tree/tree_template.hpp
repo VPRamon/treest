@@ -22,7 +22,7 @@ namespace templates {
 template <typename Node_,
          template <typename, typename> class Container = std::vector,
          typename Allocator = std::allocator<typename Node_::DataType>>
-class TreeImpl : public GraphTemplate<Node_, Container, Allocator> {
+class Tree : public GraphTemplate<Node_, Container, Allocator> {
 public:
     using Node = Node_;
 
@@ -30,23 +30,23 @@ private:
     using Base = GraphTemplate<Node, Container, Allocator>;
     using T = typename Node::DataType;
     // Type aliases for traversal policies
-    using PreOrderTraversalType = PreOrderTraversal<TreeImpl>;
-    using ConstPreOrderTraversalType = PreOrderTraversal<const TreeImpl>;
+    using PreOrderTraversalType = PreOrderTraversal<Tree>;
+    using ConstPreOrderTraversalType = PreOrderTraversal<const Tree>;
 
-    using PostOrderTraversalType = PostOrderTraversal<Node, TreeImpl>;
-    using ConstPostOrderTraversalType = PostOrderTraversal<const Node, const TreeImpl>;
+    using PostOrderTraversalType = PostOrderTraversal<Node, Tree>;
+    using ConstPostOrderTraversalType = PostOrderTraversal<const Node, const Tree>;
 
-    using BFSTraversalType = BFSTraversal<TreeImpl>;
-    using ConstBFSTraversalType = BFSTraversal<const TreeImpl>;
-    using ReverseBFSTraversalType = ReverseBFSTraversal<TreeImpl>;
-    using ConstReverseBFSTraversalType = ReverseBFSTraversal<const TreeImpl>;
+    using BFSTraversalType = BFSTraversal<Tree>;
+    using ConstBFSTraversalType = BFSTraversal<const Tree>;
+    using ReverseBFSTraversalType = ReverseBFSTraversal<Tree>;
+    using ConstReverseBFSTraversalType = ReverseBFSTraversal<const Tree>;
 
-    using ReversePreOrderTraversalType = ReversePreOrderTraversal<TreeImpl>;
-    using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const TreeImpl>;
+    using ReversePreOrderTraversalType = ReversePreOrderTraversal<Tree>;
+    using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const Tree>;
 
 protected:
 
-    TreeImpl() = default;
+    Tree() = default;
 
 public:
 
@@ -56,7 +56,7 @@ public:
      * @param root Optional value for the root node. Defaults to `std::nullopt`.
      * @param initial_capacity Initial capacity for the tree's node vector. Defaults to 16.
      */
-    explicit TreeImpl(T root, size_t initial_capacity = 16) : Base(initial_capacity) {
+    explicit Tree(T root, size_t initial_capacity = 16) : Base(initial_capacity) {
         Base::emplace_node(0, std::move(root));
     }
 
@@ -125,7 +125,7 @@ private:
      *
      * @return A TreeIterator configured for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = Node, typename TreeType = TreeImpl>
+    template <typename Traversal, bool IsEnd, typename NodeType = Node, typename TreeType = Tree>
     TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() {
         if constexpr (IsEnd) {
             return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
@@ -146,7 +146,7 @@ private:
      *
      * @return A TreeIterator configured for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = const Node, typename TreeType = const TreeImpl>
+    template <typename Traversal, bool IsEnd, typename NodeType = const Node, typename TreeType = const Tree>
     TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() const {
         if constexpr (IsEnd) {
             return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));

@@ -12,6 +12,8 @@ set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include/lightweight_graph
     ${PROJECT_SOURCE_DIR}/include/lightweight_digraph
     ${PROJECT_SOURCE_DIR}/include/tree
+    ${PROJECT_SOURCE_DIR}/include/tree/lightweight
+    ${PROJECT_SOURCE_DIR}/include/tree/smart
     ${PROJECT_SOURCE_DIR}/include/tree/iterators
 )
 

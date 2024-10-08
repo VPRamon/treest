@@ -17,8 +17,8 @@ namespace smart {
  * @tparam T The type of value stored in each node.
  */
 template <typename T>
-class Tree : public templates::TreeImpl<tree::Node<T>, std::vector> {
-    using Base = templates::TreeImpl<tree::Node<T>, std::vector>;
+class Tree : public templates::Tree<tree::Node<T>, std::vector> {
+    using Base = templates::Tree<tree::Node<T>, std::vector>;
 public:
     using Node = tree::Node<T>;
 
