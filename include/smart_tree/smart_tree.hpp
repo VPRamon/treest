@@ -1,19 +1,18 @@
-#ifndef TREE_HPP
-#define TREE_HPP
+#ifndef SMART_TREE_HPP
+#define SMART_TREE_HPP
 
-#include "lightweight_tree_node.hpp"
+#include "smart_tree_node.hpp"
 #include "graph_template.hpp"
 #include "postorder_iterator.hpp"
 #include "preorder_iterator.hpp"
 #include "bfs_iterator.hpp"
-#include <type_traits>
 
 namespace vpr {
-namespace lightweight {
+namespace smart {
 
 /**
  * @class Tree
- * @brief A tree structure that extends GraphImpl, providing node management and various traversal methods.
+ * @brief A tree structure that extends Tree, providing node management and various traversal methods.
  *
  * This class represents a tree, which is a hierarchical data structure. Each node has a single parent (except the root),
  * and can have multiple children. The tree supports different types of traversal, such as pre-order, post-order, and breadth-first.
@@ -52,7 +51,37 @@ public:
      * @param initial_capacity Initial capacity for the tree's node vector. Defaults to 16.
      */
     explicit Tree(T root, size_t initial_capacity = 16) : Base(initial_capacity) {
-        Base::emplace_node(0, std::move(root));
+        Base::emplace_node(this, 0, std::move(root));
+    }
+
+    /**
+     * @brief Copy constructor. Performs a deep copy of the graph.
+     *
+     * @param other The Tree to copy from.
+     */
+    Tree(const Tree& other) : Base(other)
+    { syncNodes(); }
+
+    /**
+     * @brief Move constructor. Transfers ownership of the graph from another Tree.
+     *
+     * @param other The Tree to move from.
+     */
+    Tree(Tree&& other) noexcept : Base(other)
+    { syncNodes(); }
+
+    /**
+     * @brief Copy assignment operator. Performs a deep copy of the graph.
+     *
+     * @param other The Tree to copy from.
+     * @return Reference to the assigned Tree.
+     */
+    Tree& operator=(const Tree& other) {
+        if (this != &other) {
+            Base::nodes_ = other.nodes_;
+            syncNodes();
+        }
+        return *this;
     }
 
     /**
@@ -66,7 +95,7 @@ public:
      */
     size_t addChild(size_t parent_index, T value) {
         Base::validateIndex(parent_index);
-        size_t id = Base::emplace_node(parent_index, std::move(value));
+        size_t id = Base::emplace_node(this, parent_index, std::move(value));
         Base::addEdge(parent_index, id);
         return id;
     }
@@ -149,9 +178,15 @@ private:
             return TreeIterator<NodeType, TreeType, Traversal>(this, Base::empty() ? static_cast<size_t>(-1) : 0);
         }
     }
+
+    void syncNodes() {
+        for (Node& node : Base::nodes_) {
+            node.tree_ = this;
+        }
+    }
 };
 
-} // namespace lightweight
+} // namespace smart
 } // namespace vpr
 
-#endif // TREE_HPP
+#endif // SMART_TREE_HPP

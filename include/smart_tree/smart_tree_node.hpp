@@ -5,7 +5,7 @@
 
 namespace vpr {
 namespace smart {
-    template<typedef T> Tree;
+    template<typename T> class Tree;
 namespace tree {
 
 /**
@@ -20,10 +20,11 @@ namespace tree {
 template <typename T>
 class Node : public lightweight::tree::Node<T>
 {
-    friend template<typedef T> Tree;
+    friend Tree<T>;
+
     using Base = lightweight::tree::Node<T>;
 
-    Tree* tree_;
+    Tree<T>* tree_;
 
 public:
 
@@ -34,10 +35,31 @@ public:
      * @param parent_id Index of the parent node.
      * @param v Optional value stored in the node. Defaults to `std::nullopt`.
      */
-    Node(Tree* tree, size_t index, size_t parent_id, T data)
+    Node(size_t index, Tree<T>* tree, size_t parent_id, T data)
         : Base(index, parent_id, data), tree_(tree)
     {}
 
+    size_t addChild(T data) {
+        return tree_->addChild(Base::index(), data);
+    }
+
+    std::vector<std::reference_wrapper<Node>> getChildren() {
+        std::vector<std::reference_wrapper<Node>> children;
+        children.reserve(Base::nChildren());
+        for (size_t id : Base::edges()) {
+            children.emplace_back(tree_->getNode(id));
+        }
+        return children;
+    }
+
+    std::vector<const std::reference_wrapper<Node>> getChildren() const {
+        std::vector<std::reference_wrapper<Node>> children;
+        children.reserve(Base::nChildren());
+        for (size_t id : Base::edges()) {
+            children.emplace_back(tree_->getNode(id));
+        }
+        return children;
+    }
 };
 
 } // namespace tree
