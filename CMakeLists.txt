@@ -10,7 +10,7 @@ option(BUILD_TESTS "Build tests for the project" ON)
 set(INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include/graph
     ${PROJECT_SOURCE_DIR}/include/graph/lightweight
-    ${PROJECT_SOURCE_DIR}/include/lightweight_digraph
+    ${PROJECT_SOURCE_DIR}/include/digraph
     ${PROJECT_SOURCE_DIR}/include/tree
     ${PROJECT_SOURCE_DIR}/include/tree/lightweight
     ${PROJECT_SOURCE_DIR}/include/tree/smart

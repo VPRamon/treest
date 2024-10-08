@@ -1,6 +1,6 @@
 file(GLOB_RECURSE UNTI_TEST_SOURCES
     lightweight_graph/test_*.cpp
-    #lightweight_digraph/test_*.cpp
+    lightweight_digraph/test_*.cpp
     #lightweight_tree/test_*.cpp
     smart_tree/test_*.cpp
 )

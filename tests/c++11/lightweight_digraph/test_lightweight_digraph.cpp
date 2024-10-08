@@ -23,7 +23,7 @@ protected:
 // Test for adding nodes to the digraph
 TEST_F(DigraphTest, AddNode) {
     // Add a new node and verify its index
-    size_t newIndex = digraph.addNode(4);
+    size_t newIndex = digraph.emplace_node(4);
     EXPECT_EQ(newIndex, 3);
     EXPECT_EQ(digraph.size(), 4);
 }
@@ -105,7 +105,7 @@ TEST_F(DigraphTest, AddEdgeInvalidIndex) {
 // Test the size method
 TEST_F(DigraphTest, SizeMethod) {
     EXPECT_EQ(digraph.size(), 3);
-    digraph.addNode(10);
+    digraph.emplace_node(10);
     EXPECT_EQ(digraph.size(), 4);
 }
 

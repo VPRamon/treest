@@ -14,7 +14,7 @@ T getValue(int n) {
 }
 
 template <>
-std::string getValue<std::string>(int n) {
+inline std::string getValue<std::string>(int n) {
     return "Node" + std::to_string(n);
 }
 
