@@ -1,15 +1,14 @@
-#ifndef TREE_HPP
-#define TREE_HPP
+#ifndef TREE_IMPLEMENTATION_HPP
+#define TREE_IMPLEMENTATION_HPP
 
 #include "lightweight_tree_node.hpp"
 #include "graph_template.hpp"
 #include "postorder_iterator.hpp"
 #include "preorder_iterator.hpp"
 #include "bfs_iterator.hpp"
-#include <type_traits>
 
 namespace vpr {
-namespace lightweight {
+namespace templates {
 
 /**
  * @class Tree
@@ -20,28 +19,30 @@ namespace lightweight {
  *
  * @tparam T The type of value stored in each node.
  */
-template <typename T>
-class Tree : public GraphTemplate<tree::Node<T>, std::vector> {
+template <typename Node_,
+         template <typename, typename> class Container = std::vector,
+         typename Allocator = std::allocator<typename Node_::DataType>>
+class TreeImpl : public GraphTemplate<Node_, Container, Allocator> {
 public:
-    using Node = tree::Node<T>;
+    using Node = Node_;
 
 private:
-    using Base = GraphTemplate<Node, std::vector>;
-
+    using Base = GraphTemplate<Node, Container, Allocator>;
+    using T = typename Node::DataType;
     // Type aliases for traversal policies
-    using PreOrderTraversalType = PreOrderTraversal<Tree<T>>;
-    using ConstPreOrderTraversalType = PreOrderTraversal<const Tree<T>>;
+    using PreOrderTraversalType = PreOrderTraversal<TreeImpl>;
+    using ConstPreOrderTraversalType = PreOrderTraversal<const TreeImpl>;
 
-    using PostOrderTraversalType = PostOrderTraversal<tree::Node<T>, Tree<T>>;
-    using ConstPostOrderTraversalType = PostOrderTraversal<const tree::Node<T>, const Tree<T>>;
+    using PostOrderTraversalType = PostOrderTraversal<Node, TreeImpl>;
+    using ConstPostOrderTraversalType = PostOrderTraversal<const Node, const TreeImpl>;
 
-    using BFSTraversalType = BFSTraversal<Tree<T>>;
-    using ConstBFSTraversalType = BFSTraversal<const Tree<T>>;
-    using ReverseBFSTraversalType = ReverseBFSTraversal<Tree<T>>;
-    using ConstReverseBFSTraversalType = ReverseBFSTraversal<const Tree<T>>;
+    using BFSTraversalType = BFSTraversal<TreeImpl>;
+    using ConstBFSTraversalType = BFSTraversal<const TreeImpl>;
+    using ReverseBFSTraversalType = ReverseBFSTraversal<TreeImpl>;
+    using ConstReverseBFSTraversalType = ReverseBFSTraversal<const TreeImpl>;
 
-    using ReversePreOrderTraversalType = ReversePreOrderTraversal<Tree<T>>;
-    using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const Tree<T>>;
+    using ReversePreOrderTraversalType = ReversePreOrderTraversal<TreeImpl>;
+    using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const TreeImpl>;
 
 public:
 
@@ -51,7 +52,7 @@ public:
      * @param root Optional value for the root node. Defaults to `std::nullopt`.
      * @param initial_capacity Initial capacity for the tree's node vector. Defaults to 16.
      */
-    explicit Tree(T root, size_t initial_capacity = 16) : Base(initial_capacity) {
+    explicit TreeImpl(T root, size_t initial_capacity = 16) : Base(initial_capacity) {
         Base::emplace_node(0, std::move(root));
     }
 
@@ -76,7 +77,7 @@ public:
      *
      * @return A constant reference to the root node.
      */
-    inline const tree::Node<T>& getRoot() const { return Base::getNode(0); }
+    inline const Node& getRoot() const { return Base::getNode(0); }
 
     // *** Traversal Iterator Methods ***
     inline auto pre_order_begin() { return TraversalIterator<PreOrderTraversalType, false>(); }
@@ -120,7 +121,7 @@ private:
      *
      * @return A TreeIterator configured for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = tree::Node<T>, typename TreeType = Tree<T>>
+    template <typename Traversal, bool IsEnd, typename NodeType = Node, typename TreeType = TreeImpl>
     TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() {
         if constexpr (IsEnd) {
             return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));
@@ -141,7 +142,7 @@ private:
      *
      * @return A TreeIterator configured for the specified traversal.
      */
-    template <typename Traversal, bool IsEnd, typename NodeType = const tree::Node<T>, typename TreeType = const Tree<T>>
+    template <typename Traversal, bool IsEnd, typename NodeType = const Node, typename TreeType = const TreeImpl>
     TreeIterator<NodeType, TreeType, Traversal> TraversalIterator() const {
         if constexpr (IsEnd) {
             return TreeIterator<NodeType, TreeType, Traversal>(this, static_cast<size_t>(-1));

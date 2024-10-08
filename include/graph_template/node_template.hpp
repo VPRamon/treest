@@ -24,6 +24,8 @@ protected:
 
 public:
 
+    using DataType = T;
+
     /**
      * @brief Constructs a node with a given index and optional value.
      * 
