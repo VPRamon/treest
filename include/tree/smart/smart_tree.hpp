@@ -8,25 +8,29 @@ namespace vpr {
 namespace smart {
 
 /**
- * @class Tree
- * @brief A tree structure that extends Tree, providing node management and various traversal methods.
+ * @brief Represents a smart tree structure with nodes that can manage their children and interact with the tree.
+ * 
+ * The `Tree` class manages a collection of `Node` objects and provides methods for adding child nodes, 
+ * copying the tree, and moving the tree. It ensures that each node is aware of the tree it belongs to 
+ * through a `syncNodes` function.
  *
- * This class represents a tree, which is a hierarchical data structure. Each node has a single parent (except the root),
- * and can have multiple children. The tree supports different types of traversal, such as pre-order, post-order, and breadth-first.
- *
- * @tparam T The type of value stored in each node.
+ * @tparam T The type of data stored in the nodes of the tree.
  */
 template <typename T>
 class Tree : public templates::Tree<tree::Node<T>, std::vector> {
     using Base = templates::Tree<tree::Node<T>, std::vector>;
+
 public:
     using Node = tree::Node<T>;
 
     /**
-     * @brief Constructs a tree with an optional root value and an initial node capacity.
+     * @brief Constructs a Tree with an initial root node and an optional initial capacity.
+     * 
+     * This constructor creates a tree with a root node and reserves space for nodes based on 
+     * the provided initial capacity.
      *
-     * @param root Optional value for the root node. Defaults to `std::nullopt`.
-     * @param initial_capacity Initial capacity for the tree's node vector. Defaults to 16.
+     * @param root The value of type `T` to be stored in the root node.
+     * @param initial_capacity The initial capacity for the tree's node storage. Defaults to 16.
      */
     explicit Tree(T root, size_t initial_capacity = 16) {
         this->nodes_.reserve(initial_capacity);
@@ -34,26 +38,34 @@ public:
     }
 
     /**
-     * @brief Copy constructor. Performs a deep copy of the graph.
+     * @brief Copy constructor for the Tree.
+     * 
+     * This constructor creates a copy of the given tree and synchronizes the nodes
+     * to point to the correct tree instance.
      *
-     * @param other The Tree to copy from.
+     * @param other The tree to be copied.
      */
     Tree(const Tree& other) : Base(other)
     { syncNodes(); }
 
     /**
-     * @brief Move constructor. Transfers ownership of the graph from another Tree.
+     * @brief Move constructor for the Tree.
+     * 
+     * This constructor moves the contents of another tree into this one and synchronizes the nodes.
      *
-     * @param other The Tree to move from.
+     * @param other The tree to be moved.
      */
     Tree(Tree&& other) noexcept : Base(other)
     { syncNodes(); }
 
     /**
-     * @brief Copy assignment operator. Performs a deep copy of the graph.
+     * @brief Copy assignment operator for the Tree.
+     * 
+     * This operator allows assigning the contents of one tree to another. It copies all nodes 
+     * and synchronizes them to the new tree instance.
      *
-     * @param other The Tree to copy from.
-     * @return Reference to the assigned Tree.
+     * @param other The tree to be copied.
+     * @return A reference to the current tree after the copy operation.
      */
     Tree& operator=(const Tree& other) {
         if (this != &other) {
@@ -64,13 +76,14 @@ public:
     }
 
     /**
-     * @brief Adds a child node to the specified parent node.
+     * @brief Adds a child node to a parent node.
+     * 
+     * This method creates a new node with the given data and adds it as a child 
+     * to the node with the specified parent index.
      *
      * @param parent_index The index of the parent node.
-     * @param value Optional value for the child node. Defaults to `std::nullopt`.
+     * @param value The value of type `T` to be stored in the child node.
      * @return The index of the newly added child node.
-     *
-     * @throws std::out_of_range if the parentIndex is invalid.
      */
     size_t addChild(size_t parent_index, T value) {
         Base::validateIndex(parent_index);
@@ -79,8 +92,16 @@ public:
         return id;
     }
 
+    inline Node& getRoot() { return Base::getNode(0); }
+
 private:
 
+    /**
+     * @brief Synchronizes the nodes to ensure they reference the correct tree.
+     * 
+     * This method updates the internal pointer of each node to point to the current tree instance.
+     * It is used after copying or moving the tree to maintain proper node-tree relationships.
+     */
     void syncNodes() {
         for (Node& node : Base::nodes_) {
             node.tree_ = this;
