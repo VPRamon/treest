@@ -43,8 +43,11 @@ TEST_F( LightweightGraphTest, AddEdge) {
 
     // Check that the edge has been added to node 0
     Node& node0 = graph.getNode(0);
+    Node& node1 = graph.getNode(1);
     EXPECT_EQ(node0.degree(), 1);
+    EXPECT_EQ(node1.degree(), 1);
     EXPECT_EQ(node0.edges().at(0), 1);
+    EXPECT_EQ(node1.edges().at(0), 0);
 }
 
 // Test graph copy constructor

@@ -1,5 +1,5 @@
-#ifndef LIGHTWEIGHT_GRAPH_HPP
-#define LIGHTWEIGHT_GRAPH_HPP
+#ifndef LIGHTWEIGHT_DIGRAPH_HPP
+#define LIGHTWEIGHT_DIGRAPH_HPP
 
 #include "graph_template.hpp"
 #include "node_template.hpp"
@@ -8,17 +8,17 @@ namespace vpr {
 namespace lightweight {
 
 /**
- * @class Graph
- * @brief A directed graph implementation derived from Graph.
+ * @class Digraph
+ * @brief A directed graph implementation derived from Digraph.
  *
- * This class provides a specialization of Graph where each node 
+ * This class provides a specialization of Digraph where each node 
  * stores a value of type T. It allows efficient management of nodes 
  * and edges in the graph.
  *
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Graph {
+class Digraph {
 public:
     using Node = NodeTemplate<T, std::vector>;
 
@@ -29,36 +29,36 @@ private:
 public:
 
     /**
-     * @brief Constructs a Graph with an optional initial capacity for nodes.
+     * @brief Constructs a Digraph with an optional initial capacity for nodes.
      * 
      * @param initial_capacity Initial capacity for the nodes vector. Defaults to 16.
      */
-    explicit Graph(size_t initial_capacity = 16) : graph_impl_(initial_capacity)
+    explicit Digraph(size_t initial_capacity = 16) : graph_impl_(initial_capacity)
     { }
 
     /**
      * @brief Copy constructor. Performs a deep copy of the graph.
      *
-     * @param other The Graph to copy from.
+     * @param other The Digraph to copy from.
      */
-    Graph(const Graph& other) : graph_impl_(other.graph_impl_)
+    Digraph(const Digraph& other) : graph_impl_(other.graph_impl_)
     { }
 
     /**
-     * @brief Move constructor. Transfers ownership of the graph from another Graph.
+     * @brief Move constructor. Transfers ownership of the graph from another Digraph.
      *
-     * @param other The Graph to move from.
+     * @param other The Digraph to move from.
      */
-    Graph(Graph&& other) noexcept : graph_impl_(std::move(other.graph_impl_))
+    Digraph(Digraph&& other) noexcept : graph_impl_(std::move(other.graph_impl_))
     { }
 
     /**
      * @brief Copy assignment operator. Performs a deep copy of the graph.
      *
-     * @param other The Graph to copy from.
-     * @return Reference to the assigned Graph.
+     * @param other The Digraph to copy from.
+     * @return Reference to the assigned Digraph.
      */
-    virtual Graph& operator=(const Graph& other) {
+    virtual Digraph& operator=(const Digraph& other) {
         if (this != &other) {
             graph_impl_ = other.graph_impl_;
         }
@@ -66,12 +66,12 @@ public:
     }
 
     /**
-     * @brief Move assignment operator. Transfers ownership of the graph from another Graph.
+     * @brief Move assignment operator. Transfers ownership of the graph from another Digraph.
      *
-     * @param other The Graph to move from.
-     * @return Reference to the assigned Graph.
+     * @param other The Digraph to move from.
+     * @return Reference to the assigned Digraph.
      */
-    Graph& operator=(Graph&& other) noexcept {
+    Digraph& operator=(Digraph&& other) noexcept {
         if (this != &other) {
             graph_impl_ = std::move(other.graph_impl_);
         }
@@ -92,7 +92,6 @@ public:
      */
     void addEdge(size_t from, size_t to) {
         graph_impl_.addEdge(from, to);
-        graph_impl_.addEdge(to, from);
     }
 
     /**
@@ -206,7 +205,7 @@ public:
      * @param graph The graph to print.
      * @return Reference to the output stream.
      */
-    friend std::ostream& operator<<(std::ostream& os, const Graph<T>& graph) {
+    friend std::ostream& operator<<(std::ostream& os, const Digraph<T>& graph) {
         os << graph.graph_impl_;
         return os;
     }
@@ -216,4 +215,4 @@ public:
 } // namespace lightweight
 } // namespace vpr
 
-#endif // LIGHTWEIGHT_GRAPH_HPP
+#endif // LIGHTWEIGHT_DIGRAPH_HPP
