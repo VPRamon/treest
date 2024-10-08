@@ -44,6 +44,10 @@ private:
     using ReversePreOrderTraversalType = ReversePreOrderTraversal<TreeImpl>;
     using ConstReversePreOrderTraversalType = ReversePreOrderTraversal<const TreeImpl>;
 
+protected:
+
+    TreeImpl() = default;
+
 public:
 
     /**
