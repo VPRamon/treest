@@ -1,7 +1,7 @@
 #ifndef TEST_FIXTURE_HPP
 #define TEST_FIXTURE_HPP
 
-#include "tree.hpp"
+#include "lightweight_tree.hpp"
 #include <gtest/gtest.h>
 #include <string>
 
@@ -11,13 +11,15 @@
 //     / \   / \
 //    3   4 5   6
 
+using namespace vpr;
+using Tree = lightweight::Tree<std::string>;
+using Node = Tree::Node;
+
 class TestFixture : public ::testing::Test {
 protected:
-    vpr::Tree<std::string> tree;
+    Tree tree{"0"};
 
     virtual void SetUp() override {
-        // Set up a common tree structure for all tests
-        tree = vpr::Tree<std::string>("0");
 
         auto root = tree.getRoot();
         size_t child1_id = tree.addChild(root.index(), "1");

@@ -18,7 +18,7 @@ namespace graph {
  * @tparam T The type of the value stored in the node.
  */
 template <typename T>
-class Node : public vpr::lightweight::graph::Node<T> {
+class Node : public NodeTemplate<T> {
     using Base = vpr::lightweight::graph::Node<T>;
     friend Graph<T>;
 

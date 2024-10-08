@@ -54,7 +54,7 @@ public:
      */
     template <typename... Args>
     void emplace(Args&&... args) {
-        value_.emplace(std::forward<Args>(args)...);
+        value_ = T(std::forward<Args>(args)...);
     }
 
     /**

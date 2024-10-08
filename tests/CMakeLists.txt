@@ -3,6 +3,7 @@ add_subdirectory(external/googletest)
 file(GLOB_RECURSE UNTI_TEST_SOURCES
     lightweight_graph/test_*.cpp
     lightweight_digraph/test_*.cpp
+    lightweight_tree/test_*.cpp
     #digraph/test_*.cpp
     #test_*.cpp
 )

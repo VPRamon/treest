@@ -1,28 +1,29 @@
-#ifndef TREE_TEST_HPP
-#define TREE_TEST_HPP
+#ifndef LIGHTWEIGHT_TREE_TEST_HPP
+#define LIGHTWEIGHT_TREE_TEST_HPP
 
 #include "test_fixture.hpp"
+#include <variant>
 
-class TreeTest : public TestFixture { };
+class LightweightTreeTest : public TestFixture { };
 
-TEST_F(TreeTest, TestTreeInitialization) {
+TEST_F(LightweightTreeTest, TestTreeInitialization) {
     EXPECT_EQ(tree.size(), 7); // Root + 3 children + 5 grandchildren + initial reserve
     EXPECT_EQ(tree.getRoot().value(), "0");
 }
 
-TEST_F(TreeTest, TestAddChild) {
+TEST_F(LightweightTreeTest, TestAddChild) {
     size_t newChild = tree.addChild(tree.getRoot().index(), "7");
     EXPECT_EQ(tree.size(), 8);
     EXPECT_EQ(tree.getNode(newChild).value(), "7");
 }
 
-TEST_F(TreeTest, TestGetNode) {
+TEST_F(LightweightTreeTest, TestGetNode) {
     EXPECT_EQ(tree.getNode(0).value(), "0");
     EXPECT_THROW(tree.getNode(-1), std::out_of_range);
     EXPECT_THROW(tree.getNode(100), std::out_of_range);
 }
 
-TEST_F(TreeTest, TestNodeProperties) {
+TEST_F(LightweightTreeTest, TestNodeProperties) {
     auto& root = tree.getRoot();
     EXPECT_TRUE(root.isRoot());
     EXPECT_FALSE(root.isLeaf());
@@ -39,7 +40,7 @@ TEST_F(TreeTest, TestNodeProperties) {
     EXPECT_EQ(grandchild1.nChildren(), 0);
 }
 
-TEST_F(TreeTest, TestGetChildren) {
+TEST_F(LightweightTreeTest, TestGetChildren) {
     auto& child1 = tree.getNode(1);
     auto children = child1.getChildren();
     EXPECT_EQ(children.size(), 2);
@@ -47,14 +48,14 @@ TEST_F(TreeTest, TestGetChildren) {
     //EXPECT_EQ(children[1].get().value(), "4");
 }
 
-TEST_F(TreeTest, TestExceptionSafety) {
+TEST_F(LightweightTreeTest, TestExceptionSafety) {
     EXPECT_THROW(tree.getNode(-1), std::out_of_range);
     EXPECT_THROW(tree.getNode(100), std::out_of_range);
     //EXPECT_THROW(tree.getRoot().getChild(-1), std::out_of_range);
     //EXPECT_THROW(tree.getRoot().getChild(100), std::out_of_range);
 }
 
-TEST_F(TreeTest, TestOperatorOverloading) {
+TEST_F(LightweightTreeTest, TestOperatorOverloading) {
     std::stringstream ss;
     ss << tree;
     std::string output = ss.str();
@@ -62,10 +63,9 @@ TEST_F(TreeTest, TestOperatorOverloading) {
     EXPECT_NE(output.find("0"), std::string::npos);
 }
 
-TEST_F(TreeTest, TestVariantNode) {
-    vpr::Tree<std::variant<int, std::string>> variantTree(42);
+TEST_F(LightweightTreeTest, TestVariantNode) {
+    vpr::lightweight::Tree<std::variant<int, std::string>> variantTree(42);
     auto& root = variantTree.getRoot();
-    EXPECT_TRUE(root.hasValue());
 
     size_t child1 = variantTree.addChild(variantTree.getRoot().index(), std::string("Child1"));
     size_t child2 = variantTree.addChild(variantTree.getRoot().index(), 84);
@@ -75,11 +75,11 @@ TEST_F(TreeTest, TestVariantNode) {
 }
 
 /*
-TEST_F(TreeTest, TestShouldNotCompile) {
+TEST_F(LightweightTreeTest, TestShouldNotCompile) {
     auto root = tree.getRoot();
     size_t root_child_id = root.getChildren()[0];
     tree.addEdge(root_child_id, root.index());
 }
 */
 
-#endif // TREE_TEST_HPP
+#endif // LIGHTWEIGHT_TREE_TEST_HPP

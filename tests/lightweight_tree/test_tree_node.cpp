@@ -1,15 +1,14 @@
 #include <gtest/gtest.h>
-#include "tree_node.hpp"
-#include "tree.hpp"
+#include "lightweight_tree_node.hpp"
+#include "lightweight_tree.hpp"
 
 using namespace vpr;
-using namespace tree;
-
+using lightweight::tree::Node;
 
 // Test fixture
 class TreeNodeTest : public ::testing::Test {
 protected:
-    Tree<int> tree_;
+    lightweight::Tree<int> tree_{0};
 
     void SetUp() override { }
 
@@ -18,50 +17,35 @@ protected:
 
 // Test constructor with optional value
 TEST_F(TreeNodeTest, ConstructorWithOptionalValue) {
-    tree::Node<int> node(0, 0, 5);
+    Node<std::optional<int>> node(0, 0, 5);
     EXPECT_EQ(node.index(), 0);
-    EXPECT_TRUE(node.hasValue());
-    EXPECT_EQ(node.value(), 5);
+    EXPECT_TRUE(node->has_value());
+    EXPECT_EQ(node->value(), 5);
 }
 
 // Test constructor without value
-TEST_F(TreeNodeTest, ConstructorWithoutValue) {
-    tree::Node<int> node(1, 0);
+TEST_F(TreeNodeTest, ConstructorWithRawValue) {
+    Node<int> node(1, 0, 777);
     EXPECT_EQ(node.index(), 1);
-    EXPECT_FALSE(node.hasValue());
+    EXPECT_EQ(node.parentId(), 0);
+    EXPECT_EQ(node.value(), 777);
 }
 
 // Test emplace method
 TEST_F(TreeNodeTest, EmplaceValue) {
-    tree::Node<int> node(0, 0);
-    EXPECT_FALSE(node.hasValue());
+    Node<int> node(0, 0, 777);
 
+    EXPECT_EQ(node.value(), 777);
     node.emplace(10);
-    EXPECT_TRUE(node.hasValue());
     EXPECT_EQ(node.value(), 10);
 }
 
 // Test ostream operator (<<) for node with value
 TEST_F(TreeNodeTest, OutputStreamOperatorWithValue) {
-    tree::Node<int> node(3, 2, 15);
+    Node<int> node(3, 2, 15);
     std::stringstream output;
     output << node;
     EXPECT_EQ(output.str(), "15");
-}
-
-// Test ostream operator (<<) for node without value
-TEST_F(TreeNodeTest, OutputStreamOperatorWithoutValue) {
-    tree::Node<int> node(4, 2);
-    std::stringstream output;
-    output << node;
-    EXPECT_EQ(output.str(), "None");
-}
-
-
-// Test exception when accessing value in a node without a value
-TEST_F(TreeNodeTest, ValueAccessThrowsException) {
-    tree::Node<int> node(5, 1);
-    EXPECT_THROW(node.value(), std::bad_optional_access);
 }
 
 // Test exception when accessing an out of range node
@@ -71,14 +55,14 @@ TEST_F(TreeNodeTest, NodeAccessThrowsException) {
 
 // Test operator* dereferencing
 TEST_F(TreeNodeTest, DereferenceOperator) {
-    tree::Node<int> node(7, 1, 25);
+    Node<int> node(7, 1, 25);
     EXPECT_EQ(*node, 25);
 }
 
 // Test operator-> for access to value
 TEST_F(TreeNodeTest, ArrowOperator) {
     struct something { int a; int b; };
-    tree::Node<something> node(8, 11, something{30, 70});
+    Node<something> node(8, 11, something{30, 70});
     EXPECT_EQ(node->a, 30);
     EXPECT_EQ(node->b, 70);
 }

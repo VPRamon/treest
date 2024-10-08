@@ -1,14 +1,15 @@
 #ifndef TREE_HPP
 #define TREE_HPP
 
-#include "tree_node.hpp"
-#include "graph_impl.hpp"
+#include "lightweight_tree_node.hpp"
+#include "graph_template.hpp"
 #include "postorder_iterator.hpp"
 #include "preorder_iterator.hpp"
 #include "bfs_iterator.hpp"
 #include <type_traits>
 
 namespace vpr {
+namespace lightweight {
 
 /**
  * @class Tree
@@ -20,8 +21,12 @@ namespace vpr {
  * @tparam T The type of value stored in each node.
  */
 template <typename T>
-class Tree : public GraphImpl<tree::Node<T>> {
-    using Base = GraphImpl<tree::Node<T>>;
+class Tree : public GraphTemplate<tree::Node<T>, std::vector> {
+public:
+    using Node = tree::Node<T>;
+
+private:
+    using Base = GraphTemplate<Node, std::vector>;
 
     // Type aliases for traversal policies
     using PreOrderTraversalType = PreOrderTraversal<Tree<T>>;
@@ -44,25 +49,25 @@ public:
      * @brief Constructs a tree with an optional root value and an initial node capacity.
      *
      * @param root Optional value for the root node. Defaults to `std::nullopt`.
-     * @param initialCapacity Initial capacity for the tree's node vector. Defaults to 16.
+     * @param initial_capacity Initial capacity for the tree's node vector. Defaults to 16.
      */
-    explicit Tree(std::optional<T> root = std::nullopt, size_t initialCapacity = 16) : Base(initialCapacity) {
+    explicit Tree(T root, size_t initial_capacity = 16) : Base(initial_capacity) {
         Base::emplace_node(0, std::move(root));
     }
 
     /**
      * @brief Adds a child node to the specified parent node.
      *
-     * @param parentIndex The index of the parent node.
+     * @param parent_index The index of the parent node.
      * @param value Optional value for the child node. Defaults to `std::nullopt`.
      * @return The index of the newly added child node.
      *
      * @throws std::out_of_range if the parentIndex is invalid.
      */
-    size_t addChild(size_t parentIndex, std::optional<T> value = std::nullopt) {
-        Base::validateIndex(parentIndex);
-        size_t id = Base::emplace_node(parentIndex, std::move(value));
-        Base::getNode(parentIndex).addChild(id);
+    size_t addChild(size_t parent_index, T value) {
+        Base::validateIndex(parent_index);
+        size_t id = Base::emplace_node(parent_index, std::move(value));
+        Base::addEdge(parent_index, id);
         return id;
     }
 
@@ -146,6 +151,7 @@ private:
     }
 };
 
+} // namespace lightweight
 } // namespace vpr
 
 #endif // TREE_HPP

@@ -1,7 +1,7 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include "graph_template.hpp"
+#include "graph_node.hpp"
 #include "node_template.hpp"
 
 namespace vpr {
@@ -17,10 +17,10 @@ namespace vpr {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Graph {
-
-    using Node = NodeTemplate<T, std::vector>;
-    GraphTemplate<Node, std::vector> graph_impl_;
+class Graph : public GraphTemplate<graph::Node<T>, std::vector> {
+public:
+    using Node = graph::Node<T>;
+    using Base = GraphTemplate<Node, std::vector>;
 
 public:
 
@@ -29,7 +29,7 @@ public:
      *
      * @param other The Graph to copy from.
      */
-    Graph(const Graph& other) : graph_impl_(other.graph_impl_)
+    Graph(const Graph& other) : Base(other)
     { syncNodes(); }
 
     /**
@@ -86,7 +86,7 @@ public:
      * @return The index of the newly added node.
      */
     template <typename... Args>
-    size_t emplace_node(Args&&... args {
+    size_t emplace_node(Args&&... args) {
         size_t nodeIndex = nodes.size();
         nodes.emplace_back(this nodeIndex, std::forward<Args>(args)...);
         return nodeIndex;

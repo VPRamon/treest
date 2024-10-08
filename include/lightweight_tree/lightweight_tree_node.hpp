@@ -1,12 +1,10 @@
-#ifndef TREE_NODE_HPP
-#define TREE_NODE_HPP
+#ifndef LIGHTWEIGHT_TREE_NODE_HPP
+#define LIGHTWEIGHT_TREE_NODE_HPP
 
-#include "node_impl.hpp"
+#include "node_template.hpp"
 
 namespace vpr {
-
-template <typename U> class GraphImpl;
-
+namespace lightweight {
 namespace tree {
 
 /**
@@ -19,9 +17,8 @@ namespace tree {
  * @tparam T The type of the value stored in the node.
  */
 template <typename T>
-class Node : public NodeImpl<T> {
-    using Base = NodeImpl<T>;
-    friend GraphImpl<Node<T>>;
+class Node : public NodeTemplate<T, std::vector> {
+    using Base = NodeTemplate<T, std::vector>;
 
     size_t parent_id_;  ///< Index of the parent node
 
@@ -34,8 +31,8 @@ public:
      * @param parent_id Index of the parent node.
      * @param v Optional value stored in the node. Defaults to `std::nullopt`.
      */
-    Node(size_t index, size_t parent_id, std::optional<T> v = std::nullopt)
-        : Base(index, v), parent_id_(parent_id)
+    Node(size_t index, size_t parent_id, T data)
+        : Base(index, data), parent_id_(parent_id)
     {}
 
     /**
@@ -43,28 +40,28 @@ public:
      *
      * @return true If the node is the root (index 0), false otherwise.
      */
-    inline bool isRoot() const { return Base::index() == 0; }
+    bool isRoot() const { return Base::index() == 0; }
 
     /**
      * @brief Checks if the node is a leaf (i.e., has no children).
      *
      * @return true If the node has no children, false otherwise.
      */
-    inline bool isLeaf() const { return Base::isolated(); }
+    bool isLeaf() const { return Base::isolated(); }
 
     /**
      * @brief Retrieves the number of children this node has.
      *
      * @return The number of children (degree of the node).
      */
-    inline size_t nChildren() const { return Base::degree(); }
+    size_t nChildren() const { return Base::degree(); }
 
     /**
      * @brief Retrieves the index of the parent node.
      *
      * @return The parent node's index.
      */
-    inline size_t parentId() const { return parent_id_; }
+    size_t parentId() const { return parent_id_; }
 
     /**
      * @brief Gets a constant reference to the list of children.
@@ -83,6 +80,7 @@ public:
 };
 
 } // namespace tree
+} // namespace lightweight
 } // namespace vpr
 
-#endif // TREE_NODE_HPP
+#endif // LIGHTWEIGHT_TREE_NODE_HPP
