@@ -1,8 +1,8 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include "graph_impl.hpp"
-#include "graph_node.hpp"
+#include "graph_template.hpp"
+#include "node_template.hpp"
 
 namespace vpr {
 
@@ -18,7 +18,9 @@ namespace vpr {
  */
 template <typename T>
 class Graph {
-    using Base = GraphImpl<graph::Node<T>>;
+
+    using Node = NodeTemplate<T, std::vector>;
+    GraphTemplate<Node, std::vector> graph_impl_;
 
 public:
 
@@ -29,8 +31,8 @@ public:
      *
      * @param other The Graph to copy from.
      */
-    Graph(const Graph& other) : Base(other)
-    { syncNodes(); }
+    Graph(const Graph& other) : graph_impl_(other.graph_impl_)
+    {}
 
     /**
      * @brief Move constructor. Transfers ownership of the graph from another Graph.

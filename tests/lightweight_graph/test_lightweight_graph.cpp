@@ -1,52 +1,55 @@
 #include <gtest/gtest.h>
-#include "graph.hpp"  // Assuming your Graph and Node implementation
+#include "lightweight_graph.hpp"
 
 using namespace vpr;
-using namespace vpr::lightweight::graph;
+
+using Graph = lightweight::Graph<int>;
+using Node = Graph::Node;
 
 // Test fixture
-class GraphTest : public ::testing::Test {
+class  LightweightGraphTest : public ::testing::Test {
 protected:
-    lightweight::Graph<int> graph;
+    Graph graph;
 
     // Setup code executed before each test
     void SetUp() override {
         // Initialize with some nodes for use in various tests
-        graph.addNode(1);   // Node 0
-        graph.addNode(2);   // Node 1
-        graph.addNode(3);   // Node 2
+        graph.emplace_node(1);   // Node 0
+        graph.emplace_node(2);   // Node 1
+        graph.emplace_node(3);   // Node 2
     }
 };
 
-// Test for adding nodes to the graph
-TEST_F(GraphTest, AddNode) {
-    // Add a new node and verify its index
-    size_t newIndex = graph.addNode(4);
-    EXPECT_EQ(newIndex, 3);
-    EXPECT_EQ(graph.size(), 4);
-}
-
 // Test for adding nodes using emplace_node
-TEST_F(GraphTest, EmplaceNode) {
+TEST_F( LightweightGraphTest, EmplaceNode) {
     size_t newIndex = graph.emplace_node(5);
     EXPECT_EQ(newIndex, 3);
     EXPECT_EQ(graph.size(), 4);
     EXPECT_EQ(graph.getNode(3).value(), 5);
 }
 
+// Test for adding nodes to the graph
+TEST_F( LightweightGraphTest, AddNode) {
+    // Add a new node and verify its index
+    Node node(4);
+    size_t newIndex = graph.addNode(node);
+    EXPECT_EQ(newIndex, 3);
+    EXPECT_EQ(graph.size(), 4);
+}
+
 // Test adding an edge and checking node's edges
-TEST_F(GraphTest, AddEdge) {
+TEST_F( LightweightGraphTest, AddEdge) {
     graph.addEdge(0, 1); // Add an edge from node 0 to node 1
 
     // Check that the edge has been added to node 0
-    Node<int>& node0 = graph.getNode(0);
+    Node& node0 = graph.getNode(0);
     EXPECT_EQ(node0.degree(), 1);
     EXPECT_EQ(node0.edges().at(0), 1);
 }
 
 // Test graph copy constructor
-TEST_F(GraphTest, CopyConstructor) {
-    Graph<int> copiedGraph = graph;  // Use copy constructor
+TEST_F( LightweightGraphTest, CopyConstructor) {
+    Graph copiedGraph = graph;  // Use copy constructor
     EXPECT_EQ(copiedGraph.size(), graph.size());
 
     // Ensure nodes are the same
@@ -56,15 +59,15 @@ TEST_F(GraphTest, CopyConstructor) {
 }
 
 // Test graph move constructor
-TEST_F(GraphTest, MoveConstructor) {
-    Graph<int> movedGraph = std::move(graph);  // Use move constructor
+TEST_F( LightweightGraphTest, MoveConstructor) {
+    Graph movedGraph = std::move(graph);  // Use move constructor
     EXPECT_EQ(movedGraph.size(), 3);  // Ensure the graph has the correct size
     EXPECT_EQ(graph.size(), 0);  // Original graph should be empty after move
 }
 
 // Test graph copy assignment operator
-TEST_F(GraphTest, CopyAssignment) {
-    Graph<int> anotherGraph;
+TEST_F( LightweightGraphTest, CopyAssignment) {
+    Graph anotherGraph;
     anotherGraph = graph;  // Use copy assignment operator
 
     EXPECT_EQ(anotherGraph.size(), graph.size());
@@ -76,8 +79,8 @@ TEST_F(GraphTest, CopyAssignment) {
 }
 
 // Test graph move assignment operator
-TEST_F(GraphTest, MoveAssignment) {
-    Graph<int> anotherGraph;
+TEST_F( LightweightGraphTest, MoveAssignment) {
+    Graph anotherGraph;
     anotherGraph = std::move(graph);  // Use move assignment operator
 
     EXPECT_EQ(anotherGraph.size(), 3);
@@ -85,8 +88,8 @@ TEST_F(GraphTest, MoveAssignment) {
 }
 
 // Test getNode method and accessing valid/invalid nodes
-TEST_F(GraphTest, GetNode) {
-    Node<int>& node = graph.getNode(1);
+TEST_F( LightweightGraphTest, GetNode) {
+    Node& node = graph.getNode(1);
     EXPECT_EQ(node.value(), 2);
 
     // Test out-of-range access (should throw an exception)
@@ -94,20 +97,20 @@ TEST_F(GraphTest, GetNode) {
 }
 
 // Test adding edges with invalid node indices
-TEST_F(GraphTest, AddEdgeInvalidIndex) {
+TEST_F( LightweightGraphTest, AddEdgeInvalidIndex) {
     EXPECT_THROW(graph.addEdge(0, 5), std::out_of_range);  // Invalid "to" index
     EXPECT_THROW(graph.addEdge(5, 1), std::out_of_range);  // Invalid "from" index
 }
 
 // Test the size method
-TEST_F(GraphTest, SizeMethod) {
+TEST_F( LightweightGraphTest, SizeMethod) {
     EXPECT_EQ(graph.size(), 3);
     graph.addNode(10);
     EXPECT_EQ(graph.size(), 4);
 }
 
 // Test ostream operator for graph
-TEST_F(GraphTest, OutputStreamOperator) {
+TEST_F( LightweightGraphTest, OutputStreamOperator) {
     std::stringstream output;
     output << graph;
 
@@ -116,7 +119,7 @@ TEST_F(GraphTest, OutputStreamOperator) {
 }
 
 // Test iterator methods
-TEST_F(GraphTest, IteratorMethods) {
+TEST_F( LightweightGraphTest, IteratorMethods) {
     // Forward iteration over graph nodes
     int sum = 0;
     for (auto it = graph.begin(); it != graph.end(); ++it) {
@@ -131,4 +134,3 @@ TEST_F(GraphTest, IteratorMethods) {
     }
     EXPECT_EQ(sum, 6);  // Same result for reverse iteration
 }
-
