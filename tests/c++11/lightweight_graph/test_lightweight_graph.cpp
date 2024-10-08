@@ -31,7 +31,7 @@ TEST_F( LightweightGraphTest, EmplaceNode) {
 // Test for adding nodes to the graph
 TEST_F( LightweightGraphTest, AddNode) {
     // Add a new node and verify its index
-    Node node(4);
+    Node node(4, 777);
     size_t newIndex = graph.addNode(node);
     EXPECT_EQ(newIndex, 3);
     EXPECT_EQ(graph.size(), 4);
@@ -108,7 +108,7 @@ TEST_F( LightweightGraphTest, AddEdgeInvalidIndex) {
 // Test the size method
 TEST_F( LightweightGraphTest, SizeMethod) {
     EXPECT_EQ(graph.size(), 3);
-    graph.addNode(10);
+    graph.emplace_node(10);
     EXPECT_EQ(graph.size(), 4);
 }
 
