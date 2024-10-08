@@ -68,14 +68,7 @@ public:
      *
      * @return const std::vector<size_t>& The vector of child node indices.
      */
-    inline const auto& getChildren() const { return Base::edges(); }
-
-    /**
-     * @brief Adds a child to this node.
-     *
-     * @param child_id The index of the child node.
-     */
-    inline void addChild(size_t child_id) { Base::addEdge(child_id); }
+    //const auto& getChildren() const { return Base::edges(); }
 
 };
 

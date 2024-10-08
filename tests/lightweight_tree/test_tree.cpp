@@ -42,8 +42,7 @@ TEST_F(LightweightTreeTest, TestNodeProperties) {
 
 TEST_F(LightweightTreeTest, TestGetChildren) {
     auto& child1 = tree.getNode(1);
-    auto children = child1.getChildren();
-    EXPECT_EQ(children.size(), 2);
+    EXPECT_EQ(child1.edges().size(), 2);
     //EXPECT_EQ(children[0].get().value(), "3");
     //EXPECT_EQ(children[1].get().value(), "4");
 }

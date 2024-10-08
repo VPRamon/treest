@@ -25,7 +25,7 @@ struct ReversePush {
      */
     template <typename TreeType, typename ContainerType>
     void operator()(const TreeType& tree, ContainerType& container, size_t currentIndex) const {
-        const auto& children = tree.getNode(currentIndex).edges();
+        const auto& children = tree.getNode(currentIndex).getChildren();
         for (auto it = children.rbegin(); it != children.rend(); ++it) {
             container.push(*it);
         }
@@ -50,7 +50,7 @@ struct StraightPush {
      */
     template <typename TreeType, typename ContainerType>
     void operator()(const TreeType& tree, ContainerType& container, size_t currentIndex) const {
-        const auto& children = tree.getNode(currentIndex).edges();
+        const auto& children = tree.getNode(currentIndex).getChildren();
         for (const auto& child : children) {
             container.push(child);
         }
