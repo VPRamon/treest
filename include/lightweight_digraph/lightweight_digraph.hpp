@@ -18,10 +18,10 @@ namespace lightweight {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Digraph : public GraphTemplate<NodeTemplate<T, std::vector>, std::vector> {
+class Digraph : public Graph<templates::Node<T, std::vector>, std::vector> {
 public:
-    using Node = NodeTemplate<T, std::vector>;
-    using Base = GraphTemplate<Node, std::vector>;
+    using Node = templates::Node<T, std::vector>;
+    using Base = Graph<Node, std::vector>;
 
 public:
 

@@ -5,6 +5,7 @@
 #include <vector>
 
 namespace vpr {
+namespace templates {
 
 /**
  * @class NodeImpl
@@ -13,7 +14,7 @@ namespace vpr {
  * @tparam T The type of the optional value held by the node.
  */
 template <typename T, template <typename, typename> class Container = std::vector, typename Allocator = std::allocator<T>>
-class NodeTemplate {
+class Node {
 
     size_t index_;      ///< Index of the node
     T value_;           ///< Optional value stored in the node
@@ -32,7 +33,7 @@ public:
      * @param index Index of the node.
      * @param v Optional value of type T (defaults to std::nullopt).
      */
-    NodeTemplate(size_t index, T v)
+    Node(size_t index, T v)
         : index_(index), value_(v), edges_()
     {}
 
@@ -44,7 +45,7 @@ public:
      * @param args Arguments to construct the value.
      */
     template <typename... Args>
-    NodeTemplate(size_t index, Args&&... args)
+    Node(size_t index, Args&&... args)
         : index_(index), edges_(), value_(std::forward<Args>(args)...)
     { }
 
@@ -146,13 +147,14 @@ public:
      * @param graph The graph to print.
      * @return Reference to the output stream.
      */
-    friend std::ostream& operator<<(std::ostream& os, const NodeTemplate<T, Container, Allocator>& node) {
+    friend std::ostream& operator<<(std::ostream& os, const Node<T, Container, Allocator>& node) {
         os << node.value();
         return os;
     }
 
 };
 
+} // namespace templates
 } // namespace vpr
 
 #endif // NODE_TEMPLATE_HPP

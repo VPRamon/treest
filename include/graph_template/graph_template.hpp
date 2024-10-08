@@ -5,15 +5,16 @@
 #include <stdexcept>
 
 namespace vpr {
+namespace templates {
 
 /**
- * @class GraphTemplate
+ * @class Graph
  * @brief A base graph implementation using a vector to store nodes.
  *
  * @tparam Node The type of the nodes in the graph.
  */
 template <typename Node, template <typename, typename> class Container = std::vector, typename Allocator = std::allocator<Node>>
-class GraphTemplate {
+class Graph {
 protected:
 
     Container<Node, Allocator> nodes_;
@@ -21,37 +22,37 @@ protected:
 public:
 
     /**
-     * @brief Constructs a GraphTemplate with an optional initial capacity for nodes.
+     * @brief Constructs a Graph with an optional initial capacity for nodes.
      * 
      * @param initialCapacity Initial capacity for the nodes vector. Defaults to 16.
      */
-    explicit GraphTemplate(size_t initialCapacity = 16) {
+    explicit Graph(size_t initialCapacity = 16) {
         nodes_.reserve(initialCapacity);
     }
 
     /**
      * @brief Copy constructor. Performs a deep copy of the graph.
      *
-     * @param other The GraphTemplate to copy from.
+     * @param other The Graph to copy from.
      */
-    GraphTemplate(const GraphTemplate& other) : nodes_(other.nodes_)
+    Graph(const Graph& other) : nodes_(other.nodes_)
     { }
 
     /**
-     * @brief Move constructor. Transfers ownership of the graph from another GraphTemplate.
+     * @brief Move constructor. Transfers ownership of the graph from another Graph.
      *
-     * @param other The GraphTemplate to move from.
+     * @param other The Graph to move from.
      */
-    GraphTemplate(GraphTemplate&& other) noexcept : nodes_(std::move(other.nodes_))
+    Graph(Graph&& other) noexcept : nodes_(std::move(other.nodes_))
     { }
 
     /**
      * @brief Copy assignment operator. Performs a deep copy of the graph.
      *
-     * @param other The GraphTemplate to copy from.
-     * @return Reference to the assigned GraphTemplate.
+     * @param other The Graph to copy from.
+     * @return Reference to the assigned Graph.
      */
-    GraphTemplate& operator=(const GraphTemplate& other) {
+    Graph& operator=(const Graph& other) {
         if (this != &other) {
             nodes_ = other.nodes_;
         }
@@ -59,12 +60,12 @@ public:
     }
 
     /**
-     * @brief Move assignment operator. Transfers ownership of the graph from another GraphTemplate.
+     * @brief Move assignment operator. Transfers ownership of the graph from another Graph.
      *
-     * @param other The GraphTemplate to move from.
-     * @return Reference to the assigned GraphTemplate.
+     * @param other The Graph to move from.
+     * @return Reference to the assigned Graph.
      */
-    GraphTemplate& operator=(GraphTemplate&& other) noexcept {
+    Graph& operator=(Graph&& other) noexcept {
         if (this != &other) {
             nodes_ = std::move(other.nodes_);
         }
@@ -184,7 +185,7 @@ public:
      * @param graph The graph to print.
      * @return Reference to the output stream.
      */
-    friend std::ostream& operator<<(std::ostream& os, const GraphTemplate<Node, Container, Allocator>& graph) {
+    friend std::ostream& operator<<(std::ostream& os, const Graph<Node, Container, Allocator>& graph) {
         for (const auto& node : graph.nodes_) {
             os << node << " ";
         }
@@ -222,6 +223,7 @@ protected:
     }
 };
 
+} // namespace templates
 } // namespace vpr
 
 #endif // GRAPH_TEMPLATE_HPP
