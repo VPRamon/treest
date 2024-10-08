@@ -1,30 +1,303 @@
 # VPR Data Structures Library
 
-The **VPR Data Structures Library** is a lightweight and versatile C++ library for creating and manipulating various graph and tree data structures. It provides implementations for directed graphs, undirected graphs, trees, and offers several traversal algorithms. The library is designed with modern C++ features, ensuring efficiency and ease of integration.
+The **VPR Data Structures Library** is a lightweight and versatile C++ library designed for creating and manipulating various tree and graph data structures. It provides efficient implementations for trees and graphs, along with multiple traversal algorithms. The library is built with modern C++ features, ensuring high performance and ease of integration.
+
+## Table of Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Getting Started](#getting-started)
+- [Library Structure](#library-structure)
+  - [Lightweight Implementation](#lightweight-implementation)
+  - [Smart Implementation](#smart-implementation)
+  - [Templates Namespace](#templates-namespace)
+- [Usage Examples](#usage-examples)
+  - [Lightweight Tree](#lightweight-tree)
+  - [Smart Tree](#smart-tree)
+  - [Customizing with Templates](#customizing-with-templates)
+- [When to Use Each Implementation](#when-to-use-each-implementation)
+- [Building and Running Tests](#building-and-running-tests)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgments](#acknowledgments)
 
 ## Features
 
-- **Generic Graph and Tree Structures**: Supports creating directed graphs, undirected graphs, and trees with customizable node types.
+- **Generic Tree Structures**: Create trees with customizable node types.
 - **Traversal Algorithms**: Includes pre-order, post-order, breadth-first, and reverse traversals for trees.
-- **Iterator Support**: Provides iterator classes for easy and efficient traversal of data structures.
-- **Header-Only Library**: Implemented as a header-only library for simple integration into existing projects.
-- **Modern C++**: Utilizes C++17 and C++17 features like templates, `std::optional`, and `constexpr` for enhanced performance and usability.
+- **Iterator Support**: Provides iterator classes for easy and efficient traversal.
+- **Lightweight Implementation**: Minimal overhead, ideal for performance-critical applications.
+- **Smart Implementation**: Nodes are aware of their parent tree, enabling node-specific operations.
+- **Customizable via Templates**: Use the `templates` namespace to create custom structures.
+- **Header-Only Library**: Easy to integrate into existing projects.
+- **Modern C++**: Utilizes C++11 features like templates and smart pointers for enhanced performance.
 
 ## Requirements
 
-- **C++17** or later (C++17 recommended for full feature support)
+- **C++11** or later (C++17 recommended for full feature support)
 - **CMake** 3.10 or later (for building tests)
-- **Google Test** (included as a submodule for unit testing)
+- **Google Test** (for unit testing)
 
-## Building the Project
+## Getting Started
 
-The library is header-only, so you can include it directly in your project without building. However, if you want to run the unit tests or examples, follow these steps:
+Since the library is header-only, you can include the necessary headers directly in your project. To explore the full capabilities, including running tests and examples, follow the instructions below.
+
+## Library Structure
+
+The library is organized into several namespaces and implementations to cater to different use cases and performance requirements.
+
+### Lightweight Implementation
+
+- **Namespace**: `vpr::lightweight`
+- **Purpose**: Provides a minimalistic tree implementation with low overhead.
+- **Use Case**: Ideal for performance-critical applications where you need efficient tree operations without extra features.
+
+### Smart Implementation
+
+- **Namespace**: `vpr::smart`
+- **Purpose**: Extends the lightweight implementation by making nodes aware of their parent tree.
+- **Use Case**: Suitable when you need nodes to perform operations like adding children directly, or when node-tree interaction is required.
+
+### Templates Namespace
+
+- **Namespace**: `vpr::templates`
+- **Purpose**: Contains base templates for creating customized data structures.
+- **Use Case**: Use this namespace when you need to create custom structures tailored to specific requirements not covered by the lightweight or smart implementations.
+
+## Usage Examples
+
+### Lightweight Tree
+
+**Header Files Required**:
+
+```cpp
+#include "lightweight_tree_node.hpp"
+#include "tree_implementation.hpp"
+```
+
+**Example**:
+
+```cpp
+#include "lightweight_tree_node.hpp"
+#include "tree_implementation.hpp"
+#include <iostream>
+
+int main() {
+    // Create a tree with root value 1
+    vpr::templates::Tree<vpr::templates::LightweightTreeNode<int>> tree(1);
+
+    // Add children to the root node
+    size_t child1 = tree.addChild(0, 2);
+    size_t child2 = tree.addChild(0, 3);
+
+    // Add a grandchild
+    tree.addChild(child1, 4);
+
+    // Traverse the tree using pre-order traversal
+    std::cout << "Pre-order traversal:" << std::endl;
+    for (auto it = tree.pre_order_begin(); it != tree.pre_order_end(); ++it) {
+        std::cout << it->value() << " ";
+    }
+    // Output: Pre-order traversal:
+    //         1 2 4 3
+
+    return 0;
+}
+```
+
+**Usage Context**:
+
+- Use the lightweight tree when you require high performance and minimal memory overhead.
+- Suitable for applications where nodes don't need to interact with the tree directly.
+
+### Smart Tree
+
+**Header Files Required**:
+
+```cpp
+#include "smart_tree_node.hpp"
+#include "smart_tree.hpp"
+```
+
+**Example**:
+
+```cpp
+#include "smart_tree.hpp"
+#include <iostream>
+
+int main() {
+    // Create a smart tree with root value "root"
+    vpr::smart::Tree<std::string> tree("root");
+
+    // Add children using node methods
+    auto& root = tree.getRoot();
+    size_t childIndex1 = root.addChild("child1");
+    size_t childIndex2 = root.addChild("child2");
+
+    // Add a grandchild
+    auto& child1 = tree.getNode(childIndex1);
+    child1.addChild("grandchild1");
+
+    // Traverse the tree recursively
+    std::function<void(const vpr::smart::tree::Node<std::string>&)> traverse;
+    traverse = [&](const vpr::smart::tree::Node<std::string>& node) {
+        std::cout << node.value() << " ";
+        for (const auto& childRef : node.getChildren()) {
+            traverse(childRef.get());
+        }
+    };
+
+    std::cout << "Recursive traversal:" << std::endl;
+    traverse(root);
+    // Output: Recursive traversal:
+    //         root child1 grandchild1 child2
+
+    return 0;
+}
+```
+
+**Usage Context**:
+
+- Use the smart tree when you need nodes to interact with the tree, such as adding children directly from a node.
+- Ideal for scenarios where node-level operations are frequent, and convenience is preferred over minimal overhead.
+
+### Customizing with Templates
+
+**Header Files Required**:
+
+```cpp
+#include "node.hpp"
+#include "tree_template.hpp"
+```
+
+**Example**:
+
+Suppose you need a tree where each node keeps track of additional metadata, such as a timestamp.
+
+**Custom Node Class**:
+
+```cpp
+#include "node.hpp"
+#include <chrono>
+
+template <typename T>
+class CustomNode : public vpr::templates::Node<T, std::vector> {
+    using Base = vpr::templates::Node<T, std::vector>;
+
+    std::chrono::time_point<std::chrono::system_clock> timestamp_;
+
+public:
+    CustomNode(size_t index, T data)
+        : Base(index, data), timestamp_(std::chrono::system_clock::now()) {}
+
+    auto getTimestamp() const { return timestamp_; }
+};
+```
+
+**Custom Tree Class**:
+
+```cpp
+#include "tree_template.hpp"
+
+template <typename T>
+class CustomTree : public vpr::templates::Tree<CustomNode<T>, std::vector> {
+    using Base = vpr::templates::Tree<CustomNode<T>, std::vector>;
+
+public:
+    explicit CustomTree(T rootValue) {
+        this->emplace_node(0, std::move(rootValue));
+    }
+
+    size_t addChild(size_t parentIndex, T value) {
+        this->validateIndex(parentIndex);
+        size_t id = this->emplace_node(std::move(value));
+        this->addEdge(parentIndex, id);
+        return id;
+    }
+};
+```
+
+**Usage**:
+
+```cpp
+#include <iostream>
+
+int main() {
+    CustomTree<std::string> tree("root");
+
+    // Add children
+    size_t child1 = tree.addChild(0, "child1");
+    size_t child2 = tree.addChild(0, "child2");
+
+    // Access custom node properties
+    auto& node = tree.getNode(child1);
+    std::cout << "Node value: " << node.value() << std::endl;
+    std::cout << "Timestamp: " << std::chrono::system_clock::to_time_t(node.getTimestamp()) << std::endl;
+
+    return 0;
+}
+```
+
+**Usage Context**:
+
+- Use the templates namespace when you need to create a custom tree or graph structure with specific node properties or behaviors.
+- Ideal for applications requiring specialized data structures not provided by the default implementations.
+
+## When to Use Each Implementation
+
+### Lightweight Implementation
+
+- **When to Use**:
+  - Performance-critical applications.
+  - Memory usage needs to be minimal.
+  - Nodes do not need to interact with the tree directly.
+
+- **Advantages**:
+  - Minimal overhead.
+  - High performance.
+
+- **Disadvantages**:
+  - Less convenient for node-level operations.
+  - Nodes are not aware of the tree.
+
+### Smart Implementation
+
+- **When to Use**:
+  - Applications where nodes need to perform operations like adding children.
+  - When node-tree interaction enhances code readability and maintainability.
+
+- **Advantages**:
+  - Nodes can interact with the tree.
+  - More convenient for complex tree manipulations.
+
+- **Disadvantages**:
+  - Slightly more overhead than the lightweight implementation.
+  - May not be as performant in tight loops or performance-critical sections.
+
+### Customizing with Templates
+
+- **When to Use**:
+  - Specific requirements not met by the provided implementations.
+  - Need to extend node functionalities or store additional data.
+
+- **Advantages**:
+  - Complete control over the data structure.
+  - Can tailor the implementation to fit exact needs.
+
+- **Disadvantages**:
+  - Requires more effort to set up.
+  - Potential for increased complexity.
+
+## Building and Running Tests
+
+The library includes a comprehensive set of unit tests using Google Test. To build and run the tests:
 
 1. **Clone the repository**:
 
    ```bash
-   git clone git@github.com:VPRamon/treest.git
-   cd treest
+   git clone https://github.com/YourUsername/YourRepository.git
+   cd YourRepository
    ```
 
 2. **Initialize submodules** (if any):
@@ -52,138 +325,13 @@ The library is header-only, so you can include it directly in your project witho
    cmake --build .
    ```
 
-## Running Tests
+6. **Run the tests**:
 
-After building the project, you can run the unit tests using CTest:
+   ```bash
+   ctest -V
+   ```
 
-```bash
-ctest -V
-```
-
-## Usage Examples
-
-### Creating a Tree and Adding Nodes
-
-```cpp
-#include "tree.hpp"
-#include <iostream>
-
-int main() {
-    vpr::Tree<int> tree(1); // Create a tree with root value 1
-
-    // Add children to the root node
-    size_t child1 = tree.addChild(0, 2);
-    size_t child2 = tree.addChild(0, 3);
-
-    // Add a grandchild
-    tree.addChild(child1, 4);
-
-    // Traverse the tree using pre-order traversal
-    for (const auto& node : tree) {
-        std::cout << node.value().value_or(-1) << " ";
-    }
-    // Output: 1 2 4 3
-
-    return 0;
-}
-```
-
-### Working with Directed Graphs
-
-```cpp
-#include "digraph.hpp"
-#include <iostream>
-
-int main() {
-    vpr::Digraph<int> graph;
-
-    // Add nodes to the graph
-    size_t nodeA = graph.addNode(1);
-    size_t nodeB = graph.addNode(2);
-    size_t nodeC = graph.addNode(3);
-
-    // Add directed edges
-    graph.addEdge(nodeA, nodeB);
-    graph.addEdge(nodeB, nodeC);
-
-    // Iterate over the nodes
-    for (const auto& node : graph) {
-        std::cout << "Node " << node.value().value_or(-1) << " has edges to: ";
-        for (auto edge : node.outEdges()) {
-            std::cout << graph.getNode(edge).value().value_or(-1) << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    return 0;
-}
-```
-
-### Using Iterators for Traversal
-
-```cpp
-#include "tree.hpp"
-#include <iostream>
-
-int main() {
-    vpr::Tree<std::string> tree("root");
-
-    // Add children
-    size_t child1 = tree.addChild(0, "child1");
-    size_t child2 = tree.addChild(0, "child2");
-    tree.addChild(child1, "grandchild1");
-
-    // Pre-order traversal
-    std::cout << "Pre-order traversal:" << std::endl;
-    for (auto it = tree.pre_order_begin(); it != tree.pre_order_end(); ++it) {
-        std::cout << it->value().value_or("nil") << std::endl;
-    }
-
-    // Post-order traversal
-    std::cout << "\nPost-order traversal:" << std::endl;
-    for (auto it = tree.post_order_begin(); it != tree.post_order_end(); ++it) {
-        std::cout << it->value().value_or("nil") << std::endl;
-    }
-
-    return 0;
-}
-```
-
-## Documentation
-
-### Graph Structures
-
-- **vpr::Graph<T>**: Represents an undirected graph where edges are bidirectional.
-- **vpr::Digraph<T>**: Represents a directed graph with edges having a direction from one node to another.
-
-### Tree Structure
-
-- **vpr::Tree<T>**: Represents a tree data structure with nodes that can have multiple children but only one parent.
-
-#### Key Methods for `Tree<T>`:
-
-- **addChild(size_t parentIndex, std::optional<T> value = std::nullopt)**: Adds a child to the specified parent node.
-- **getRoot() const**: Retrieves the root node of the tree.
-- **Traversal Methods**:
-  - **pre_order_begin() / pre_order_end()**: Iterators for pre-order traversal.
-  - **post_order_begin() / post_order_end()**: Iterators for post-order traversal.
-  - **bfs_begin() / bfs_end()**: Iterators for breadth-first traversal.
-
-### Node Classes
-
-- **vpr::graph::Node<T>**: Node class for undirected graphs.
-- **vpr::digraph::Node<T>**: Node class for directed graphs, with methods to access incoming and outgoing edges.
-- **vpr::tree::Node<T>**: Node class for trees, with methods to access parent and child nodes.
-
-### Traversal Iterators
-
-The library provides iterator classes to traverse trees using different algorithms:
-
-- **PreOrderTraversal**: Traverse nodes in pre-order.
-- **PostOrderTraversal**: Traverse nodes in post-order.
-- **BFSTraversal**: Traverse nodes in breadth-first order.
-- **ReverseBFSTraversal**: Traverse nodes in reverse breadth-first order.
-- **ReversePreOrderTraversal**: Traverse nodes in reverse pre-order.
+   You should see output indicating the status of each test case.
 
 ## Contributing
 
@@ -192,10 +340,11 @@ Contributions are welcome! If you have ideas for improvements or find bugs, feel
 ### Steps to Contribute
 
 1. **Fork the repository** on GitHub.
+
 2. **Clone your fork**:
 
    ```bash
-   git clone git@github.com:VPRamon/treest.git
+   git clone https://github.com/YourUsername/YourRepository.git
    ```
 
 3. **Create a new branch** for your feature or bugfix:
@@ -220,8 +369,9 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## Contact
 
-For any questions or suggestions, feel free to contact the maintainer at [vallespuigramon@gmail.co](mailto:vallespuigramon@gmail.co).
+For any questions or suggestions, feel free to contact the maintainer at [vallespuigramon@gmail.com](mailto:vallespuigramon@gmail.com).
 
----
+## Acknowledgments
 
-Thank you for using the VPR Data Structures Library! I hope it serves your needs for efficient and flexible data structure implementations in C++.
+- **Contributors**: Thank you to all contributors who have helped improve this library.
+- **Community**: Appreciation to the C++ community for providing resources and inspiration for this project.
