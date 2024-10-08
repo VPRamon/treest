@@ -24,15 +24,13 @@ class Graph {
 
 public:
 
-    using Base::GraphImpl;
-
     /**
      * @brief Copy constructor. Performs a deep copy of the graph.
      *
      * @param other The Graph to copy from.
      */
     Graph(const Graph& other) : graph_impl_(other.graph_impl_)
-    {}
+    { syncNodes(); }
 
     /**
      * @brief Move constructor. Transfers ownership of the graph from another Graph.

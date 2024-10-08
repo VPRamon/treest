@@ -137,7 +137,6 @@ public:
      */
     bool isolated() const { return edges_.empty(); }
 
-
     /**
      * @brief Overloads the output stream operator to print all nodes in the graph.
      *

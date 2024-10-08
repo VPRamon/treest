@@ -71,10 +71,6 @@ public:
         return *this;
     }
 
-    size_t addNode(Node node) {
-        return this->emplace_node(node.value());
-    }
-
     /**
      * @brief Constructs a node with arguments and adds it to the graph.
      *
@@ -194,6 +190,8 @@ public:
         }
         return os;
     }
+
+protected:
 
     /**
      * @brief Adds a directed edge from one node to another.
