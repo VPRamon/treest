@@ -17,8 +17,8 @@ namespace tree {
  * @tparam T The type of data stored in the node.
  */
 template <typename T>
-class Node : public templates::Node<T, std::vector> {
-    using Base = templates::Node<T, std::vector>;
+class Node : public templates::Node<T, size_t, std::vector> {
+    using Base = templates::Node<T, size_t, std::vector>;
 
     size_t parent_id_;  ///< Index of the parent node.
 

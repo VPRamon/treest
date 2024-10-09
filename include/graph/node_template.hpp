@@ -10,35 +10,38 @@ namespace templates {
 /**
  * @brief A template class representing a graph node with an optional value and edges.
  * 
- * This class defines a generic node structure, which holds a value of type `T` and 
+ * This class defines a generic node structure, which holds a value of type `Data` and 
  * manages its connections (edges) using a container. The node is designed to be 
  * flexible by allowing custom containers and allocators for edge storage.
  * 
- * @tparam T Type of the value stored in the node.
+ * @tparam Data Type of the value stored in the node.
  * @tparam Container Container type for storing edges, default is `std::vector`.
- * @tparam Allocator Allocator type for managing memory, default is `std::allocator<T>`.
+ * @tparam Allocator Allocator type for managing memory, default is `std::allocator<Data>`.
  */
-template <typename T, template <typename, typename> class Container = std::vector, typename Allocator = std::allocator<T>>
+template <typename Data,
+          typename Edge,
+          template <typename, typename> class Container = std::vector,
+          typename Allocator = std::allocator<Edge>>
 class Node {
 
     size_t index_;      ///< Index of the node.
-    T value_;           ///< Value stored in the node.
+    Data value_;           ///< Value stored in the node.
 
 protected:
-    Container<size_t, Allocator> edges_; ///< Container holding the indices of edges.
+    Container<Edge, Allocator> edges_; ///< Container holding the indices of edges.
 
 public:
 
-    using DataType = T; ///< Alias for the type of data stored in the node.
+    using DataType = Data; ///< Alias for the type of data stored in the node.
 
     /**
      * @brief Constructs a node with a given index and a value.
      * 
-     * @tparam U Type of the value, defaulting to `T`.
+     * @tparam U Type of the value, defaulting to `Data`.
      * @param index Index of the node.
      * @param v Value to store in the node, perfect-forwarded.
      */
-    template <typename U = T>
+    template <typename U = Data>
     Node(size_t index, U&& v)
         : index_(index), value_(std::forward<U>(v)), edges_() {}
 
@@ -124,8 +127,8 @@ public:
      */
     template <typename... Args>
     void emplace(Args&&... args) {
-        value_.~T();
-        new (&value_) T(std::forward<Args>(args)...);
+        value_.~Data();
+        new (&value_) Data(std::forward<Args>(args)...);
     }
 
     /**
@@ -154,56 +157,56 @@ public:
      * 
      * @return A reference to the value.
      */
-    T& value() { return value_; }
+    Data& value() { return value_; }
 
     /**
      * @brief Returns a constant reference to the stored value.
      * 
      * @return A constant reference to the value.
      */
-    const T& value() const { return value_; }
+    const Data& value() const { return value_; }
 
     /**
      * @brief Dereferences the node to access the value.
      * 
      * @return A reference to the value.
      */
-    T& operator*() { return value_; }
+    Data& operator*() { return value_; }
 
     /**
      * @brief Dereferences the node to access the constant value.
      * 
      * @return A constant reference to the value.
      */
-    const T& operator*() const { return value(); }
+    const Data& operator*() const { return value(); }
 
     /**
      * @brief Provides pointer-like access to the value.
      * 
      * @return A pointer to the value.
      */
-    T* operator->() { return &(value()); }
+    Data* operator->() { return &(value()); }
 
     /**
      * @brief Provides constant pointer-like access to the value.
      * 
      * @return A constant pointer to the value.
      */
-    const T* operator->() const { return &(value()); }
+    const Data* operator->() const { return &(value()); }
 
     /**
      * @brief Returns a constant reference to the container holding edges.
      * 
      * @return A constant reference to the edges container.
      */
-    const Container<size_t, Allocator>& edges() const { return edges_; }
+    const Container<Edge, Allocator>& edges() const { return edges_; }
 
     /**
      * @brief Adds an edge to the node, connecting it to another node.
      * 
      * @param fromIndex Index of the node to which this node is being connected.
      */
-    void addEdge(size_t fromIndex) { edges_.push_back(fromIndex); }
+    void addEdge(Edge from) { edges_.push_back(from); }
 
     /**
      * @brief Output stream operator for printing the node's value.
