@@ -2,7 +2,6 @@
 #define NODE_TEMPLATE_HPP
 
 #include <memory>
-#include <vector>
 
 namespace vpr {
 namespace templates {
@@ -15,12 +14,12 @@ namespace templates {
  * flexible by allowing custom containers and allocators for edge storage.
  * 
  * @tparam Data Type of the value stored in the node.
- * @tparam Container Container type for storing edges, default is `std::vector`.
+ * @tparam Container Container type for storing edges.
  * @tparam Allocator Allocator type for managing memory, default is `std::allocator<Data>`.
  */
 template <typename Data,
           typename Edge,
-          template <typename, typename> class Container = std::vector,
+          template <typename, typename> class Container,
           typename Allocator = std::allocator<Edge>>
 class Node {
 

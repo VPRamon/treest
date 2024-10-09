@@ -2,6 +2,7 @@
 #define LIGHTWEIGHT_TREE_NODE_HPP
 
 #include "node_template.hpp"
+#include <vector>
 
 namespace vpr {
 namespace lightweight {

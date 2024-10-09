@@ -14,11 +14,11 @@ namespace templates {
  * It offers flexibility by allowing the use of custom containers and allocators.
  * 
  * @tparam Node The type representing a node in the graph.
- * @tparam Container The container type used to store nodes. Defaults to std::vector.
+ * @tparam Container The container type used to store nodes.
  * @tparam Allocator The allocator type for the nodes. Defaults to std::allocator.
  */
 template <typename Node,
-          template <typename, typename> class Container = std::vector,
+          template <typename, typename> class Container,
           typename Allocator = std::allocator<Node>>
 class Graph {
 protected:
