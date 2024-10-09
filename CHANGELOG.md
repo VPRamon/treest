@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [x.y.z] dd mm yyyy
 
 ### Added
+* Smart Tree `const Node& getRoot() const;`
 
 ### Changed
 * Graph template now accepts Edge as type

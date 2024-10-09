@@ -93,6 +93,7 @@ public:
     }
 
     inline Node& getRoot() { return Base::getNode(0); }
+    inline const Node& getRoot() const { return Base::getNode(0); }
 
 private:
 
