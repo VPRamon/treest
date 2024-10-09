@@ -3,6 +3,7 @@
 
 #include "graph_template.hpp"
 #include "node_template.hpp"
+#include <vector>
 
 namespace vpr {
 namespace lightweight {
