@@ -17,7 +17,9 @@ namespace templates {
  * @tparam Container The container type used to store nodes. Defaults to std::vector.
  * @tparam Allocator The allocator type for the nodes. Defaults to std::allocator.
  */
-template <typename Node, template <typename, typename> class Container = std::vector, typename Allocator = std::allocator<Node>>
+template <typename Node,
+          template <typename, typename> class Container = std::vector,
+          typename Allocator = std::allocator<Node>>
 class Graph {
 protected:
     /**

@@ -23,7 +23,7 @@ namespace templates {
  */
 template <typename Node_,
          template <typename, typename> class Container = std::vector,
-         typename Allocator = std::allocator<typename Node_::DataType>>
+         typename Allocator = std::allocator<Node_>>
 class Tree : public Graph<Node_, Container, Allocator> {
 public:
     using Node = Node_;
