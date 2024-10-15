@@ -44,35 +44,3 @@ or logos.
 For permission requests or inquiries, please contact:
 
 Email: [vallespuigramon@gmail.com](mailto:vallespuigramon@gmail.com)
-
----
-
-**Note**: It's recommended to include the full text of the GNU General Public License in a file
-named `LICENSE` or `COPYING` in your project's root directory.
-
----
-
-### Explanation of Improvements:
-
-1. **Formality and Professional Tone**: The revised license uses formal language consistent with standard open-source licenses, enhancing its professional appearance.
-
-2. **Consistency**: Adjusted phrases like "This file is part of the Treest library" to "This program," aligning with the standard GPL wording.
-
-3. **Emphasis on Warranty Disclaimer**: Bolded key disclaimers to draw attention to important legal terms.
-
-4. **Clarified Special Provisions**:
-   - Specified the need for **prior written permission** for public research purposes.
-   - Clarified that once permission is granted, usage is unrestricted under the outlined conditions.
-
-5. **License Negotiation Section**:
-   - Added "upon mutual agreement" to emphasize that both parties need to agree on the terms.
-   - Ensured the language is formal and clear about the negotiation process.
-
-6. **Disclaimer Section**:
-   - Added a standard disclaimer regarding trademarks and logos, which is common in open-source licenses.
-
-7. **Contact Information**:
-   - Included a placeholder for contact information, making it easy for users to request permissions or alternative licenses.
-
-8. **Note on Including the Full GPL Text**:
-   - Recommended including the full GPL text in your project to ensure compliance and provide users with all necessary information.
