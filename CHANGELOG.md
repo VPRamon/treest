@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 * Default vector container type.
+* Tree iterators "isEnd" template argument.
 
 ### Fixed
 * Wrong default Tree Allocator type.
