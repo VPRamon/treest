@@ -1,11 +1,10 @@
-#ifndef SMART_TREE_NODE_HPP
-#define SMART_TREE_NODE_HPP
+#pragma once
 
 #include "lightweight_tree_node.hpp"
 
 namespace vpr {
 namespace smart {
-    template<typename T> class Tree;
+    template<typename Data> class Tree;
 namespace tree {
 
 /**
@@ -15,17 +14,18 @@ namespace tree {
  * child nodes and retrieving child nodes. It maintains a pointer to its parent tree and 
  * uses this pointer to add children or access other nodes in the tree.
  *
- * @tparam T The type of data stored in the node.
+ * @tparam Data The type of data stored in the node.
+ * @tparam Edges The Container of edges stored in the node.
  */
-template <typename T>
-class Node : public lightweight::tree::Node<T>
+template <typename Data, typename Edges = std::vector<size_t>>
+class Node : public lightweight::tree::Node<Data, Edges>
 {
     // Allows the Tree class to access private/protected members of Node.
-    friend Tree<T>;
+    friend Tree<Data>;
 
-    using Base = lightweight::tree::Node<T>;
+    using Base = lightweight::tree::Node<Data, Edges>;
 
-    Tree<T>* tree_;  ///< Pointer to the tree that the node belongs to.
+    Tree<Data>* tree_;  ///< Pointer to the tree that the node belongs to.
 
 public:
 
@@ -38,9 +38,9 @@ public:
      * @param index The index of the node in the tree.
      * @param tree Pointer to the tree that the node belongs to.
      * @param parent_id The index of the parent node.
-     * @param data The value of type `T` stored in the node.
+     * @param data The value of type `Data` stored in the node.
      */
-    Node(size_t index, Tree<T>* tree, size_t parent_id, T data)
+    Node(size_t index, Tree<Data>* tree, size_t parent_id, Data data)
         : Base(index, parent_id, data), tree_(tree)
     {}
 
@@ -50,10 +50,10 @@ public:
      * This method creates a new child node with the given data and adds it as a child 
      * of this node. It uses the tree's `addChild` method to create the new node.
      *
-     * @param data The value of type `T` to be stored in the child node.
+     * @param data The value of type `Data` to be stored in the child node.
      * @return The index of the newly added child node.
      */
-    size_t addChild(T data) {
+    size_t addChild(Data data) {
         return tree_->addChild(Base::index(), std::move(data));
     }
 
@@ -93,6 +93,3 @@ public:
 } // namespace tree
 } // namespace smart
 } // namespace vpr
-
-#endif // SMART_TREE_NODE_HPP
-

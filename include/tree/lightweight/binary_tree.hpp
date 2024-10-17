@@ -7,7 +7,7 @@ namespace vpr {
 namespace lightweight {
 
 template <typename T>
-using BinaryTree = templates::Tree<tree::Node<T>, std::array>;
+using BinaryTree = templates::Tree<std::array<tree::Node<T>>;
 
 
 } // namespace lightweight

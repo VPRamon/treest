@@ -15,11 +15,11 @@ namespace tree {
  * a parent node. It stores the parent node's index and provides utility functions to check whether
  * the node is a root, a leaf, and retrieve the number of children.
  *
- * @tparam T The type of data stored in the node.
+ * @tparam Data The type of data stored in the node.
  */
-template <typename T>
-class Node : public templates::Node<T, std::vector<size_t>> {
-    using Base = templates::Node<T, std::vector<size_t>>;
+template <typename Data, typename Edges>
+class Node : public templates::Node<Data, Edges> {
+    using Base = templates::Node<Data, Edges>;
 
     size_t parent_id_;  ///< Index of the parent node.
 
@@ -32,9 +32,9 @@ public:
      *
      * @param index The index of the node in the graph.
      * @param parent_id The index of the parent node.
-     * @param data The value of type `T` stored in the node.
+     * @param data The value of type `Data` stored in the node.
      */
-    Node(size_t index, size_t parent_id, T data)
+    Node(size_t index, size_t parent_id, Data data)
         : Base(index, data), parent_id_(parent_id)
     {}
 

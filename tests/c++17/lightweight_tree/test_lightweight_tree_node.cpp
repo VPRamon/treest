@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <vector>
-#include "lightweight_tree_node.hpp" // Ensure this path is correct based on your project structure
+#include "lightweight_tree.hpp" // Ensure this path is correct based on your project structure
 
-using namespace vpr::lightweight::tree;
+template<typename T>
+using Node = typename vpr::lightweight::Tree<T>::Node;
 
 /**
  * @brief Helper function to generate values for different types.
@@ -43,7 +44,7 @@ protected:
      * @param data The value stored in the node.
      * @return A Node instance.
      */
-    Node<T> createNode(size_t index, size_t parent_id, T data) {
+    auto createNode(size_t index, size_t parent_id, T data) {
         return Node<T>(index, parent_id, std::move(data));
     }
 };
