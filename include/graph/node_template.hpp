@@ -15,19 +15,16 @@ namespace templates {
  * 
  * @tparam Data Type of the value stored in the node.
  * @tparam Container Container type for storing edges.
- * @tparam Allocator Allocator type for managing memory, default is `std::allocator<Data>`.
  */
 template <typename Data,
-          typename Edge,
-          template <typename, typename> class Container,
-          typename Allocator = std::allocator<Edge>>
+          typename Container>
 class Node {
-
+    using Edge = typename Container::value_type;
     size_t index_;      ///< Index of the node.
-    Data value_;           ///< Value stored in the node.
+    Data value_;        ///< Value stored in the node.
 
 protected:
-    Container<Edge, Allocator> edges_; ///< Container holding the indices of edges.
+    Container edges_; ///< Container holding the indices of edges.
 
 public:
 
@@ -198,7 +195,7 @@ public:
      * 
      * @return A constant reference to the edges container.
      */
-    const Container<Edge, Allocator>& edges() const { return edges_; }
+    const Container& edges() const { return edges_; }
 
     /**
      * @brief Adds an edge to the node, connecting it to another node.

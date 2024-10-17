@@ -19,9 +19,11 @@ namespace lightweight {
  * @tparam T The type of the value stored in each node.
  */
 template <typename T>
-class Graph : public templates::Graph<templates::Node<T, size_t, std::vector>, std::vector<templates::Node<T, size_t, std::vector>>> {
+class Graph : public templates::Graph<templates::Node<T, std::vector<size_t>>,   //< Node Type
+                                      std::vector<templates::Node<T, std::vector<size_t>>>> //< Container Type
+{
 public:
-    using Node = templates::Node<T, size_t, std::vector>;
+    using Node = templates::Node<T, std::vector<size_t>>;
 
 private:
     using Base = templates::Graph<Node, std::vector<Node>>;
