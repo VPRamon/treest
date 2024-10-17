@@ -8,7 +8,7 @@ namespace vpr {
 namespace lightweight {
 
 template <typename T>
-using Tree = templates::Tree<tree::Node<T>, std::vector<tree::Node<T>>>;
+using Tree = templates::Tree<std::vector<tree::Node<T>>>;
 
 
 } // namespace lightweight

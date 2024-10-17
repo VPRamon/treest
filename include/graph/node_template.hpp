@@ -14,17 +14,17 @@ namespace templates {
  * flexible by allowing custom containers and allocators for edge storage.
  * 
  * @tparam Data Type of the value stored in the node.
- * @tparam Container Container type for storing edges.
+ * @tparam Edges Container for storing edges.
  */
 template <typename Data,
-          typename Container>
+          typename Edges>
 class Node {
-    using Edge = typename Container::value_type;
+    using Edge = typename Edges::value_type;
     size_t index_;      ///< Index of the node.
     Data value_;        ///< Value stored in the node.
 
 protected:
-    Container edges_; ///< Container holding the indices of edges.
+    Edges edges_; ///< Edges holding the indices of edges.
 
 public:
 
@@ -195,7 +195,7 @@ public:
      * 
      * @return A constant reference to the edges container.
      */
-    const Container& edges() const { return edges_; }
+    const Edges& edges() const { return edges_; }
 
     /**
      * @brief Adds an edge to the node, connecting it to another node.

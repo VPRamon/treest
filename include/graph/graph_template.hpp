@@ -13,7 +13,6 @@ namespace templates {
  * This templated graph class manages nodes and provides functionalities to add, access, and iterate over them.
  * It offers flexibility by allowing the use of custom containers and allocators.
  * 
- * @tparam Node The type representing a node in the graph.
  * @tparam Container The container type used to store nodes.
  */
 template <typename Container>

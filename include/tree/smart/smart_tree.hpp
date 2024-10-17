@@ -17,14 +17,9 @@ namespace smart {
  * @tparam T The type of data stored in the nodes of the tree.
  */
 template <typename T>
-class Tree : public templates::Tree<tree::Node<T>, std::vector<tree::Node<T>>> {
+class Tree : public templates::Tree<std::vector<tree::Node<T>>> {
 
-public:
-    using Node = tree::Node<T>;
-
-private:
-
-    using Base = templates::Tree<Node, std::vector<Node>>;
+    using Base = templates::Tree<std::vector<tree::Node<T>>>;
 
 public:
 
@@ -97,8 +92,8 @@ public:
         return id;
     }
 
-    inline Node& getRoot() { return Base::getNode(0); }
-    inline const Node& getRoot() const { return Base::getNode(0); }
+    inline auto& getRoot() { return Base::getNode(0); }
+    inline auto& getRoot() const { return Base::getNode(0); }
 
 private:
 
@@ -109,7 +104,7 @@ private:
      * It is used after copying or moving the tree to maintain proper node-tree relationships.
      */
     void syncNodes() {
-        for (Node& node : Base::nodes_) {
+        for (auto& node : Base::nodes_) {
             node.tree_ = this;
         }
     }

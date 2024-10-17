@@ -13,11 +13,10 @@ namespace templates {
  * @brief A Tree data structure template class.
  *
  */
-template <typename Node_,
-         typename Container = std::vector<Node_>>
+template <typename Container>
 class Tree : public Graph<Container> {
 public:
-    using Node = Node_;
+    using Node = typename Container::value_type;
 
 private:
     using Base = Graph<Container>;
