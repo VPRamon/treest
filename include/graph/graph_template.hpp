@@ -16,9 +16,10 @@ namespace templates {
  * @tparam Node The type representing a node in the graph.
  * @tparam Container The container type used to store nodes.
  */
-template <typename Node,
-          typename Container>
+template <typename Container>
 class Graph {
+    using Node = typename Container::value_type;
+
 protected:
     /**
      * @brief Container holding all nodes in the graph.
