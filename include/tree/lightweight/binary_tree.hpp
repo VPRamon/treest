@@ -1,5 +1,4 @@
-#ifndef TREE_HPP
-#define TREE_HPP
+#pragma once
 
 #include "lightweight_tree_node.hpp"
 #include "tree_template.hpp"
@@ -8,10 +7,8 @@ namespace vpr {
 namespace lightweight {
 
 template <typename T>
-using Tree = templates::Tree<tree::Node<T>, std::vector<tree::Node<T>>>;
+using BinaryTree = templates::Tree<tree::Node<T>, std::array>;
 
 
 } // namespace lightweight
 } // namespace vpr
-
-#endif // TREE_HPP

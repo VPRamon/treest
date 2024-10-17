@@ -17,11 +17,16 @@ namespace smart {
  * @tparam T The type of data stored in the nodes of the tree.
  */
 template <typename T>
-class Tree : public templates::Tree<tree::Node<T>, std::vector> {
-    using Base = templates::Tree<tree::Node<T>, std::vector>;
+class Tree : public templates::Tree<tree::Node<T>, std::vector<tree::Node<T>>> {
 
 public:
     using Node = tree::Node<T>;
+
+private:
+
+    using Base = templates::Tree<Node, std::vector<Node>>;
+
+public:
 
     /**
      * @brief Constructs a Tree with an initial root node and an optional initial capacity.

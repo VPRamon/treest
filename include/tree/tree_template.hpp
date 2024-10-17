@@ -14,14 +14,13 @@ namespace templates {
  *
  */
 template <typename Node_,
-         template <typename, typename> class Container = std::vector,
-         typename Allocator = std::allocator<Node_>>
-class Tree : public Graph<Node_, Container, Allocator> {
+         typename Container = std::vector<Node_>>
+class Tree : public Graph<Node_, Container> {
 public:
     using Node = Node_;
 
 private:
-    using Base = Graph<Node, Container, Allocator>;
+    using Base = Graph<Node, Container>;
     using T = typename Node::DataType;
 
     // Type aliases for traversal policies

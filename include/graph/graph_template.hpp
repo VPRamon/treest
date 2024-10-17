@@ -18,8 +18,7 @@ namespace templates {
  * @tparam Allocator The allocator type for the nodes. Defaults to std::allocator.
  */
 template <typename Node,
-          template <typename, typename> class Container,
-          typename Allocator = std::allocator<Node>>
+          typename Container>
 class Graph {
 protected:
     /**
@@ -27,7 +26,7 @@ protected:
      * 
      * The underlying container type is user-defined, allowing flexibility for different performance requirements.
      */
-    Container<Node, Allocator> nodes_;
+    Container nodes_;
 
 public:
     /**
@@ -36,8 +35,7 @@ public:
      * @param initialCapacity Initial reserve capacity for the container to minimize reallocations.
      * @param alloc Allocator instance used to manage memory for the container.
      */
-    explicit Graph(size_t initialCapacity = 16, const Allocator& alloc = Allocator())
-        : nodes_(alloc) {
+    explicit Graph(size_t initialCapacity = 16) {
         nodes_.reserve(initialCapacity);
     }
 
@@ -48,7 +46,7 @@ public:
      * 
      * @param other The graph to copy from.
      */
-    Graph(const Graph& other) : nodes_(other.nodes_.get_allocator()) {
+    Graph(const Graph& other) : nodes_(other.nodes_) {
         nodes_.reserve(other.nodes_.size());
         nodes_ = other.nodes_;
     }
@@ -157,56 +155,56 @@ public:
      * 
      * @return Iterator pointing to the first node.
      */
-    typename Container<Node, Allocator>::iterator begin() noexcept { return nodes_.begin(); }
+    typename Container::iterator begin() noexcept { return nodes_.begin(); }
 
     /**
      * @brief Returns an iterator to the end of the nodes.
      * 
      * @return Iterator pointing past the last node.
      */
-    typename Container<Node, Allocator>::iterator end() noexcept { return nodes_.end(); }
+    typename Container::iterator end() noexcept { return nodes_.end(); }
 
     /**
      * @brief Returns a reverse iterator to the beginning of the nodes in reverse order.
      * 
      * @return Reverse iterator pointing to the last node.
      */
-    typename Container<Node, Allocator>::reverse_iterator rbegin() noexcept { return nodes_.rbegin(); }
+    typename Container::reverse_iterator rbegin() noexcept { return nodes_.rbegin(); }
 
     /**
      * @brief Returns a reverse iterator to the end of the nodes in reverse order.
      * 
      * @return Reverse iterator pointing before the first node.
      */
-    typename Container<Node, Allocator>::reverse_iterator rend() noexcept { return nodes_.rend(); }
+    typename Container::reverse_iterator rend() noexcept { return nodes_.rend(); }
 
     /**
      * @brief Const version of the iterator to the beginning of nodes.
      * 
      * @return Const iterator pointing to the first node.
      */
-    typename Container<Node, Allocator>::const_iterator begin() const noexcept { return nodes_.begin(); }
+    typename Container::const_iterator begin() const noexcept { return nodes_.begin(); }
 
     /**
      * @brief Const version of the iterator to the end of nodes.
      * 
      * @return Const iterator pointing past the last node.
      */
-    typename Container<Node, Allocator>::const_iterator end() const noexcept { return nodes_.end(); }
+    typename Container::const_iterator end() const noexcept { return nodes_.end(); }
 
     /**
      * @brief Const version of the reverse iterator to the beginning of nodes in reverse order.
      * 
      * @return Const reverse iterator pointing to the last node.
      */
-    typename Container<Node, Allocator>::const_reverse_iterator rbegin() const noexcept { return nodes_.rbegin(); }
+    typename Container::const_reverse_iterator rbegin() const noexcept { return nodes_.rbegin(); }
 
     /**
      * @brief Const version of the reverse iterator to the end of nodes in reverse order.
      * 
      * @return Const reverse iterator pointing before the first node.
      */
-    typename Container<Node, Allocator>::const_reverse_iterator rend() const noexcept { return nodes_.rend(); }
+    typename Container::const_reverse_iterator rend() const noexcept { return nodes_.rend(); }
 
     /**
      * @brief Outputs the graph to an output stream.
