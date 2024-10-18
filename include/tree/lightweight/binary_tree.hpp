@@ -9,37 +9,31 @@
 template <typename T, size_t MaxSize>
 class DynamicArray {
     std::array<T, MaxSize> data_;  // Fixed-size array to hold the elements
-    size_t size_ = 0;         // Tracks the current number of elements
+    size_t size_ = 0;              // Tracks the current number of elements
 
 public:
 
     using value_type = T;
+    using iterator = typename std::array<T, MaxSize>::iterator;
+    using const_iterator = typename std::array<T, MaxSize>::const_iterator;
+    using reverse_iterator = typename std::array<T, MaxSize>::reverse_iterator;
+    using const_reverse_iterator = typename std::array<T, MaxSize>::const_reverse_iterator;
 
     DynamicArray() = default;
 
     template <typename... Args>
     DynamicArray(Args&&... args) {
         static_assert(sizeof...(args) <= MaxSize, "Number of elements exceeds FixedVector's maximum size");
-
-        // Add each argument to the array
         size_ = sizeof...(args);
         data_ = {std::forward<Args>(args)...};
     }
 
     template <typename... Args>
-    void emplace_back(const Args&&... args) {
+    void emplace_back(Args&&... args) {
         if (size_ >= MaxSize) {
             throw std::out_of_range("Exceeded maximum size");
         }
-        data_[size_] = {std::forward<Args>(args)...};
-        ++size_;
-    }
-
-    void emplace_back(const T& value) {
-        if (size_ >= MaxSize) {
-            throw std::out_of_range("Exceeded maximum size");
-        }
-        data_[size_] = value;
+        data_[size_] = T(std::forward<Args>(args)...);
         ++size_;
     }
 
@@ -52,14 +46,14 @@ public:
     }
 
     T& at(size_t index) {
-        if (index >= MaxSize) {
+        if (index >= size_) {
             throw std::out_of_range("Attempt to access an element out of array bounds");
         }
         return data_[index];
     }
 
     const T& at(size_t index) const {
-        if (index >= MaxSize) {
+        if (index >= size_) {
             throw std::out_of_range("Attempt to access an element out of array bounds");
         }
         return data_[index];
@@ -90,6 +84,26 @@ public:
 
     // Check if array contains any element
     bool empty() const { return size_ == 0; }
+
+    T& front() { return at(0); }
+    const T& front() const { return at(0); }
+    T& back() { return at(size_-1); }
+    const T& back() const { return at(size_-1); }
+
+    // Corrected iterator functions
+    iterator begin() noexcept { return data_.begin(); }
+    iterator end() noexcept { return data_.begin() + size_; }
+    const_iterator begin() const noexcept { return data_.begin(); }
+    const_iterator end() const noexcept { return data_.begin() + size_; }
+    const_iterator cbegin() const noexcept { return data_.cbegin(); }
+    const_iterator cend() const noexcept { return data_.cbegin() + size_; }
+
+    reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+    reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+    const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
+    const_reverse_iterator rend() const noexcept { return const_reverse_iterator(begin()); }
+    const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(end()); }
+    const_reverse_iterator crend() const noexcept { return const_reverse_iterator(begin()); }
 };
 
 
