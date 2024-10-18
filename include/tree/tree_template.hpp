@@ -20,7 +20,7 @@ public:
 
 private:
     using Base = Graph<Container>;
-    using T = typename Node::DataType;
+    using Data = typename Node::DataType;
 
     // Type aliases for traversal policies
     using PreOrderTraversalType = PreOrderTraversal<Tree>;
@@ -47,7 +47,7 @@ public:
      * @brief Constructs a tree with a root value and an initial capacity for nodes.
      *
      */
-    explicit Tree(T root, size_t initial_capacity = 16) : Base(initial_capacity) {
+    explicit Tree(Data root, size_t initial_capacity = 16) : Base(initial_capacity) {
         Base::emplace_node(0, std::move(root));
     }
 
@@ -55,7 +55,7 @@ public:
      * @brief Adds a child node to the specified parent node.
      *
      */
-    size_t addChild(size_t parent_index, T value) {
+    size_t addChild(size_t parent_index, Data value) {
         Base::validateIndex(parent_index);
         size_t id = Base::emplace_node(parent_index, std::move(value));
         Base::addEdge(parent_index, id);

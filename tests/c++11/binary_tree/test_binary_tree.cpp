@@ -1,7 +1,7 @@
-#include "test_fixture.hpp"
+#include "binary_tree_test_fixture.hpp"
 #include <variant>
 
-class BinaryTreeTest : public TestFixture { };
+class BinaryTreeTest : public BinTreeTestFixture { };
 
 TEST_F(BinaryTreeTest, TestTreeInitialization) {
     EXPECT_EQ(tree.size(), 7); // Root + 3 children + 5 grandchildren + initial reserve
@@ -9,9 +9,11 @@ TEST_F(BinaryTreeTest, TestTreeInitialization) {
 }
 
 TEST_F(BinaryTreeTest, TestAddChild) {
-    size_t newChild = tree.addChild(tree.getRoot().index(), "7");
+    size_t newChild = tree.addChild(tree.getNode(6).index(), "7");
     EXPECT_EQ(tree.size(), 8);
     EXPECT_EQ(tree.getNode(newChild).value(), "7");
+    std::cout << tree.getNode(6) << std::endl;
+    EXPECT_EQ(tree.getNode(tree.getNode(6).left()).value(), "7");
 }
 
 TEST_F(BinaryTreeTest, TestGetNode) {

@@ -3,7 +3,7 @@ file(GLOB_RECURSE UNTI_TEST_SOURCES
     lightweight_digraph/test_*.cpp
     lightweight_tree/test_*.cpp
     smart_tree/test_*.cpp
-    #binary_tree/test_*.cpp
+    binary_tree/test_*.cpp
 )
 
 add_executable(test_cpp11 ${UNTI_TEST_SOURCES})

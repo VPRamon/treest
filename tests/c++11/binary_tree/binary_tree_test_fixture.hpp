@@ -1,5 +1,3 @@
-#pragma once
-
 #include "binary_tree.hpp"
 #include <gtest/gtest.h>
 #include <string>
@@ -14,7 +12,7 @@ using namespace vpr;
 using Tree = lightweight::BinaryTree<std::string>;
 using Node = Tree::Node;
 
-class TestFixture : public ::testing::Test {
+class BinTreeTestFixture : public ::testing::Test {
 protected:
     Tree tree{"0"};
 
